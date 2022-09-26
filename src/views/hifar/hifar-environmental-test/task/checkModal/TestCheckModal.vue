@@ -301,7 +301,9 @@ export default {
           checkUserId: "",
           checkTime: "0"
         }
-      }))
+      })).map(item1 => {return {...item1,checked: false,}})
+      this.checkAll = false
+      this.indeterminate = false
     },
     handleAdd(type) {
       let params = this[type].length > 0 ? cloneDeep(this[type][this[type].length - 1]) : Object.assign({}, this.checkDetail, {testId: this.testId})
@@ -479,7 +481,7 @@ export default {
           onOk: () => {
             let items = this.checkItem(this[type], ['id'])
             if (items.length > 0) {
-              this.handleFillCheck(items)
+              this.handleFlagCheck(items)
             } else {
               return this.$message.warning('请填写检查项')
             }

@@ -314,21 +314,6 @@ export default {
           scopedSlots: {customRender: 'status'},
           minWidth: 100,
         },
-        // {
-        //   title: '试品名称',
-        //   dataIndex: 'productName',
-        //   minWidth: 120
-        // },
-        // {
-        //   title: '试品编号',
-        //   dataIndex: 'productCode',
-        //   minWidth: 120
-        // },
-        // {
-        //   title: '试品型号',
-        //   dataIndex: 'productModel',
-        //   minWidth: 120
-        // },
         {
           title: "试品工号",
           align: "left",
@@ -399,7 +384,7 @@ export default {
           customRender: (time) => {
             return time && time != 0 ? moment(parseFloat(time)).format('YYYY-MM-DD HH:mm:ss') : '--'
           },
-          minWidth: 100,
+          minWidth: 150,
         },
         {
           title: '实际用时(h)',

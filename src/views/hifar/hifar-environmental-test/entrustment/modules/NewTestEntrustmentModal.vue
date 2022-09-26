@@ -104,6 +104,9 @@
                   :edit-render="{
                   name: 'input',
                   attrs: { type: 'text', placeholder: '请输入试品名称' },
+                  events:{
+                      blur: this.pieceItemChange,
+                    }
                 }"
                   field='productName'
                   title="试品名称"
@@ -113,6 +116,9 @@
                   :edit-render="{
                    name:'input',
                    attrs: { type: 'text', placeholder: '请输入试品工号' },
+                   events:{
+                      blur: this.pieceItemChange,
+                    }
                 }"
                   field='productCode'
                   title="试品工号"
@@ -121,6 +127,9 @@
                   :edit-render="{
                    name:'input',
                    attrs: { type: 'text', placeholder: '请输入试品代号' },
+                   events:{
+                      blur: this.pieceItemChange,
+                    }
                 }"
                   field='productAlias'
                   :title="+entrustType === 1 ? '试品代号' : '试品型号'"
@@ -130,6 +139,9 @@
                   :edit-render="{
                    name:'input',
                    attrs: { type: 'number', placeholder: '请输入试品数量' },
+                   events:{
+                      blur: this.pieceItemChange,
+                    }
                 }"
                   field='pieceNum'
                   title="试品数量"
@@ -231,6 +243,7 @@ export default {
       pieceModelInfo: [],
       projectModelInfo: [],
       secretLevelArr: [],
+      staticTableData: [],
       url: {
         save: "HfEnvEntrustBusiness/saveEntrust",
         setSecretLevel: '/MinioBusiness/modifyAttachSecretLevelByIds',
@@ -578,6 +591,23 @@ export default {
       this.$set(this.entrustModel, 'isPhotographByPiece', '2')
       this.$set(this.entrustModel, 'isNeedOriginalData', '2')
     },
+    pieceItemChange({row, rowIndex}) {
+      function deleteKey(obj, key) {
+        let currentObj = cloneDeep(obj)
+        delete currentObj[key]
+        return currentObj
+      }
+
+      setTimeout(() => {
+        if (JSON.stringify(deleteKey(row, 'productId')) !== JSON.stringify(deleteKey(this.staticTableData[rowIndex], 'productId'))) {
+          row.productId = ''
+          row.type = 'inside'
+        } else {
+          row.productId = this.staticTableData[rowIndex].productId
+          row.type = 'selected'
+        }
+      }, 1)
+    },
     // 选择试品
     selectProductHandle() {
       this.$refs.ProductSelectModal.show()
@@ -599,6 +629,7 @@ export default {
       const {insertRecords} = $table.getRecordset()
       this.insertRecords = insertRecords
       this.tableData = this.tableData.concat(insertRecords)
+      this.staticTableData = cloneDeep(this.tableData)
       this.setProjectPieceNos()
     },
     //内部试品手动新增
@@ -723,13 +754,13 @@ export default {
           for (let i = 0; i < this.projectInfoData.length; i++) {
             projectFormItem[i].$refs['projectInfoForm' + i].form.setFieldsValue({pieceIds, pieceNos})
             projectFormItem[i].model.pieceNos = pieceNos
-            console.log(projectFormItem[i].$refs['projectInfoForm' + i].form.getFieldsValue())
           }
         }, 1)
       }
     },
     activeCellMethod({row, column}) {
-      return row.type === 'inside' || (row.type === 'selected' && column.property === 'pieceNo')
+      // return row.type === 'inside' || (row.type === 'selected' && column.property === 'pieceNo')
+      return row.type === 'inside' || row.type === 'selected'
     },
     selectCustomerChange(val, record) {
       let [customer] = record

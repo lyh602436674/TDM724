@@ -23,6 +23,7 @@
             <a-input
               v-decorator="['userCode', { rules: [{ required: true, message: '请输入用户名' }] }]"
               placeholder="请输入用户名"
+              @keyup="submitKeyup"
             >
               <a-icon slot="prefix" type="user" />
             </a-input>
@@ -31,6 +32,7 @@
             <a-input-password
               v-decorator="['password', { rules: [{ required: true, message: '请输入密码' }] }]"
               placeholder="请输入密码"
+              @keyup="submitKeyup"
             >
               <a-icon slot="prefix" type="security-scan" />
             </a-input-password>
@@ -45,7 +47,8 @@
 </template>
 
 <script>
-import { isFunction } from 'lodash'
+import {isFunction} from 'lodash'
+
 export default {
   inject: {
     getContainer: {
@@ -79,6 +82,11 @@ export default {
         },
       })
       this.visible = true
+    },
+    submitKeyup(e) {
+      if (e.keyCode === 13) {
+        this.submit()
+      }
     },
     submit() {
       this.form.validateFields((err, values) => {

@@ -576,7 +576,7 @@ export default {
           customRender: (time) => {
             return time && time != 0 ? moment(parseFloat(time)).format('YYYY-MM-DD HH:mm:ss') : '--'
           },
-          minWidth: 100,
+          minWidth: 150,
         },
         {
           title: '预计用时(h)',
@@ -584,12 +584,20 @@ export default {
           minWidth: 100,
         },
         {
+          title: '预计结束时间',
+          dataIndex: 'taskEndTime',
+          minWidth: 150,
+          customRender: (text, record) => {
+            return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD HH:mm:ss') : '--'
+          }
+        },
+        {
           title: '实际开始时间',
           dataIndex: 'realStartTime',
           customRender: (time) => {
             return time && time != 0 ? moment(parseFloat(time)).format('YYYY-MM-DD HH:mm:ss') : '--'
           },
-          minWidth: 100,
+          minWidth: 150,
         },
         {
           title: '实际用时(h)',

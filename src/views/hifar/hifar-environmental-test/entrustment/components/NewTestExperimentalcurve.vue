@@ -41,6 +41,7 @@ export default {
       let option = {
         title: [],//
         legend: {},
+        animation:false,
         tooltip: {
           trigger: 'axis',
           formatter: function (params) {

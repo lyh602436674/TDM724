@@ -184,8 +184,8 @@ export default {
         {
           title: '委托单号',
           align: 'left',
+          width: 100,
           dataIndex: 'entrustCodes',
-          minWidth: 10,
           customRender: (text, record) => {
             return text || '--'
           }
@@ -193,8 +193,8 @@ export default {
         {
           title: '试验项目',
           align: 'left',
+          width: 100,
           dataIndex: 'unitNames',
-          minWidth: 10,
           customRender: (text, record) => {
             return text || '--'
           }
@@ -202,8 +202,8 @@ export default {
         {
           title: '使用设备',
           align: 'left',
+          width: 100,
           dataIndex: 'equipName',
-          minWidth: 25,
           customRender: (text, record) => {
             return text || '--'
           }
@@ -212,15 +212,7 @@ export default {
           title: '试件数量(件)',
           align: 'left',
           dataIndex: 'sampleNum',
-          minWidth: 10,
-          customRender: (text, record) => {
-            return text || '--'
-          }
-        },
-        {
-          title: '试验地点',
-          align: 'left',
-          dataIndex: 'workName',
+          minWidth: 100,
           customRender: (text, record) => {
             return text || '--'
           }
@@ -228,6 +220,7 @@ export default {
         {
           title: '试验费用(元)',
           align: 'left',
+          width: 100,
           dataIndex: 'testCost',
           customRender: (text, record) => {
             return text || '--'
@@ -236,6 +229,7 @@ export default {
         {
           title: '过程描述',
           align: 'left',
+          minWidth: 200,
           dataIndex: 'processDesc',
           customRender: (text, record) => {
             return text || '--'
@@ -245,23 +239,30 @@ export default {
           title: '开始时间',
           align: 'left',
           dataIndex: 'realStartTime',
-          minWidth: 30,
+          minWidth: 150,
           customRender: (text, record) => {
-            return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD HH:mm') : '--'
+            return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD HH:mm:ss') : '--'
           }
         },
         {
-          title: '结束时间',
+          title: '预计用时',
           align: 'left',
-          dataIndex: 'realEndTime',
-          minWidth: 30,
+          width: 80,
+          dataIndex: 'predictUseTime',
+        },
+        {
+          title: '预计结束时间',
+          align: 'left',
+          minWidth: 150,
+          dataIndex: 'predictEndTime',
           customRender: (text, record) => {
-            return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD HH:mm') : '--'
+            return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD HH:mm:ss') : '--'
           }
         },
         {
           title: '备注',
           align: 'left',
+          width: 200,
           dataIndex: 'remarks',
           customRender: (text, record) => {
             return text || '--'

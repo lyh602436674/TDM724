@@ -77,6 +77,7 @@ export default {
     return {
       // 添加弹窗相关
       visible: false,
+      allowEmpty: false,
       queryParams: {},
       selectedRowKeys: [],
       selectedRows: [],
@@ -160,10 +161,11 @@ export default {
     handleCancel() {
       this.queryParams = {}
       this.visible = false
+      this.allowEmpty = false
       this.selectedRowKeys = []
     },
     handleSubmit() {
-      if (!this.selectedRowKeys.length) {
+      if (!this.selectedRowKeys.length && !this.allowEmpty) {
         this.$message.warning('请先选择项目!')
         return
       }

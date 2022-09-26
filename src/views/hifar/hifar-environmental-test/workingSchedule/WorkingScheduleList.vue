@@ -15,7 +15,6 @@
           <working-schedule-table :table-data="nextMonthTableData" tableEdit table-data-name="nextMonthTableData" :userList="userList"></working-schedule-table>
         </a-tab-pane>
       </h-tabs>
-
     </h-card>
   </div>
 </template>

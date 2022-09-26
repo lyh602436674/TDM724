@@ -634,7 +634,7 @@ export default {
           this.detailData = data
           this.projectInfo = data.testTaskInfo[0]
           this.projectAbilityInfo = data.projectInfo[0].abilityRequire || []
-          this.curveUrl = data.projectInfo[0].curveUrl || []
+          this.curveUrl = data.projectInfo[0].curveUrl || ''
           if (testEquipInfoArr.length) {
             testEquipInfoArr.forEach((item) => {
               testEquipInfo.push(item.equipName + (item.innerName ? '(' + item.innerName + ')' : ''))

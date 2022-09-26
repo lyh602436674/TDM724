@@ -759,7 +759,7 @@ export default {
           })
         }
       })
-      console.log('Selected equip', this.model)
+      this.model.predictUseTime = this.model.predictUseTime == 0 ? 1 : this.model.predictUseTime
       this.$refs.taskArrangementFormModal.show(this.model)
     },
     filterQueryType(type) {

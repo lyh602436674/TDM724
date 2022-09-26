@@ -220,8 +220,10 @@ export default {
           readOnly: true,
           click: () => {
             this.$refs.projectAddModal.visible = true
+            this.$refs.projectAddModal.allowEmpty = true
             this.$refs.projectAddModal.getProjectTree()
-            this.$refs.projectAddModal.selectedRowKeys = this.$refs.equipmentForm.form.getFieldsValue().equipBaseProjectIds.split(',')
+            let equipBaseProjectIds = this.$refs.equipmentForm.form.getFieldsValue().equipBaseProjectIds
+            this.$refs.projectAddModal.selectedRowKeys = equipBaseProjectIds && equipBaseProjectIds.split(',') || []
           }
         },
         {

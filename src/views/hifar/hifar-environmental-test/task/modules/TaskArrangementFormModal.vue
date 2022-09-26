@@ -13,8 +13,11 @@
     destroyOnClose
     :visible="visible"
     @cancel="handleCancel"
-    @submit="handleSubmit"
   >
+    <template slot="footer">
+      <a-button @click="handleCancel" type="ghost-error">关闭</a-button>
+      <a-button type="primary" @click="handleSubmit" :loading="submitLoading">确定</a-button>
+    </template>
     <a-alert v-if="errorMessage" type="error" :message="errorMessage" banner/>
     <h-form v-model="model" ref="taskArrangementForm" :formData="formData" :column="1" @change="submit"/>
   </h-modal>
@@ -37,6 +40,7 @@ export default {
   data() {
     return {
       visible: false,
+      submitLoading: false,
       model: {},
       name: '',
       centerId: 'hello',
@@ -198,6 +202,7 @@ export default {
       this.model.idName = record.map(item => item.idName).toString()
     },
     handleSubmit() {
+      this.submitLoading = true
       this.$refs.taskArrangementForm.validateForm()
     },
     submit(values, res) {
@@ -231,6 +236,8 @@ export default {
         } else {
 
         }
+      }).finally(() => {
+        this.submitLoading = false
       })
     },
   },
