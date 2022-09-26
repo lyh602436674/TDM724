@@ -11,6 +11,9 @@
         <a-tab-pane key="2" tab="历史排班" :forceRender="true">
           <working-schedule-table :table-data="historyTableData" table-data-name="historyTableData" :userList="userList"></working-schedule-table>
         </a-tab-pane>
+        <a-tab-pane key="3" tab="下月排班" :forceRender="true">
+          <working-schedule-table :table-data="nextMonthTableData" tableEdit table-data-name="nextMonthTableData" :userList="userList"></working-schedule-table>
+        </a-tab-pane>
       </h-tabs>
 
     </h-card>
@@ -29,6 +32,7 @@ export default {
       activeKey: "1",
       historyTableData: [],
       monthlyTableData: [],
+      nextMonthTableData: [],
       columns: [
         {
           title: '日期',
@@ -91,7 +95,7 @@ export default {
       postAction(this.url.list).then((res) => {
         if (res.code === 200) {
           this.monthlyTableData = res.data.data
-          this.historyTableData = res.data.data
+          this.historyTableData = [{}]
         }
       })
     },

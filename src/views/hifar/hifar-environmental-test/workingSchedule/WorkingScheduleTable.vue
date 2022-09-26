@@ -1,14 +1,15 @@
 <template>
   <div style="height: 100%">
     <vxe-table ref='workTable'
-               :data='localTableData'
+               :data='tableData'
+               @cell-click="handleCellClick"
                height="100%"
                size="medium"
                autoResize round border stripe
                :edit-config="{
                   trigger: 'click',
                   mode: 'cell',
-                  activeMethod: ()=> true
+                  activeMethod: ()=> this.tableEdit
                 }"
                keep-source
                show-overflow>
@@ -22,13 +23,12 @@
       </vxe-table-column>
       <template>
         <vxe-table-column v-if="tableEdit" :edit-render="{}" field="user" align="center" title="排班">
-          <template #edit="{row,rowIndex}">
+          <template #edit="{row,rowIndex,column}">
             <a-select v-model="row.user" show-search
                       @change="(e) => handleUserChange(e,row,rowIndex,[{key:'concatWay',value:'mobile'},{key:'userName',value:'idName'}])"
                       :getPopupContainer="(node)=> node.parentNode" style="width: 100%" :filter-option="filterOption">
-              <a-select-option v-for="item in userList" :key="item.id" :value="item.id">{{
-                  item.idName
-                }}
+              <a-select-option v-for="item in userList" :key="item.id" :value="item.id">
+                {{ item.idName }}
               </a-select-option>
             </a-select>
           </template>
@@ -69,7 +69,7 @@
       <template>
         <vxe-table-column v-if="tableEdit" :edit-render="{}" field="user1" align="center" title="排班">
           <template #edit="{row,rowIndex}">
-            <a-select v-model="row.user1" show-search
+            <a-select v-model="row.user1" show-search autoFocus
                       @change="(e) => handleUserChange(e,row,rowIndex,[{key:'concatWay1',value:'mobile'},{key:'userName1',value:'idName'}])"
                       :getPopupContainer="(node)=> node.parentNode" style="width: 100%" :filter-option="filterOption">
               <a-select-option v-for="item in userList" :key="item.id" :value="item.id">{{
@@ -144,26 +144,29 @@ export default {
       deep: true,
       handler(val) {
         this.localTableData = val
-        this[this.tableDataName] = val
       },
     },
   },
   data() {
     return {
-      localTableData: []
+      localTableData: [],
     }
   },
   methods: {
     handleUserChange(id, row, rowIndex, setData) {
       for (let i = 0; i < setData.length; i++) {
-        this.$set(this[this.tableDataName][rowIndex], setData[i].key, this.userList.filter(item => item.id === id)[0][setData[i].value])
+        this.$set(this.localTableData[rowIndex], setData[i].key, this.userList.filter(item => item.id === id)[0][setData[i].value])
       }
+    },
+    handleCellClick({row, rowIndex, column}) {
+
     },
     filterOption(input, option) {
       return (
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       );
-    },
+    }
+    ,
   }
 }
 </script>
