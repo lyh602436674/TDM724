@@ -2,6 +2,7 @@
   <div style="height: 100%">
     <vxe-table ref='workTable'
                :data='tableData'
+               row-key="id"
                @cell-click="handleCellClick"
                height="100%"
                size="medium"
@@ -9,23 +10,25 @@
                :edit-config="{
                   trigger: 'click',
                   mode: 'cell',
-                  activeMethod: ()=> this.tableEdit
+                  activeMethod: activeCellMethod
                 }"
                keep-source
                show-overflow>
-      <vxe-table-column field='date' title="日期" align="center">
+      <vxe-table-column field='dutyTime' title="日期" align="center">
         <div slot='default' slot-scope='{row, rowIndex}'>
           <div style="display: flex;width: 100%;justify-content: center">
-            <div class="date" style="padding:0 5px">{{ row.date }}</div>
+            <div class="time" style="padding:0 5px">
+              {{ moment(+row.dutyTime).format('YYYY-MM-DD') }}
+            </div>
             <div class="week" style="padding:0 5px">{{ row.week }}</div>
           </div>
         </div>
       </vxe-table-column>
       <template>
-        <vxe-table-column v-if="tableEdit" :edit-render="{}" field="user" align="center" title="排班">
+        <vxe-table-column v-if="tableEdit" :edit-render="{}" field="proNameId" align="center" title="排班">
           <template #edit="{row,rowIndex,column}">
-            <a-select v-model="row.user" show-search
-                      @change="(e) => handleUserChange(e,row,rowIndex,[{key:'concatWay',value:'mobile'},{key:'userName',value:'idName'}])"
+            <a-select v-model="row.proNameId" show-search
+                      @change="(e) => handleUserChange(e,row,rowIndex,[{key:'proPhone',value:'mobile'},{key:'proName',value:'idName'}])"
                       :getPopupContainer="(node)=> node.parentNode" style="width: 100%" :filter-option="filterOption">
               <a-select-option v-for="item in userList" :key="item.id" :value="item.id">
                 {{ item.idName }}
@@ -33,21 +36,21 @@
             </a-select>
           </template>
           <template v-slot="{row}">
-            <span>{{ row.userName }}</span>
+            <span>{{ row.proName }}</span>
           </template>
         </vxe-table-column>
-        <vxe-table-column v-else field="userName" align="center" title="排班"/>
+        <vxe-table-column v-else field="proName" align="center" title="排班"/>
       </template>
       <vxe-table-column
         align="center"
-        field='concatWay'
+        field='proPhone'
         title="联系方式"
       />
       <template>
-        <vxe-table-column v-if="tableEdit" :edit-render="{}" field="realityUser" align="center" title="实际">
+        <vxe-table-column v-if="tableEdit" :edit-render="{}" field="practicalNameId" align="center" title="实际">
           <template #edit="{row,rowIndex}">
-            <a-select v-model="row.realityUser" show-search
-                      @change="(e) => handleUserChange(e,row,rowIndex,[{key:'realityConcatWay',value:'mobile'},{key:'realityUserName',value:'idName'}])"
+            <a-select v-model="row.practicalNameId" show-search
+                      @change="(e) => handleUserChange(e,row,rowIndex,[{key:'practicalPhone',value:'mobile'},{key:'practicalName',value:'idName'}])"
                       :getPopupContainer="(node)=> node.parentNode" style="width: 100%" :filter-option="filterOption">
               <a-select-option v-for="item in userList" :key="item.id" :value="item.id">{{
                   item.idName
@@ -56,21 +59,21 @@
             </a-select>
           </template>
           <template v-slot="{row}">
-            <span>{{ row.realityUserName }}</span>
+            <span>{{ row.practicalName }}</span>
           </template>
         </vxe-table-column>
-        <vxe-table-column v-else field="realityUserName" align="center" title="实际"/>
+        <vxe-table-column v-else field="practicalName" align="center" title="实际"/>
       </template>
       <vxe-table-column
-        field='realityConcatWay'
+        field='practicalPhone'
         title="联系方式"
         align="center"
       />
       <template>
-        <vxe-table-column v-if="tableEdit" :edit-render="{}" field="user1" align="center" title="排班">
+        <vxe-table-column v-if="tableEdit" :edit-render="{}" field="proNameId2" align="center" title="排班">
           <template #edit="{row,rowIndex}">
-            <a-select v-model="row.user1" show-search autoFocus
-                      @change="(e) => handleUserChange(e,row,rowIndex,[{key:'concatWay1',value:'mobile'},{key:'userName1',value:'idName'}])"
+            <a-select v-model="row.proNameId2" show-search autoFocus
+                      @change="(e) => handleUserChange(e,row,rowIndex,[{key:'proPhone2',value:'mobile'},{key:'proName2',value:'idName'}])"
                       :getPopupContainer="(node)=> node.parentNode" style="width: 100%" :filter-option="filterOption">
               <a-select-option v-for="item in userList" :key="item.id" :value="item.id">{{
                   item.idName
@@ -79,21 +82,21 @@
             </a-select>
           </template>
           <template v-slot="{row}">
-            <span>{{ row.userName1 }}</span>
+            <span>{{ row.proName2 }}</span>
           </template>
         </vxe-table-column>
-        <vxe-table-column v-else field="userName1" align="center" title="排班"/>
+        <vxe-table-column v-else field="proName2" align="center" title="排班"/>
       </template>
       <vxe-table-column
-        field='concatWay1'
+        field='proPhone2'
         title="联系方式"
         align="center"
       />
       <template>
-        <vxe-table-column v-if="tableEdit" :edit-render="{}" field="realityUser1" align="center" title="实际">
+        <vxe-table-column v-if="tableEdit" :edit-render="{}" field="practicalNameId2" align="center" title="实际">
           <template #edit="{row,rowIndex}">
-            <a-select v-model="row.realityUser1" show-search
-                      @change="(e) => handleUserChange(e,row,rowIndex,[{key:'realityConcatWay1',value:'mobile'},{key:'realityUserName1',value:'idName'}])"
+            <a-select v-model="row.practicalNameId2" show-search
+                      @change="(e) => handleUserChange(e,row,rowIndex,[{key:'practicalPhone2',value:'mobile'},{key:'practicalName2',value:'idName'}])"
                       :getPopupContainer="(node)=> node.parentNode" style="width: 100%" :filter-option="filterOption">
               <a-select-option v-for="item in userList" :key="item.id" :value="item.id">{{
                   item.idName
@@ -102,13 +105,13 @@
             </a-select>
           </template>
           <template v-slot="{row}">
-            <span>{{ row.realityUserName1 }}</span>
+            <span>{{ row.practicalName2 }}</span>
           </template>
         </vxe-table-column>
-        <vxe-table-column v-else field="realityUserName1" align="center" title="实际"/>
+        <vxe-table-column v-else field="practicalName2" align="center" title="实际"/>
       </template>
       <vxe-table-column
-        field='realityConcatWay1'
+        field='practicalPhone2'
         title="联系方式"
         align="center"
       />
@@ -117,6 +120,8 @@
 </template>
 
 <script>
+import moment from "moment";
+
 export default {
   name: "userTable",
   props: {
@@ -139,6 +144,21 @@ export default {
     },
   },
   watch: {
+    /*
+    dutyTime = 日期
+    proNameId = 排班人id
+    proName = 排班人姓名
+    proPhone = 排班人联系方式
+    practicalNameId =实际id
+    practicalName = 实际人姓名
+    practicalPhone =实际人联系方式
+    proNameId2 = 第二列
+    proName2 =
+    proPhone2 =
+    practicalNameId2 =
+    practicalName2 =
+    practicalPhone2 =
+    * */
     tableData: {
       immediate: true,
       deep: true,
@@ -149,6 +169,7 @@ export default {
   },
   data() {
     return {
+      moment,
       localTableData: [],
     }
   },
@@ -157,6 +178,10 @@ export default {
       for (let i = 0; i < setData.length; i++) {
         this.$set(this.localTableData[rowIndex], setData[i].key, this.userList.filter(item => item.id === id)[0][setData[i].value])
       }
+    },
+    activeCellMethod({row}) {
+      return this.tableEdit
+      // return +row.dutyTime / 1000 >( +moment().format('X') - 24 * 60 * 60)
     },
     handleCellClick({row, rowIndex, column}) {
 

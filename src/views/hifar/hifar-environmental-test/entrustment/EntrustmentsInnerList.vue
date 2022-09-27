@@ -74,9 +74,6 @@
               <a-menu-item v-if='record.status == 1 || record.status == 30'>
                 <a @click='handleEdit(record)'>编辑</a>
               </a-menu-item>
-              <!--              <a-menu-item v-if='record.status == 1 || record.status == 30'>-->
-              <!--                <a @click='handleSubmit(record)'>提交</a>-->
-              <!--              </a-menu-item>-->
               <a-menu-item>
                 <a @click='handleCopyItem(record)'>复制</a>
               </a-menu-item>
@@ -90,8 +87,7 @@
         </template>
       </h-vex-table>
     </h-card>
-
-    <new-test-entrustment-modal ref='EntrustmentModal' @change='refresh(true)'></new-test-entrustment-modal>
+    <entrustment-inner-modal ref="EntrustmentModal" @change='refresh(true)'></entrustment-inner-modal>
     <entrustment-detail-modal ref='EntrustmentDetailModal'></entrustment-detail-modal>
     <task-submit-modal ref='TaskSubmitModal' @change='refresh(true)'></task-submit-modal>
     <a-alert v-if='messageErrorShow' :message='messageError' show-icon type='error'/>
@@ -106,7 +102,7 @@ import mixin from '@/views/hifar/hifar-environmental-test/mixin.js'
 import EntrustmentDetailModal from './modules/EntrustmentDetailModal'
 import TaskSubmitModal from './modules/TaskSubmitModal'
 import EntrustDataEntryModal from '@/views/hifar/hifar-environmental-test/entrustment/modules/EntrustDataEntryModal'
-import NewTestEntrustmentModal from "@views/hifar/hifar-environmental-test/entrustment/modules/NewTestEntrustmentModal";
+import EntrustmentInnerModal from "@views/hifar/hifar-environmental-test/entrustment/modules/EntrustmentInnerModal";
 
 export default {
   provide() {
@@ -115,7 +111,7 @@ export default {
     }
   },
   components: {
-    NewTestEntrustmentModal,
+    EntrustmentInnerModal,
     EntrustmentDetailModal,
     TaskSubmitModal,
     EntrustDataEntryModal
@@ -423,10 +419,11 @@ export default {
       loadData: (params) => {
         let data = {
           ...params,
-          ...this.queryParams
+          ...this.queryParams,
+          entrustType: '1'
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -434,7 +431,6 @@ export default {
       signAndIssueLoading: false,
     }
   },
-
   methods: {
     refresh(bool = true) {
       this.$refs.entrustmentListTable.refresh(bool)
@@ -489,30 +485,6 @@ export default {
           })
         } else {
           _this.$message.success(res.msg)
-        }
-      })
-    },
-    // 提交--需要下一处理人
-    handleSubmit(record) {
-      let _this = this
-      postAction(_this.url.flowNode, {priId: record.flowId, proCode: record.entrustFlowCode}).then((res) => {
-        if (res.code == 200) {
-          if (res.data.needSelectNextUser == 2) {
-            _this.submitHandle(record.id)
-          } else {
-            _this.$refs.TaskSubmitModal.show(record, 'list')
-          }
-        }
-      })
-    },
-    // 本页面提交--不需要下一处理人
-    submitHandle(id) {
-      postAction(this.url.submitUrl, {id: id}).then((res) => {
-        if (res.code === 200) {
-          this.$message.success('提交成功')
-          this.refresh()
-        } else {
-          this.$message.error(res.msg)
         }
       })
     },
@@ -594,20 +566,6 @@ export default {
     getCheckboxProps(record) {
       return record.status == 1 || record.status == 30
     },
-    arrJoin(arr) {
-      return function (num = 1) {
-        let arrLen = arr.length
-        let newArr = []
-        for (let i = 0; i < arrLen; i += num) {
-          let arrJoin = []
-          for (let j = 0; j < num && i + j < arrLen; j++) {
-            arrJoin.push(arr[i + j])
-          }
-          newArr.push(arrJoin.join(','))
-        }
-        return newArr
-      }
-    }
   }
 }
 </script>

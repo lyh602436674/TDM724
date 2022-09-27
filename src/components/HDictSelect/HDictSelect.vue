@@ -13,6 +13,7 @@
     :getPopupContainer="getPopupContainer"
     :placeholder="placeholder"
     :showSearch="true"
+    :disabled="disabled"
     :size="size"
     :value="getValueSting"
     @change="handleInput"
@@ -45,6 +46,10 @@ export default {
   name: 'HDictSelect',
   props: {
     triggerChange: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
       type: Boolean,
       default: false,
     },
