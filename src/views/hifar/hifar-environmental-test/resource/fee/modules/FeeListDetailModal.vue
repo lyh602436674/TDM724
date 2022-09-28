@@ -20,7 +20,7 @@
       </h-desc-item>
     </h-desc>
     <div class="h-descriptions-title" style="margin-top: 35px">
-      <span class="content">项目单价</span>
+      <span class="content">设备单价</span>
     </div>
     <vxe-table
       border
@@ -31,7 +31,9 @@
       :edit-config="{ key: 'id', trigger: 'click', mode: 'row', showStatus: true }"
     >
       <vxe-table-column type="seq" width="60"></vxe-table-column>
-      <vxe-table-column title="项目名称" field="unitName" :disabled="true"></vxe-table-column>
+      <vxe-table-column title="设备名称" field="unitName" :disabled="true"></vxe-table-column>
+      <vxe-table-column title="设备型号" field="equipModel" :disabled="true"></vxe-table-column>
+      <vxe-table-column title="速率" field="rate" :disabled="true"></vxe-table-column>
       <vxe-table-column title="单价（元）" field="unitPrice"></vxe-table-column>
       <vxe-table-column title="单价描述" field="remarks"></vxe-table-column>
     </vxe-table>
@@ -39,7 +41,8 @@
 </template>
 
 <script>
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
+
 export default {
   components: {},
 
@@ -88,6 +91,8 @@ export default {
               newTableData.push({
                 costId: item.costId,
                 unitId: item.unitId,
+                equipModel: item.equipModel,
+                rate: item.rate,
                 id: item.id,
                 unitName: item.unitName,
                 unitPrice: item.unitPrice / 100,

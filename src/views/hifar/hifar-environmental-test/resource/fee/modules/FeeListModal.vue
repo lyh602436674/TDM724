@@ -60,7 +60,13 @@
         >
           <vxe-table-column type="checkbox" width="60"></vxe-table-column>
           <vxe-table-column type="seq" width="60"></vxe-table-column>
-          <vxe-table-column title="项目名称" field="unitName" :disabled="true"></vxe-table-column>
+          <vxe-table-column title="设备名称" field="unitName" :disabled="true"></vxe-table-column>
+          <vxe-table-column title="设备型号" field="equipModel" :disabled="true"></vxe-table-column>
+          <vxe-table-column
+            title="速率"
+            field="rate"
+            :edit-render="{ name: '$input', props: { type: 'number', min: 0, placeholder: '请输入速率' } }"
+          ></vxe-table-column>
           <vxe-table-column
             title="单价（元）"
             field="unitPrice"
@@ -79,9 +85,10 @@
 </template>
 
 <script>
-import { postAction } from '@/api/manage'
-import { isArray } from 'lodash'
+import {postAction} from '@/api/manage'
+import {isArray} from 'lodash'
 import SysFeeListSelectModal from '@/views/components/SysFeeListSelectModal'
+
 export default {
   components: {
     SysFeeListSelectModal,
@@ -96,12 +103,13 @@ export default {
       dataSource: [],
       visible: false,
       confirmLoading: false,
-      drawerWidth: 800,
+      drawerWidth: 1000,
       model: {},
       title: '添加',
       selectedRowKeys: [],
       priceData: [],
       validRules: {
+        rate: [{ required: true, message: '速率不能为空', trigger: 'blur' }],
         unitPrice: [{ required: true, message: '单价不能为空', trigger: 'blur' }],
       },
       url: {
@@ -157,9 +165,11 @@ export default {
             record.forEach((item) => {
               newTableData.push({
                 costId: item.costId,
-                unitId: item.unitId,
                 id: item.id,
+                unitId: item.unitId,
                 unitName: item.unitName,
+                rate: item.rate,
+                equipModel: item.equipModel,
                 unitPrice: item.unitPrice / 100,
                 remarks: item.remarks,
               })
@@ -170,8 +180,7 @@ export default {
       })
     },
     editor(record) {
-      let obj = Object.assign({}, record)
-      this.model = obj
+      this.model = Object.assign({}, record)
     },
     //  多选
     onSelectChange(records) {
@@ -203,7 +212,9 @@ export default {
             costId: this.model.id,
             unitId: item.id,
             id: '',
-            unitName: item.unitName,
+            unitName: item.equipName,
+            equipModel: item.equipModel,
+            rate: '',
             unitPrice: '',
             remarks: '',
           })
@@ -246,6 +257,8 @@ export default {
           unitId: item.unitId,
           id: item.id,
           unitName: item.unitName,
+          equipModel: item.equipModel,
+          rate: item.rate,
           unitPrice: item.unitPrice * 100,
           remarks: item.remarks,
         })
@@ -258,7 +271,7 @@ export default {
       params.childRecord = childRecord ? childRecord : []
       if (!errMap) {
         postAction(url, params).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success(this.title + '成功')
             this.$emit('change', true)
             this.handleCancel()
