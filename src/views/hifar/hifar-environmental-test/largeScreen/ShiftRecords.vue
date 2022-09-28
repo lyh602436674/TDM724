@@ -8,27 +8,23 @@
 -->
 <template>
   <div class="shiftRecords">
-    <div class="title">交接班记录</div>
+    <div class="title">当日排班安排</div>
     <div class="content">
-      <vue-seamless-scroll :data="shiftData" class="content-wrapper" :class-option="classOption">
         <ul class="content-wrapper-item">
           <li v-for="(item, index) in shiftData" :key="index">
-            <span>
-              <a-icon type="sound"></a-icon>
-            </span>
-            <span>
-              {{ item.title }}
-            </span>
-            <span v-text="item.date"></span>
+            <div>
+              <img style="width: 100%;height: 100%;display: block" :src="item.headUrl ? item.headUrl : noHead" alt="">
+            </div>
+            <div>{{ item.idName }}</div>
+            <div>{{ item.mobile }}</div>
           </li>
         </ul>
-      </vue-seamless-scroll>
     </div>
   </div>
 </template>
 
 <script>
-import { getAction } from '@api/manage'
+import {getAction} from '@api/manage'
 import moment from 'moment'
 
 export default {
@@ -36,12 +32,14 @@ export default {
   description: '交接班记录页面',
   data() {
     return {
+      noHead: require('./image/nohead.png'),
       shiftData: [],
       classOption: {
         singleHeight: 30,
       },
       url: {
-        list: '/LargeScreenDisplay/changeShiftsRecord',
+        // list: '/LargeScreenDisplay/changeShiftsRecord',
+        list: '/HfRecordHandover/getRecordHandover',
       },
     }
   },
@@ -50,13 +48,7 @@ export default {
     loadData() {
       getAction(this.url.list).then((response) => {
         if (response.code === 200) {
-          this.shiftData = []
-          response.data.forEach((item) => {
-            this.shiftData.push({
-              title: item.title,
-              date: moment(+item.handoverTime).format('YYYY-MM-DD'),
-            })
-          })
+          this.shiftData = response.data
         }
       })
     },
@@ -89,26 +81,48 @@ export default {
       &-item {
         margin: 0 auto;
         padding: 0 0.063rem /* 24/384 */;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
 
         li {
           display: flex;
-          justify-content: space-between;
+          align-items: center;
+          color: #fff;
+          height: calc(50% - 0.052rem);
 
-          span {
-            display: inline-block;
-            font-size: 0.083rem /* 32/384 */;
-            color: #fff;
+          &:first-child {
+            margin-bottom: 0.052rem;
           }
-          span:first-child {
-            width: 7%;
+
+          div:nth-of-type(1) {
+            background-size: 100% 100%;
+            height: 100%;
+            margin-right: 0.1rem;
+            position: relative;
+            padding-left: 31%;
+            border-radius: 0.05rem;
+
+            img {
+              position: absolute;
+              left: 0;
+              right: 0;
+              width: 100%;
+              height: 100%;
+              display: block;
+              border-radius: 0.05rem;
+            }
           }
-          span:nth-of-type(2) {
-            width: 55%;
+
+          div:nth-of-type(2) {
+            font-size: 0.09rem;
+            margin-right: 0.1rem;
           }
-          span:last-child {
-            flex: 1;
-            text-align: right;
+
+          div:nth-of-type(3) {
+            font-size: 0.09rem;
           }
+
         }
       }
     }
