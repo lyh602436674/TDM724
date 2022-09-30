@@ -1,9 +1,9 @@
 <!--
  * @Author: 雷宇航
- * @Date: 2022-06-16 15:36:11
- * @fileName: NewEntrustmentModal.vue
- * @FilePath: \tdm200-client\tdm200-client\src\views\hifar\hifar-environmental-test\entrustment\modules\NewTestEntrustmentModal.vue
- * @Description: 新版委托单（由之前的三个步骤填写改为一个页面）
+ * @Date: 2022-09-29 15:48:41
+ * @fileName: EntrustmentInnerModal.vue
+ * @FilePath: tdm724-client\src\views\hifar\hifar-environmental-test\entrustment\modules\EntrustmentInnerModal.vue
+ * @Description: 新增/编辑委托单弹框
 -->
 <template>
   <h-modal
@@ -41,32 +41,31 @@
         </div>
         <div class="item-wrapper">
           <div class="item-wrapper-title">
-            <span class="title">试品信息</span>
-            <span class="description">选择并填写试品信息</span>
+            <span class="title">样品信息</span>
+            <span class="description">选择并填写样品信息</span>
           </div>
           <div class="item-wrapper-content">
             <div style="margin-top:20px">
-              <template v-if="tableData.length === 0">
-                <a-button
+              <a-button
                   icon='plus'
                   size='small'
                   style='margin-right: 10px'
                   type='ghost-primary'
                   @click='selectProductHandle'
-                >
-                  选择试品
-                </a-button>
-                <a-button
+              >
+                选择样品
+              </a-button>
+              <a-button
                   icon='plus'
                   size='small'
                   style='margin-right: 10px'
                   type='ghost-primary'
                   @click='handleManuallyAdd'
-                >
-                  内部新增
-                </a-button>
-              </template>
-              <a-button v-if='selectedRowKeys.length' icon='minus' size='small' type='danger' @click='handleDelete'> 删除
+              >
+                内部新增
+              </a-button>
+              <a-button v-if='selectedRowKeys.length' icon='minus' size='small' type='danger' @click='handleDelete'>
+                删除
               </a-button>
             </div>
             <div class="vxe-table-box" style="margin-bottom: 20px">
@@ -91,49 +90,41 @@
                 <vxe-table-column type='checkbox' width='60'></vxe-table-column>
                 <vxe-table-column type='seq' width='60'></vxe-table-column>
                 <vxe-table-column
-                  :edit-render="{
+                    :edit-render="{
                   name: 'input',
-                  attrs: { type: 'text', placeholder: '请输入试品名称' },
-                  events:{
-                      blur: this.pieceItemChange,
-                    }
+                  attrs: { type: 'text', placeholder: '请输入样品名称' },
                 }"
-                  field='productName'
-                  title="试品名称"
+                    field='productName'
+                    title="样品名称"
                 />
                 <vxe-table-column
-                  :edit-render="{
+                    :edit-render="{
                    name:'input',
-                   attrs: { type: 'text', placeholder: '请输入试品工号' },
-                   events:{
-                      blur: this.pieceItemChange,
-                    }
+                   attrs: { type: 'text', placeholder: '请输入型号/规格' },
                 }"
-                  field='productCode'
-                  title="试品工号"
-                />
-                <vxe-table-column
-                  :edit-render="{
-                   name:'input',
-                   attrs: { type: 'text', placeholder: '请输入试品代号' },
-                   events:{
-                      blur: this.pieceItemChange,
-                    }
-                }"
-                  field='productAlias'
-                  title="试品代号"
+                    field='productModel'
+                    title="型号/规格"
                 />
                 <vxe-table-column
                   :edit-render="{
                     showAsterisk:true,
                     name: 'input',
-                    attrs: { type: 'text', placeholder: '请输入试品编号' },
+                    attrs: { type: 'text', placeholder: '请输入样品编号' },
                     events:{
                       blur: this.pieceNoBlur,
                     }
                   }"
                   field='pieceNo'
-                  title="试品编号"
+                  title="样品编号"
+                />
+                <vxe-table-column
+                    :edit-render="{
+                    showAsterisk:true,
+                    name: 'input',
+                    attrs: { type: 'text', placeholder: '请输入数量' },
+                  }"
+                    field='pieceNum'
+                    title="数量"
                 />
               </vxe-table>
             </div>
@@ -177,11 +168,10 @@ import store from '@/store'
 import {cloneDeep, isArray} from 'lodash'
 import {postAction} from "@api/manage";
 import {randomUUID} from "@/utils/util";
-import OutsideProductAddModal from "@views/hifar/hifar-environmental-test/entrustment/modules/OutsideProductAddModal";
 
 export default {
   name: "NewEntrustmentModal",
-  components: {OutsideProductAddModal, ProductSelectModal, ProjectAddModal, NewTestProjectForm, PhemismCustomSelect},
+  components: {ProductSelectModal, ProjectAddModal, NewTestProjectForm, PhemismCustomSelect},
   inject: {
     getContainer: {
       default: () => document.body
@@ -192,7 +182,7 @@ export default {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
           if (!cellValue) {
-            reject(new Error('试品编号不能为空'))
+            reject(new Error('样品编号不能为空'))
           } else {
             resolve()
           }
@@ -211,7 +201,7 @@ export default {
       selectedRowKeys: [],
       projectInfoData: [],
       validRules: {
-        pieceNo: [{required: true, message: '试品编号不能为空'}, {validator: nameValid}]
+        pieceNo: [{required: true, message: '样品编号不能为空'}, {validator: nameValid}]
       },
       entrustModelInfo: {},
       pieceModelInfo: [],
@@ -237,7 +227,7 @@ export default {
           hidden: true
         },
         {
-          title: '委托单',
+          title: '运行单号',
           key: 'entrustCode',
           formType: 'input',
           disabled: true,
@@ -262,11 +252,20 @@ export default {
           },
         },
         {
-          title: '送试单位',
+          title: '密级',
+          key: 'secretLevelCode',
+          formType: 'dict',
+          dictCode: 'hf_entrustlist_secondary',
+          validate: {
+            rules: [{required: false, message: '请选择密级'}]
+          },
+        },
+        {
+          title: '委托单位',
           key: 'custName',
           formType: 'input',
           validate: {
-            rules: [{required: true, message: '请输入送试单位'}]
+            rules: [{required: true, message: '请输入委托单位'}]
           }
         },
         {
@@ -286,75 +285,152 @@ export default {
           }
         },
         {
-          title: '试验性质',
-          key: 'testPropertyCode',
-          formType: 'dict',
-          dictCode: 'env_test_quality',
+          title: '单位地址',
+          key: 'custAddress',
+          formType: 'input',
           validate: {
-            rules: [{required: true, message: '请选择试验性质'}]
+            rules: [{required: false, message: '请输入单位地址'}]
+          }
+        },
+        {
+          title: '样品制造单位',
+          key: 'sampleMakeUnit',
+          formType: 'input',
+          validate: {
+            rules: [{required: false, message: '请输入样品制造单位'}]
+          }
+        },
+        {
+          title: '样品状态',
+          key: 'sampleStatus',
+          formType: 'dict',
+          dictCode: 'en_sample_status',
+          validate: {
+            rules: [{required: true, message: '请选择样品状态'}]
           },
           change: (val, option) => {
-            this.$refs.entrustFrom.form.setFieldsValue({testPropertyName: option.title})
           }
         },
         {
-          title: '',
-          key: 'testPropertyName',
-          formType: 'input',
-          hidden: true
-        },
-        {
-          title: '密级',
-          key: 'secretLevelCode',
+          title: '样品提供方式',
+          key: 'sampleProvisionMethod',
           formType: 'dict',
-          dictCode: 'hf_entrustlist_secondary',
+          dictCode: 'en_sample_pro_method',
           validate: {
-            rules: [{required: false, message: '请选择密级'}]
+            rules: [{required: true, message: '请选择样品提供方式'}]
           },
-        },
-        {
-          title: '是否外包',
-          key: 'isExternalManage',
-          formType: 'radio',
-          radioType: 'radioButton',
-          initialValue: 0,
-          hidden: true,
-          options: [
-            {title: '是', value: '1', key: '1', disabled: true},
-            {title: '否', value: '0', key: '0'}
-          ],
-          validate: {
-            rules: [{required: false, message: '请选择是否外包'}]
+          change: (val, option) => {
           }
         },
         {
-          title: '是否出报告',
-          key: 'isReport',
-          formType: 'radio',
-          radioType: 'radioButton',
-          options: [
-            {title: '是', value: 1, key: 1},
-            {title: '否', value: 2, key: 2}
-          ],
-          disabled: true,
+          title: '样品处置方式',
+          key: 'sampleDisposeMethod',
+          formType: 'dict',
+          dictCode: 'en_sample_dis_method',
           validate: {
-            rules: [{required: true, message: '请选择是否出报告'}]
+            rules: [{required: true, message: '请选择样品处置方式'}]
+          },
+          change: (val, option) => {
           }
         },
         {
-          title: '任务编码',
-          key: 'outSourceCode',
+          title: '试验目的',
+          key: 'testPurpose',
+          formType: 'dict',
+          dictCode: 'en_test_purpose',
+          validate: {
+            rules: [{required: true, message: '请选择试验目的'}]
+          },
+          change: (val, option) => {
+          }
+        },
+        {
+          title: '进度要求',
+          key: 'progressRequire',
+          formType: 'dict',
+          dictCode: 'en_progress_require',
+          validate: {
+            rules: [{required: true, message: '请选择进度要求'}]
+          },
+          change: (val, option) => {
+          }
+        },
+        {
+          title: '性能测试',
+          key: 'performanceTest',
+          formType: 'dict',
+          dictCode: 'en_performance_test',
+          validate: {
+            rules: [{required: true, message: '请选择性能测试'}]
+          },
+          change: (val, option) => {
+          }
+        },
+        {
+          title: '检测照片',
+          key: 'testPicture',
+          formType: 'dict',
+          dictCode: 'en_test_picture',
+          validate: {
+            rules: [{required: true, message: '请选择检测照片'}]
+          },
+          change: (val, option) => {
+          }
+        },
+        {
+          title: '报告形式',
+          key: 'reportForm',
+          formType: 'dict',
+          dictCode: 'en_report_form',
+          validate: {
+            rules: [{required: true, message: '请选择报告形式'}]
+          },
+          change: (val, option) => {
+          }
+        },
+        {
+          title: '报告密级',
+          key: 'reportSecretLevel',
+          formType: 'dict',
+          dictCode: 'en_report_secretLevel',
+          validate: {
+            rules: [{required: true, message: '请选择报告密级'}]
+          },
+          change: (val, option) => {
+          }
+        },
+        {
+          title: '报告份数',
+          key: 'reportNum',
+          formType: 'input-number',
+          style: {
+            width: '100%'
+          }
+        },
+        {
+          title: '报告领取方式',
+          key: 'reportCollectionMethod',
+          formType: 'dict',
+          dictCode: 'en_report_coll_method',
+          validate: {
+            rules: [{required: true, message: '请选择报告领取方式'}]
+          },
+          change: (val, option) => {
+          }
+        },
+        {
+          title: '委托人',
+          key: 'entrustPerson',
           formType: 'input',
           validate: {
-            rules: [{required: false, message: '请输入任务编码'}]
+            rules: [{required: true, message: '请输入委托人'}]
           }
-        },
-        {
-          title: '委托方批准人',
-          key: 'entrustApproval',
+        }, {
+          title: '委托人手机号',
+          key: 'entrustPersonPhone',
           formType: 'input',
           validate: {
-            rules: [{required: true, message: '请输入委托方批准人'}]
+            rules: [{required: true, message: '请输入委托人手机号'}]
           }
         },
         {
@@ -385,7 +461,7 @@ export default {
       if (record.id) {
         this.handleEdit(record.id)
       } else {
-        this.handleAdd(data)
+        this.handleAdd()
       }
     },
     // 新增默认值
@@ -438,35 +514,17 @@ export default {
         this.submitLoading = false
       })
     },
-    pieceItemChange({row, rowIndex}) {
-      function deleteKey(obj, key) {
-        let currentObj = cloneDeep(obj)
-        delete currentObj[key]
-        return currentObj
-      }
-
-      setTimeout(() => {
-        if (JSON.stringify(deleteKey(row, 'productId')) !== JSON.stringify(deleteKey(this.staticTableData[rowIndex], 'productId'))) {
-          row.productId = ''
-          row.type = 'inside'
-        } else {
-          row.productId = this.staticTableData[rowIndex].productId
-          row.type = 'selected'
-        }
-      }, 1)
-    },
-    // 选择试品
+    // 选择样品
     selectProductHandle() {
       this.$refs.ProductSelectModal.show()
     },
-    //选择试品返回数据
+    //选择样品返回数据
     async productSelectModalCallback(val) {
       let tableData = [{
         projectUseFlag: false,
         productId: val.productId,
         productName: val.productName,
-        productCode: val.productCode,
-        productAlias: val.productAlias,
+        productModel: val.productModel,
         pieceNo: val.pieceNo,
         id: randomUUID(),
         type: 'selected'
@@ -479,14 +537,13 @@ export default {
       this.staticTableData = cloneDeep(this.tableData)
       this.setProjectPieceNos()
     },
-    //内部试品手动新增
+    //内部样品手动新增
     handleManuallyAdd() {
       let product = {
         projectUseFlag: false,
         productId: '',
         productName: '',
-        productCode: '',
-        productAlias: '',
+        productModel: '',
         pieceNo: '',
         id: randomUUID(),
         type: 'inside'
@@ -497,7 +554,7 @@ export default {
     pieceNoBlur({row}) {
       this.setProjectPieceNos()
     },
-    // 试品删除
+    // 样品删除
     handleDelete() {
       const $table = this.$refs.pieceTable
       $table.removeCheckboxRow()
@@ -511,7 +568,7 @@ export default {
       this.selectedRowKeys = []
       this.setProjectPieceNos()
     },
-    // 动态设置项目中已选试品
+    // 动态设置项目中已选样品
     setProjectPieceNos() {
       if (this.projectInfoData.length) {
         setTimeout(() => {
@@ -542,14 +599,15 @@ export default {
     // 选择项目
     async handleAddProject() {
       let errMap = await this.$refs.pieceTable.validate().catch(errMap => errMap)
-      if (errMap) return this.$message.warning('请填写试品编号')
-      if (!this.tableData.length) return this.$message.warning('请先添加试品')
+      if (errMap) return this.$message.warning('请填写样品编号')
+      if (!this.tableData.length) return this.$message.warning('请先添加样品')
       this.$refs.projectAddModal.visible = true
-      this.$refs.projectAddModal.getProjectTree()
+      await this.$refs.projectAddModal.getProjectTree()
       this.$refs.projectAddModal.selectedRowKeys = this.projectInfoData && this.projectInfoData.length && this.projectInfoData.map(item => item.id) || []
     },
     // 选择项目弹框返回数据
     projectModalCallback(recordId, record) {
+      console.log(recordId, record, 'recordId, record')
       let tableData = this.$refs.pieceTable.getData()
       let extendRecord = cloneDeep(record)
       if (this.projectInfoData.length) {
@@ -566,9 +624,7 @@ export default {
       this.projectInfoData = this.projectInfoData.concat(extendRecord.map(item => {
         return {
           ...item,
-          needProcess: 2,
-          craftUnitId: 0,
-          separateMark: 1,
+          testCondition: item.remarks,
           pieceIds: tableData.map(item => item.id).toString(),
           pieceNos: tableData.map(item => item.pieceNo).toString()
         }
@@ -627,7 +683,7 @@ export default {
             this.$refs.ProjectForm.submitHandle(true, 10)
           } else {
             this.submitLoading = false
-            return this.$message.warning('请添加试品！')
+            return this.$message.warning('请添加样品！')
           }
         })
       })
@@ -689,7 +745,7 @@ export default {
         }
       })
     },
-    // 获取试品表格数据
+    // 获取样品表格数据
     getPiecesTableData(bool) {
       // bool 是否进行表格验证
       let pieceTable = this.$refs.pieceTable

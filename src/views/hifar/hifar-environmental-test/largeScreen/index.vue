@@ -1,7 +1,7 @@
 <template>
   <div ref="largeScreenPage" class="largeScreenPage">
     <header>
-      200厂实验室综合看板
+      724所试验室综合看板
       <span
         id="localtime"
         style="
@@ -74,7 +74,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: '控制系统研发楼',
+      default: '设备状态',
     },
     bgImg: {
       type: String,

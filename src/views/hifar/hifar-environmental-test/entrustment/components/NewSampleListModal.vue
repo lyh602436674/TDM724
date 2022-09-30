@@ -3,7 +3,7 @@
  * @Date: 2021-09-16 11:57:20
  * @LastEditTime: 2021-12-06 21:58:56
  * @LastEditors: 赵文凯
- * @Descripttion: 试品试品组件
+ * @Descripttion: 样品样品组件
  * @FilePath: \tdm200-client\src\views\hifar\hifar-environmental-test\entrustment\components\SampleListModal.vue
 -->
 <template>
@@ -76,7 +76,7 @@ export default {
     },
     placeholder: {
       type: String,
-      default: '请选择试品',
+      default: '请选择样品',
     },
     size: {
       type: String,
@@ -136,7 +136,7 @@ export default {
     return {
       visible: false,
       queryParams: {},
-      title: '选择试品',
+      title: '选择样品',
       loading: false,
       localSelectedName: this.selectedName || [],
       dataList: [],
@@ -150,24 +150,24 @@ export default {
       },
       columns: [
         {
-          title: '试品名称',
+          title: '样品名称',
           align: 'left',
           dataIndex: 'productName',
         },
         {
-          title: '试品代号',
+          title: '型号/规格',
           align: 'left',
-          dataIndex: 'productAlias',
+          dataIndex: 'productModel',
         },
         {
-          title: '试品数量',
-          align: 'left',
-          dataIndex: 'pieceNum',
-        },
-        {
-          title: '试品编号',
+          title: '样品编号',
           align: 'left',
           dataIndex: 'pieceNo',
+        },
+        {
+          title: '样品数量',
+          align: 'left',
+          dataIndex: 'pieceNum',
         },
       ],
     }
@@ -198,7 +198,7 @@ export default {
         this.handleCancel()
         this.triggerChange()
       } else {
-        this.$message.error('请选择试品')
+        this.$message.error('请选择样品')
       }
     },
     onClickRow(record) {

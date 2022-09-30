@@ -89,8 +89,6 @@
     </h-card>
     <entrustment-outer-modal ref='EntrustmentModal' @change='refresh(true)'></entrustment-outer-modal>
     <entrustment-detail-modal ref='EntrustmentDetailModal'></entrustment-detail-modal>
-    <task-submit-modal ref='TaskSubmitModal' @change='refresh(true)'></task-submit-modal>
-    <a-alert v-if='messageErrorShow' :message='messageError' show-icon type='error'/>
     <entrust-data-entry-modal ref="EntrustDataEntryModal"></entrust-data-entry-modal>
   </div>
 </template>
@@ -100,7 +98,6 @@ import moment from 'moment'
 import {downloadFile, postAction} from '@/api/manage'
 import mixin from '@/views/hifar/hifar-environmental-test/mixin.js'
 import EntrustmentDetailModal from './modules/EntrustmentDetailModal'
-import TaskSubmitModal from './modules/TaskSubmitModal'
 import EntrustDataEntryModal from '@/views/hifar/hifar-environmental-test/entrustment/modules/EntrustDataEntryModal'
 import EntrustmentOuterModal from "@views/hifar/hifar-environmental-test/entrustment/modules/EntrustmentOuterModal";
 
@@ -113,7 +110,6 @@ export default {
   components: {
     EntrustmentOuterModal,
     EntrustmentDetailModal,
-    TaskSubmitModal,
     EntrustDataEntryModal
   },
   mixins: [mixin],
@@ -124,10 +120,6 @@ export default {
         list: '/HfEnvEntrustBusiness/listPage',
         delete: '/HfEnvEntrustBusiness/logicRemoveById',
         copy: '/HfEnvEntrustBusiness/copyById',
-        flowNode: '/FlowBusiness/listStartNextData',
-        submitUrl: '/HfEnvEntrustBusiness/submit',
-        submitConfirm: '/HfEnvEntrustBusiness/submitConfirm',
-        batchSubmitConfirm: '/HfEnvEntrustBusiness/batchSubmitConfirm',
         export: '/HfEnvEntrustBusiness/listAllForExport',
         signAndIssue: "/HfEnvEntrustBusiness/signAndIssue"
       },
@@ -137,6 +129,11 @@ export default {
       searchForm: [
         {
           title: '委托单号',
+          key: 'c_entrustNo_7',
+          formType: 'input'
+        },
+        {
+          title: '运行单号',
           key: 'c_entrustCode_7',
           formType: 'input'
         },
@@ -146,22 +143,22 @@ export default {
           formType: 'input'
         },
         {
-          title: '试品名称',
+          title: '样品名称',
           key: 'productName',
           formType: 'input'
         },
         {
-          title: "试品工号",
+          title: "样品工号",
           key: "productCode",
           formType: 'input'
         },
         {
-          title: '试品代号',
+          title: '样品代号',
           key: 'productAlias',
           formType: 'input'
         },
         {
-          title: '试品编号',
+          title: '样品编号',
           key: 'pieceNo',
           formType: 'input'
         },
@@ -236,6 +233,14 @@ export default {
           title: '委托单号',
           align: 'left',
           width: 140,
+          dataIndex: 'entrustNo',
+          scopedSlots: {customRender: 'entrustNo'},
+          fixed: 'left'
+        },
+        {
+          title: '运行单号',
+          align: 'left',
+          width: 140,
           dataIndex: 'entrustCode',
           scopedSlots: {customRender: 'entrustCode'},
           fixed: 'left'
@@ -255,18 +260,9 @@ export default {
           scopedSlots: {customRender: 'isExternalManage'},
         },
         {
-          title: '外包单位',
+          title: '试验项目',
           align: 'left',
-          dataIndex: 'outsourcingUnit',
-          minWidth: 180,
-          customRender: (text, record) => {
-            return text || '--'
-          },
-        },
-        {
-          title: '送试单位',
-          align: 'left',
-          dataIndex: 'custName',
+          dataIndex: 'unitNames',
           minWidth: 100,
           customRender: (text, record) => {
             return text || '--'
@@ -282,25 +278,7 @@ export default {
           }
         },
         {
-          title: '分号',
-          align: 'left',
-          dataIndex: 'separateMarks',
-          minWidth: 100,
-          customRender: (text, record) => {
-            return text || '--'
-          }
-        },
-        {
-          title: '总号',
-          align: 'left',
-          dataIndex: 'sumMarks',
-          minWidth: 100,
-          customRender: (text, record) => {
-            return text || '--'
-          }
-        },
-        {
-          title: '试品名称',
+          title: '样品名称',
           align: 'left',
           minWidth: 200,
           dataIndex: 'productNames',
@@ -309,39 +287,31 @@ export default {
           }
         },
         {
-          title: "试品代号",
+          title: "型号/规格",
           align: "left",
-          dataIndex: "productAliass",
+          dataIndex: "productModel",
           minWidth: 100,
           customRender: (text, record) => {
             return text || "--";
           },
         },
         {
-          title: "试品工号",
-          minWidth: 150,
-          dataIndex: "productCodes",
-          align: "center",
-          customRender: (t) => {
-            return t || '--'
+          title: '委托单位',
+          align: 'left',
+          minWidth: 80,
+          dataIndex: 'custName',
+          customRender: (text, record) => {
+            return text || "--";
           }
         },
+
         {
-          title: "试品编号",
-          align: "left",
-          dataIndex: "pieceNo",
+          title: '委托日期',
+          align: 'left',
+          dataIndex: 'entrustTime',
           minWidth: 100,
-          customRender: (text, record) => {
-            return text || "--";
-          },
-        },
-        {
-          title: '试品数量',
-          align: 'center',
-          dataIndex: 'productNums',
-          minWidth: 100,
-          customRender: (text, record) => {
-            return text || '--'
+          customRender: (time) => {
+            return time && time != 0 ? moment(parseInt(time)).format('YYYY-MM-DD') : '--'
           }
         },
         {
@@ -363,31 +333,22 @@ export default {
           },
         },
         {
-          title: '试验性质',
-          align: 'left',
-          minWidth: 80,
-          dataIndex: 'testPropertyCodeText',
+          title: "委托人",
+          align: "center",
+          dataIndex: "entrustPerson",
+          width: 120,
           customRender: (text, record) => {
             return text || "--";
-          }
+          },
         },
         {
-          title: '试验项目',
-          align: 'left',
-          dataIndex: 'unitNames',
-          minWidth: 100,
+          title: "委托人手机号",
+          align: "center",
+          width: 150,
+          dataIndex: "entrustPersonPhone",
           customRender: (text, record) => {
-            return text || '--'
-          }
-        },
-        {
-          title: '委托日期',
-          align: 'left',
-          dataIndex: 'entrustTime',
-          minWidth: 100,
-          customRender: (time) => {
-            return time && time != 0 ? moment(parseInt(time)).format('YYYY-MM-DD') : '--'
-          }
+            return text || "--";
+          },
         },
         {
           title: '创建人 ',
@@ -445,9 +406,8 @@ export default {
       this.$refs.EntrustDataEntryModal.open()
     },
     handleAdd() {
-      let record = {}
       let type = 'add'
-      this.$refs.EntrustmentModal.show(record, type)
+      this.$refs.EntrustmentModal.show({}, type)
     },
     async handleExportXls(name, model) {
       let data = {
@@ -460,33 +420,6 @@ export default {
       let params = data
       let fileName = name + '.xls'
       await downloadFile(url, fileName, params)
-    },
-    submitConfirm(record) {
-      let _this = this
-      postAction(_this.url.submitConfirm, {id: record.id}).then((res) => {
-        if (res.code === 200) {
-          _this.$message.success('确认成功')
-          _this.refresh()
-        } else if (res.code === 502) {
-          this.$confirm({
-            title: '是否外包',
-            content: '没有合适的设备,是否外包?',
-            okText: '外包',
-            onOk: function () {
-              postAction(_this.url.submitConfirm, {id: record.id, isExternalManage: 1}).then((response) => {
-                if (response.code === 200) {
-                  _this.$message.success('外包成功')
-                  _this.refresh()
-                } else {
-                  _this.$message.success(response.msg)
-                }
-              })
-            }
-          })
-        } else {
-          _this.$message.success(res.msg)
-        }
-      })
     },
     // 复制
     handleCopyItem(record) {
@@ -562,9 +495,6 @@ export default {
       } else if (record.status >= 10 && record.status != 30) {
         this.handleDetail(record)
       }
-    },
-    getCheckboxProps(record) {
-      return record.status == 1 || record.status == 30
     },
   }
 }

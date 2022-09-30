@@ -10,8 +10,8 @@
   <div class="detail-containter">
     <!-- 委托信息 -->
     <detail-base-info :detailDataObj="detailData"></detail-base-info>
-    <!--试品信息-->
-    <h-desc labelWidth="120px" title="试品信息">
+    <!--样品信息-->
+    <h-desc labelWidth="120px" title="样品信息">
       <a-table
         :columns="columns[detailData.entrustType]"
         :dataSource="detailData.pieceInfo"
@@ -77,20 +77,24 @@ export default {
             },
           },
           {
-            title: '试品名称',
+            title: '样品名称',
             dataIndex: 'productName',
+            align: 'center',
           },
           {
-            title: '试品工号',
-            dataIndex: 'productCode',
+            title: '型号/规格',
+            dataIndex: 'productModel',
+            align: 'center',
           },
           {
-            title: '试品代号',
-            dataIndex: 'productAlias',
+            title: '编号',
+            dataIndex: 'pieceNo',
+            align: 'center',
           },
           {
-            title: '试品编号',
-            dataIndex: 'pieceNo'
+            title: '数量',
+            dataIndex: 'pieceNum',
+            align: 'center',
           }
         ],
         2: [
@@ -105,21 +109,25 @@ export default {
             },
           },
           {
-            title: '试品名称',
+            title: '样品名称',
             dataIndex: 'productName',
+            align: 'center',
           },
           {
-            title: '试品型号',
+            title: '图号',
             dataIndex: 'productAlias',
+            align: 'center',
           },
           {
-            title: '试品数量',
+            title: '样品编号',
+            dataIndex: 'pieceNo',
+            align: 'center',
+          },
+          {
+            title: '样品数量',
             dataIndex: 'pieceNum',
+            align: 'center',
           },
-          {
-            title: '试品编号',
-            dataIndex: 'pieceNo'
-          }
         ],
       },
     }
@@ -133,7 +141,7 @@ export default {
     show(id) {
       let url = this.url.detailById
       postAction(url, {id: id}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.detailData = res.data
         }
       })

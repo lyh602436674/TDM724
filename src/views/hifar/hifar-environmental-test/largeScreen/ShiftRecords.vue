@@ -8,7 +8,7 @@
 -->
 <template>
   <div class="shiftRecords">
-    <div class="title">当日排班安排</div>
+    <div class="title">当日排班人员</div>
     <div class="content">
         <ul class="content-wrapper-item">
           <li v-for="(item, index) in shiftData" :key="index">

@@ -20,17 +20,6 @@
     <r-l-layout :leftMinWidth="150" style="height: 100%">
       <template slot="left">
         <h-card fixed>
-          <!--          <h-edit-tree-->
-          <!--            ref="physicoChemicalTree"-->
-          <!--            :replaceFields="replaceFields"-->
-          <!--            :selectedKeys="selectedTreeKeys"-->
-          <!--            :tree="treeData"-->
-          <!--            selectable-->
-          <!--            fileIcon="icon-xiangmuchengyuan"-->
-          <!--            menuIcon="icon-fenlei"-->
-          <!--            title="试验类型"-->
-          <!--            @onSelect="handleSelected"-->
-          <!--          />-->
           <ul class="classify-list">
             <li v-for="item in treeData" :key="item.id" @click="(e)=>handleSelected(e,item)">
               <h-icon type="icon-xiangmuchengyuan"/>
@@ -50,7 +39,7 @@
             @change="refresh"
           />
           <h-vex-table
-            ref="projecTable"
+            ref="projectTable"
             slot="content"
             :columns="columns"
             :data="loadProjectList"
@@ -140,7 +129,7 @@ export default {
       this.refresh()
     },
     refresh(bool = true) {
-      this.$refs.projecTable.refresh(bool)
+      this.$refs.projectTable.refresh(bool)
     },
     loadProjectList(params) {
       let data = {

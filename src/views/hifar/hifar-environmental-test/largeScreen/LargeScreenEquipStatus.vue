@@ -1,6 +1,6 @@
 <template>
   <div class="main" ref="mainPage">
-    <header>200厂实验室综合看板</header>
+    <header>724所试验室综合看板</header>
     <div class="equipStatus">
       <div class="leftEquipImage" :style="{backgroundImage:'url('+imageSrc+')'}" ref="leftEquipImage"
            @contextmenu="switchContextmenu">

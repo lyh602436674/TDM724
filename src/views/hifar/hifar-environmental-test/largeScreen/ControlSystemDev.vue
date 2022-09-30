@@ -3,7 +3,7 @@
  * @Date: 2022-04-12 15:43:41
  * @LastEditTime: 2022-04-12 16:05:10
  * @LastEditors: 雷宇航
- * @Description: 
+ * @Description:
  * @FilePath: \tdm200-client\tdm200-client\src\views\hifar\hifar-environmental-test\largeScreen\ControlSystemDev.vue
 -->
 <template>
@@ -19,7 +19,7 @@ export default {
   components: { LargeScreenPage },
   data() {
     return {
-      title: '控制系统研发楼',
+      title: '设备状态',
       bgImg: require('./image/kzxt.png'),
     }
   },

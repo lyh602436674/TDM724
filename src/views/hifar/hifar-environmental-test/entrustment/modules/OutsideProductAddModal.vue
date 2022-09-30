@@ -18,7 +18,7 @@
       @change="formChange"
     >
     </h-form>
-    <div class="help">试品编号：连续的编号请以' - '分隔，其他情况请以' , '分隔</div>
+    <div class="help">样品编号：连续的编号请以' - '分隔，其他情况请以' , '分隔</div>
   </h-modal>
 </template>
 
@@ -30,27 +30,24 @@ export default {
       default: () => document.body,
     },
   },
+  props: {
+    entrustType: {
+      type: String,
+    },
+  },
   data() {
     return {
       visible: false,
       formData: [
         {
-          title: '试品名称',
+          title: '样品名称',
           key: 'productName',
           formType: 'input',
         },
         {
-          title: '试品型号',
+          title: '图号',
           key: 'productAlias',
           formType: 'input',
-        },
-        {
-          title: '试品数量',
-          key: 'pieceNum',
-          formType: 'input-number',
-          style: {
-            width: '100%',
-          }
         },
         {
           title: '编号前缀',
@@ -61,11 +58,19 @@ export default {
           }
         },
         {
-          title: '试品编号',
+          title: '编号',
           key: 'pieceNo',
           formType: 'input',
           validate: {
-            rules: [{required: true, message: '请输入试品编号',}],
+            rules: [{required: true, message: '请输入样品编号',}],
+          }
+        },
+        {
+          title: '样品数量',
+          key: 'pieceNum',
+          formType: 'input-number',
+          style: {
+            width: '100%',
           }
         },
       ],
