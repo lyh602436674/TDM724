@@ -444,7 +444,9 @@ export default {
       hicon: [
         'icon-shebeizhuangtai_duanwang',
         'icon-wai',
+        'icon-wai-text',
         'icon-nei',
+        'icon-nei-text',
         'icon-waibu',
         'icon-neibu',
         'icon-chuangjiangongdan',

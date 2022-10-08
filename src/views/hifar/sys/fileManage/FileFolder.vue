@@ -116,15 +116,23 @@
                 class="primary-text"
                 @click="() => handleEditFolder(record)"
               />
+              <template v-if="record.fileType == 2">
+                <a-icon
+                  type="eye"
+                  class="primary-text"
+                  @click="() => handlePreview(record)"
+                />
+                <a-divider type="vertical"/>
+              </template>
               <a-icon
-                v-else-if="record.fileType == 2"
+                v-if="record.fileType == 2"
                 type="download"
                 class="primary-text"
                 @click="() => handleDownload(record)"
               />
-              <a-divider type="vertical" />
+              <a-divider type="vertical"/>
               <a-popconfirm title="确认删除？" @confirm="() => handleDelete(record.id)">
-                <h-icon type="icon-shanchu" class="danger-text" />
+                <h-icon type="icon-shanchu" class="danger-text"/>
               </a-popconfirm>
             </template>
           </h-vex-table>
@@ -144,15 +152,16 @@
 </template>
 
 <script>
-import { getFileAccessHttpUrl, downloadFile, postAction } from '@/api/manage'
+import {downloadFile, getAction, getFileAccessHttpUrl, postAction} from '@/api/manage'
 import FolderModal from './modules/FolderModal.vue'
 import FolderEditModal from './modules/FolderEditModal.vue'
-import { createTree } from '@/utils/hasPermission'
+import {createTree} from '@/utils/hasPermission'
 import moment from 'moment'
 import FileUpload from './modules/FileUpload.vue'
 import FileShareModal from './modules/FileShareModal.vue'
-import { find } from 'lodash'
+import {find} from 'lodash'
 import mixin from '@/views/hifar/mixin.js'
+
 export default {
   provide() {
     return {
@@ -286,6 +295,7 @@ export default {
         folderListByPid: '/BaseFolderFileBusiness/listPageForMyFileByPid',
         delete: '/BaseFolderFileBusiness/logicRemoveById',
         detail: '/BaseFolderFileBusiness/queryById',
+        preview: "/BaseFolderFileBusiness/filePreView"
       },
     }
   },
@@ -443,12 +453,27 @@ export default {
       }
       this.$refs.fileShareModal.show(this.selectedRowKeys)
     },
+    handlePreview(record) {
+      getAction(this.url.preview, {id: record.id}).then((res) => {
+        if (res.code === 200) {
+          let link = document.createElement('a')
+          link.style.display = 'none'
+          link.href = res.data
+          link.setAttribute('target', '_blank')
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+        } else {
+          this.$message.warning(res.msg)
+        }
+      })
+    },
     handleDownload(record) {
-      let { filePath, fileName,id } = record
+      let {filePath, fileName, id} = record
       let fileAccessUrl = getFileAccessHttpUrl(filePath)
       if (id) {
         let detailUrl = this.url.detail
-        postAction(detailUrl, { id: id }).then((res) => {
+        postAction(detailUrl, {id: id}).then((res) => {
           if (res.code == 200 && res.data.status == 9) {
             downloadFile(fileAccessUrl, fileName)
           } else {
