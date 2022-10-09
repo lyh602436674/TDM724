@@ -68,7 +68,7 @@ export default {
         {
           title: '委托单号',
           align: 'left',
-          dataIndex: 'entrustCode',
+          dataIndex: 'entrustNo',
         },
         {
           title: '送试单位 ',

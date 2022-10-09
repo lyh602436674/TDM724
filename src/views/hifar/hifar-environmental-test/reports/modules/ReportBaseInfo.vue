@@ -3,13 +3,13 @@
  * @Date: 2021-09-09 11:21:48
  * @LastEditTime: 2021-11-10 14:55:18
  * @LastEditors: 赵峰
- * @Descripttion: 
+ * @Descripttion:
  * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\reports\modules\ReportBaseInfo.vue
 -->
 <template>
   <h-desc slot="content" size="small" labelWidth="120px">
     <h-desc-item label="委托单号">
-      {{ detailData.entrustCode ? detailData.entrustCode : '--' }}
+      {{ detailData.entrustNo ? detailData.entrustNo : '--' }}
     </h-desc-item>
     <h-desc-item label="委托单位">
       {{ detailData.custName ? detailData.custName : '--' }}

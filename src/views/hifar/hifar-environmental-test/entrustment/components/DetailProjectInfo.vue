@@ -8,55 +8,25 @@
   <h-desc :bordered="false" size="small" title="项目信息">
     <h-card v-for="(item, index) in projectInfo" :key="index" style="margin-bottom: 10px">
       <div slot="title">{{ item.unitName }}</div>
-      <h-desc slot="content" labelWidth="130px" size="small">
-        <h-desc-item label="项目名称">
-          {{ item.unitName || '--' }}
-        </h-desc-item>
-        <h-desc-item label="试验名称">
-          {{ item.testName || '--' }}
-        </h-desc-item>
-        <h-desc-item label="试验标准">
-          {{ item.standardCode + item.standardName || '--' }}
-        </h-desc-item>
-        <h-desc-item :span="4" label="试验依据">
-          {{ item.checkRequire || '--' }}
-        </h-desc-item>
-        <h-desc-item :span="4" label="其他条件">
-          {{ item.testCondition || '--' }}
-        </h-desc-item>
-        <h-desc-item :span='4' label='附件'>
-          <div slot='content'>
-            <template v-if='item.fileInfo && item.fileInfo.length'>
-              <div v-for='(item, index) in item.fileInfo' :key='index' class='url-list'>
-                <span>{{ index + 1 }}、{{ item.fileName }}</span>
-                <a-button icon='download' size='small' type='primary' style="margin-left: 10px"
-                          @click='handleDownload(item.filePath, item.fileName)'>
-                  下载
-                </a-button>
-              </div>
-            </template>
-            <span v-else>暂无附件</span>
-          </div>
-        </h-desc-item>
-      </h-desc>
+      <template slot="content">
+        <project-detail-template :model="item" title=""></project-detail-template>
+      </template>
     </h-card>
   </h-desc>
 </template>
 
 <script>
 import moment from 'moment'
-import mixin from '@/views/hifar/mixin.js'
-import {downloadFile, getFileAccessHttpUrl} from "@api/manage";
+import ProjectDetailTemplate from "@views/hifar/hifar-environmental-test/entrustment/components/ProjectDetailTemplate";
 
 export default {
+  components: {ProjectDetailTemplate},
   data() {
     return {
       moment,
       projectInfo: [],
-      newArr: [],
     }
   },
-  mixins: [mixin],
   props: {
     projectInfoArr: [Array],
   },
@@ -67,11 +37,6 @@ export default {
       handler(val) {
         if (val) {
           this.projectInfo = val
-          this.projectInfo.forEach((item) => {
-            item.pieceDetail.forEach((tt) => {
-              this.newArr = tt.productAlias + '-' + tt.pieceNo
-            })
-          })
         }
       },
     },
@@ -79,12 +44,7 @@ export default {
 
   created() {
   },
-  methods: {
-    handleDownload(filePath, fileName) {
-      let fileAccessUrl = getFileAccessHttpUrl(filePath)
-      downloadFile(fileAccessUrl, fileName)
-    },
-  },
+  methods: {},
 }
 </script>
 

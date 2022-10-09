@@ -22,10 +22,11 @@
 import moment from 'moment'
 import {isObject} from 'lodash'
 import NewSampleListModal from '@/views/hifar/hifar-environmental-test/entrustment/components/NewSampleListModal'
+import MethodSelectModal from '@/views/hifar/hifar-environmental-test/components/MethodSelectModal'
 
 export default {
   components: {
-    NewSampleListModal,
+    NewSampleListModal, MethodSelectModal
   },
   props: {
     project: {
@@ -102,7 +103,7 @@ export default {
           hidden: true
         },
         {
-          title: '名称',
+          title: '项目名称',
           key: 'unitName',
           formType: 'text'
         },
@@ -123,8 +124,29 @@ export default {
           }
         },
         {
-          title: "测试依据",
-          key: 'testStandard'
+          title: '检测依据',
+          key: 'standardId',
+          validate: {
+            rules: [{required: true, message: '请选择试验标准'}]
+          },
+          component: (
+            <method-select-modal
+              v-decorator={['standardId', {initialValue: []}]}
+              selectedName={() => {
+                return this.model.standardName
+              }}
+              itemUnitId={() => {
+                return this.model.unitId
+              }}
+              onchange={(selectedRowKeys, selectedRows) => {
+                let formName = 'projectInfoForm' + this.index
+                let standardName = selectedRows[0] ? selectedRows[0].standardCode + '-' + selectedRows[0].standardName : ''
+                this.model.standardId = selectedRowKeys
+                this.model.standardName = standardName
+                this.$refs[formName].form.setFieldsValue({standardName: standardName})
+              }}
+            />
+          )
         },
         {
           title: "是否分包",
@@ -132,10 +154,10 @@ export default {
           formType: 'radio',
           radioType: 'radioButton',
           options: [
-            {title: '是', value: 1, key: 1},
-            {title: '否', value: 2, key: 2}
+            {title: '是', value: '1', key: '1'},
+            {title: '否', value: '2', key: '2'}
           ],
-          defaultValue: 2,
+          defaultValue: '2',
           validate: {
             rules: [{required: true, message: '请选择是否分包'}]
           }
@@ -174,6 +196,7 @@ export default {
           title: '期望开始时间',
           key: 'taskExpectStartTime',
           formType: 'datePick',
+          showTime: true,
         },
         {
           title: '试验条件',

@@ -236,12 +236,12 @@ export default {
           ],
         },
         {
-          title: '试品名称',
+          title: '样品名称',
           key: 'productName',
           formType: 'input',
         },
         {
-          title: '试品代号',
+          title: '样品代号',
           key: 'productAlias',
           formType: 'input',
         },
@@ -261,7 +261,7 @@ export default {
           },
         },
         {
-          title: '送试单位',
+          title: '委托单位',
           dataIndex: 'custName',
           minWidth: 120,
         },
@@ -288,25 +288,7 @@ export default {
           },
         },
         {
-          title: "试品工号",
-          align: "left",
-          dataIndex: "productCodes",
-          minWidth: 100,
-          customRender: (text, record) => {
-            return text || "--";
-          },
-        },
-        {
-          title: "试品代号",
-          align: "left",
-          dataIndex: "productAliass",
-          minWidth: 100,
-          customRender: (text, record) => {
-            return text || "--";
-          },
-        },
-        {
-          title: "试品名称",
+          title: "样品名称",
           align: "left",
           dataIndex: "productNames",
           minWidth: 100,
@@ -315,7 +297,25 @@ export default {
           },
         },
         {
-          title: "试品编号",
+          title: "型号/规格",
+          align: "left",
+          dataIndex: "productModels",
+          minWidth: 100,
+          customRender: (text, record) => {
+            return text || "--";
+          },
+        },
+        {
+          title: "图号",
+          align: "left",
+          dataIndex: "productAliass",
+          minWidth: 100,
+          customRender: (text, record) => {
+            return text || "--";
+          },
+        },
+        {
+          title: "样品编号",
           align: "left",
           dataIndex: "pieceNo",
           minWidth: 100,
@@ -330,21 +330,15 @@ export default {
           align: 'center',
         },
         {
-          title: '预计用时（小时）',
-          dataIndex: 'predictDuration',
-          minWidth: 140,
-          align: 'center',
-        },
-        {
           title: '异常数量',
           minWidth: 100,
           dataIndex: 'exceptionNum',
           align: 'center',
         },
         {
-          title: '试验标准',
+          title: '检测依据',
           dataIndex: 'standardName',
-          minWidth: 100,
+          minWidth: 150,
         },
         {
           title: '委托日期',
@@ -362,12 +356,6 @@ export default {
             return text && text != 0 ? moment(parseFloat(text)).format('YYYY-MM-DD HH:mm:ss') : '--'
           },
         },
-        // {
-        //   title: '试验部门',
-        //   dataIndex: 'workName',
-        //   minWidth: 100,
-        //   scopedSlots: {customRender: 'workName'},
-        // },
         {
           title: '操作',
           dataIndex: 'action',

@@ -12,10 +12,6 @@
       <template slot='title'> 委托管理</template>
       <h-search slot='search-form' v-model='queryParams' :data='searchForm' size='default' @change='refresh(true)'/>
       <template slot='table-operator'>
-        <a-button v-has="'entrustment:signAndIssue'" icon='solution' size='small' type='ghost-primary'
-                  :loading="signAndIssueLoading"
-                  @click='handleSignAndIssue'>{{ signAndIssueLoading ? '签发中' : '签发' }}
-        </a-button>
         <a-button v-has="'entrustment:dataEntry'" icon='qrcode' size='small' type='ghost-primary'
                   @click='handleDataEntry'>扫码创建
         </a-button>
@@ -43,13 +39,14 @@
               text === '1' ? '是' : text === '0' ? '否' : '--'
             }}</span>
         </template>
-        <span slot='entrustCode' slot-scope='text, record'>
+        <span slot='entrustNo' slot-scope='text, record'>
+          {{ record.entrustNo }}
+        </span>
+        <template #entrustCode="text, record">
           <h-icon v-if="record.entrustType == '1'" type='icon-nei'/>
           <h-icon v-else type='icon-wai'/>
-          <a href='javascript:;' @click='handleDetailCode(record)'>
-            {{ record.entrustCode ? record.entrustCode : '--' }}</a
-          >
-        </span>
+          <a style="padding-left:5px" @click='handleDetailCode(record)'>{{ record.entrustCode || '--' }}</a>
+        </template>
         <template #runningCode="text,record">
           <span>{{ text }}</span>
         </template>
@@ -152,13 +149,8 @@ export default {
           formType: 'input'
         },
         {
-          title: "样品工号",
-          key: "productCode",
-          formType: 'input'
-        },
-        {
-          title: '样品代号',
-          key: 'productAlias',
+          title: '型号/规格',
+          key: 'productModel',
           formType: 'input'
         },
         {
@@ -226,17 +218,16 @@ export default {
           ]
         },
         {
-          title: '外包单位',
-          key: 'c_outsourcingUnit_7',
+          title: '委托单位',
+          key: 'c_custName_7',
           formType: 'input'
         },
-
       ],
       columns: [
         {
           title: '委托单号',
           align: 'left',
-          width: 140,
+          width: 160,
           dataIndex: 'entrustNo',
           scopedSlots: {customRender: 'entrustNo'},
           fixed: 'left'
@@ -273,15 +264,6 @@ export default {
           }
         },
         {
-          title: '签发人',
-          align: 'left',
-          dataIndex: 'signAndIssuePerson',
-          minWidth: 100,
-          customRender: (text, record) => {
-            return text || '--'
-          }
-        },
-        {
           title: '样品名称',
           align: 'left',
           minWidth: 200,
@@ -302,7 +284,7 @@ export default {
         {
           title: '委托单位',
           align: 'left',
-          minWidth: 80,
+          minWidth: 100,
           dataIndex: 'custName',
           customRender: (text, record) => {
             return text || "--";
@@ -393,7 +375,6 @@ export default {
           }
         })
       },
-      signAndIssueLoading: false,
     }
   },
   methods: {
@@ -453,27 +434,6 @@ export default {
           this.refresh(true)
         }
       })
-    },
-    //签发
-    handleSignAndIssue() {
-      if (this.selectedRowKeys.length) {
-        this.$confirm({
-          title: '提示',
-          content: '确认签发吗？',
-          onOk: () => {
-            this.signAndIssueLoading = true
-            postAction(this.url.signAndIssue, {ids: this.selectedRowKeys.toString()}).then((res) => {
-              if (res.code === 200) {
-                this.$message.success('签发成功')
-                this.refresh()
-                this.signAndIssueLoading = false
-              }
-            })
-          }
-        })
-      } else {
-        this.$message.warning('请至少选择一项')
-      }
     },
     // 批量删除
     batchDel() {

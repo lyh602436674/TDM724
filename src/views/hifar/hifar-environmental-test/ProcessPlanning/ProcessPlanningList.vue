@@ -25,10 +25,10 @@
               text === '1' ? '是' : text === '0' ? '否' : '--'
             }}</span>
         </template>
-        <span slot='entrustCode' slot-scope='text, record'>
+        <span slot='entrustNo' slot-scope='text, record'>
           <h-icon v-if="record.entrustType == '1'" type='icon-nei'/>
           <h-icon v-else type='icon-wai'/>
-          <span style="margin-left:5px">{{ record.entrustCode ? record.entrustCode : '--' }}</span>
+          <span style="margin-left:5px">{{ record.entrustNo ? record.entrustNo : '--' }}</span>
         </span>
         <span slot='status' slot-scope='text, record'>
           <a-badge :color='record.status | wtStatusColorFilter' :text='record.status | wtStatusFilter'/>
@@ -68,7 +68,7 @@ export default {
       searchForm: [
         {
           title: '委托单号',
-          key: 'c_entrustCode_7',
+          key: 'c_entrustNo_7',
           formType: 'input'
         },
         {
@@ -167,8 +167,8 @@ export default {
           title: '委托单号',
           align: 'left',
           width: 140,
-          dataIndex: 'entrustCode',
-          scopedSlots: {customRender: 'entrustCode'},
+          dataIndex: 'entrustNo',
+          scopedSlots: {customRender: 'entrustNo'},
           fixed: 'left'
         },
         {
@@ -198,15 +198,6 @@ export default {
           title: '送试单位',
           align: 'left',
           dataIndex: 'custName',
-          minWidth: 100,
-          customRender: (text, record) => {
-            return text || '--'
-          }
-        },
-        {
-          title: '签发人',
-          align: 'left',
-          dataIndex: 'signAndIssuePerson',
           minWidth: 100,
           customRender: (text, record) => {
             return text || '--'

@@ -34,7 +34,7 @@ import {cloneDeep} from "lodash";
 export default {
   mixins: [mixin],
   props: {
-    entrustCode: {
+    entrustNo: {
       type: String
     },
     isExternalManage: {
@@ -148,7 +148,7 @@ export default {
         {
           title: '委托单号',
           align: 'left',
-          key: 'entrustCode',
+          key: 'entrustNo',
           cellRender: {
             name: 'cell',
             renderCell: (h, renderOpts, {row, column}) => {
@@ -334,7 +334,7 @@ export default {
         let data = {
           ...this.queryParams,
           ...params,
-          c_entrustCode_7: this.entrustCode,
+          c_entrustNo_7: this.entrustNo,
           isEntrustListReport: true
         }
         return postAction(this.url.list, data).then((res) => {

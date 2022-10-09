@@ -185,7 +185,7 @@ export default {
           title: '委托单号',
           align: 'left',
           width: 100,
-          dataIndex: 'entrustCodes',
+          dataIndex: 'entrustNos',
           customRender: (text, record) => {
             return text || '--'
           }

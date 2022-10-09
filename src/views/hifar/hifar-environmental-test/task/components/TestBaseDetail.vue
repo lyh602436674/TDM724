@@ -26,160 +26,16 @@
     </template>
     <template v-else>
       <!-- 基本信息 -->
-      <h-desc id="basicInfo" ref="basicInfo" :style="{ marginTop: top ? top : '50px' }" lableWidth="110px"
-              title="基本信息">
-        <h-desc-item label="委托单号">{{ entrustInfoItem.entrustCode || '--' }}
-          <a-button icon="eye" size="small" style="margin-left: 10px" type="primary" @click="entrustReview">委托单预览
-          </a-button>
-        </h-desc-item>
-        <h-desc-item label="委托状态">
-          <a-tag slot="content" :color="entrustInfoItem.status | wtStatusColorFilter" class="status_tag">
-            {{ entrustInfoItem.status | wtStatusFilter }}
-          </a-tag>
-        </h-desc-item>
-        <h-desc-item label="委托日期">
-          {{
-            entrustInfoItem.entrustTime && entrustInfoItem.entrustTime != 0
-              ? moment(parseInt(entrustInfoItem.entrustTime)).format('YYYY-MM-DD')
-              : '--'
-          }}
-        </h-desc-item>
-        <h-desc-item label="委托单类型">{{ entrustInfoItem.entrustType | entrustTypeFilter }}</h-desc-item>
-        <h-desc-item label="送试单位">{{ entrustInfoItem.custName || '--' }}</h-desc-item>
-        <h-desc-item label="联系人">{{ entrustInfoItem.linkName || '--' }}</h-desc-item>
-        <h-desc-item label="联系方式">{{ entrustInfoItem.linkMobile || '--' }}</h-desc-item>
-        <h-desc-item label="客户地址" v-if="entrustInfoItem.entrustType == 2">{{ entrustInfoItem.custAddress || '--' }}</h-desc-item>
-        <h-desc-item label="任务编码">{{ entrustInfoItem.outSourceCode || '--' }}</h-desc-item>
-        <h-desc-item label="试验性质">{{ entrustInfoItem.testPropertyName || '--' }}</h-desc-item>
-        <h-desc-item label="密级">{{ entrustInfoItem.secretLevelCode_dictText || '--' }}</h-desc-item>
-        <h-desc-item label="是否出报告">
-          {{ entrustInfoItem.isReport == 1 ? '是' : entrustInfoItem.isReport == 2 ? '否' : '--' }}
-        </h-desc-item>
-        <h-desc-item label='是否外包'>
-          <span v-if="entrustInfoItem.isExternalManage == 1" slot="content" style="color:red">是</span>
-          <span v-else slot="content" style="color:green">否</span>
-        </h-desc-item>
-        <h-desc-item label="创建人">
-          {{ entrustInfoItem.createUserName ? entrustInfoItem.createUserName : '--' }}
-        </h-desc-item>
-        <h-desc-item label="创建时间">
-          {{
-            entrustInfoItem.createTime && entrustInfoItem.createTime != 0
-              ? moment(parseInt(entrustInfoItem.createTime)).format('YYYY-MM-DD HH:mm:ss')
-              : '--'
-          }}
-        </h-desc-item>
-        <h-desc-item :span="3" label="委托单附件">
-          <div slot="content">
-            <template v-if="entrustInfoItem.attachInfo && entrustInfoItem.attachInfo.length">
-              <div v-for="(item, index) in entrustInfoItem.attachInfo" :key="index" class="url-list">
-                <span>{{ index + 1 }}、{{ item.fileName }}</span>
-                <a-button
-                  icon="download"
-                  size="small"
-                  type="primary"
-                  @click="handleDownload(item.filePath, item.fileName)"
-                >
-                  下载
-                </a-button>
-              </div>
-            </template>
-            <span v-else>暂无附件</span>
-          </div>
-        </h-desc-item>
-        <h-desc-item :span="3" label="备注">
-          {{ entrustInfoItem.remarks ? entrustInfoItem.remarks : '--' }}
-        </h-desc-item>
-      </h-desc>
-      <!--      试品信息-->
-      <h-desc labelWidth="120px" title="试品信息">
-        <a-table
-          :columns="columns1[detailData.entrustInfo ? detailData.entrustInfo[0].entrustType : 1]"
-          :dataSource="detailData.testPieceInfo"
-          :pagination="false"
-          bordered
-          rowKey="id"
-          size="small"
-          style="width: 100%; height: 100%"
-        ></a-table>
-      </h-desc>
-
+      <div :style="{ marginTop: top ? top : '50px' }">
+        <detail-base-info :detailDataObj="entrustInfoItem"></detail-base-info>
+      </div>
+      <!--      样品信息-->
+      <piece-detail-template :entrustType="detailData.entrustInfo[0].entrustType"
+                             :dataSource="detailData.testPieceInfo"/>
       <!-- 项目信息 -->
-      <h-desc id="projectInfo" ref="projectInfo" lableWidth="110px" style="margin-top: 20px" title="项目信息">
-        <h-desc-item label="项目名称">{{ projectInfo.unitName || '--' }}</h-desc-item>
-        <h-desc-item label="试验名称">{{ projectInfo.testName || '--' }}</h-desc-item>
-        <h-desc-item label="试验标准">{{ projectInfo.standardCode + projectInfo.standardName || '--' }}</h-desc-item>
-        <h-desc-item label="预计时长(h)">{{ projectInfo.predictDuration || '--' }}</h-desc-item>
-        <h-desc-item label="总号">
-          {{ projectInfo.sumMark ? projectInfo.sumMark : '--' }}
-        </h-desc-item>
-        <h-desc-item label="分号">
-          {{ projectInfo.separateMark ? projectInfo.separateMark : '--' }}
-        </h-desc-item>
-        <h-desc-item :span="3" label="试验依据">{{ projectInfo.checkRequire || '--' }}</h-desc-item>
-        <h-desc-item :span="3" label="其他条件">{{ projectInfo.testCondition || '--' }}</h-desc-item>
-        <h-desc-item :span='4' label='附件'>
-          <div slot='content'>
-            <template v-if='projectInfo.fileInfo && projectInfo.fileInfo.length'>
-              <div v-for='(item, index) in projectInfo.fileInfo' :key='index' class='url-list'>
-                <span>{{ index + 1 }}、{{ item.fileName }}</span>
-                <a-button icon='download' size='small' type='primary' style="margin-left: 10px"
-                          @click='handleDownload(item.filePath, item.fileName)'>
-                  下载
-                </a-button>
-              </div>
-            </template>
-            <span v-else>暂无附件</span>
-          </div>
-        </h-desc-item>
-        <h-desc-item :span="3" label="试验条件要求">
-          <template slot="content">
-            <template v-if="!projectAbilityInfo.length">
-              <a-empty style="width: 100%"></a-empty>
-            </template>
-            <a-tabs v-else :default-active-key="0" style="width: 100%">
-              <template v-for="(proItem,itemIndex) in projectAbilityInfo">
-                <a-tab-pane :key="itemIndex"
-                            :tab="proItem.type === 'stage' ? proItem.title + itemIndex : proItem.title">
-                  <vxe-table
-                    :key="itemIndex + '-only'"
-                    :auto-resize="true"
-                    :data="proItem.abilityInfo"
-                    border
-                    highlight-hover-row
-                    keep-source
-                    size="mini"
-                    style="width: 100%"
-                  >
-                    <vxe-table-column type="seq" width="60"></vxe-table-column>
-                    <vxe-table-column field="paramName" title="设备能力"></vxe-table-column>
-                    <vxe-table-column field="unitName" title="单位"></vxe-table-column>
-                    <vxe-table-column field="curveType" title="曲线类型">
-                      <template #default="{ row }">
-                        <span>{{ row.curveType === '1' ? '温度/℃' : row.curveType === '2' ? '湿度/RH' : '--' }}</span>
-                      </template>
-                    </vxe-table-column>
-                    <vxe-table-column field="conditionTypeDesc" title="条件">
-                      <template #default="{ row }">
-                      <span v-if="row.paramName === '初始类型'">{{
-                          row.conditionTypeDesc === '1' ? '先高温' : row.curveType === '2' ? '先低温' : '--'
-                        }}</span>
-                        <span v-else>{{ row.conditionTypeDesc }}</span>
-                      </template>
-                    </vxe-table-column>
-                  </vxe-table>
-                </a-tab-pane>
-              </template>
-            </a-tabs>
-          </template>
-        </h-desc-item>
-        <h-desc-item label="规划曲线">
-          <template slot="content">
-            <img v-if="curveUrl" :src="curveUrl" alt="规划曲线" style="width: 100%;height:500px">
-            <span v-else>暂无规划曲线</span>
-          </template>
-        </h-desc-item>
-      </h-desc>
+      <template v-for="(item,index) in projectInfo">
+        <project-detail-template :key="index" :model="item"></project-detail-template>
+      </template>
       <!-- 试验信息 -->
       <h-desc id="testInfo" ref="testInfo" lableWidth="110px" style="margin-top: 20px; margin-bottom: 20px"
               title="试验信息">
@@ -294,9 +150,16 @@ import TerminationRecordTable
   from '@/views/hifar/hifar-environmental-test/task/modules/components/detail/TerminationRecordTable'
 import TestReportInfo from '@views/hifar/hifar-environmental-test/task/components/TestReportInfo'
 import TestEntrustReviewPdf from "@views/hifar/hifar-environmental-test/task/modules/TestEntrustReviewPdf";
+import DetailBaseInfo from "@views/hifar/hifar-environmental-test/entrustment/components/DetailBaseInfo";
+import PieceDetailTemplate from "@views/hifar/hifar-environmental-test/entrustment/components/PieceDetailTemplate";
+import ProjectDetailTemplate from "@views/hifar/hifar-environmental-test/entrustment/components/ProjectDetailTemplate";
 
 export default {
-  components: {TestEntrustReviewPdf, AbnormalRecordTable, TerminationRecordTable, TestReportInfo},
+  components: {
+    ProjectDetailTemplate,
+    PieceDetailTemplate,
+    TestEntrustReviewPdf, AbnormalRecordTable, TerminationRecordTable, TestReportInfo, DetailBaseInfo
+  },
   mixins: [mixin],
   props: {
     testId: {
@@ -329,7 +192,6 @@ export default {
       projectInfo: {},
       testEquipInfo: [],
       testPersonInfo: [],
-      projectAbilityInfo: [],
       entrustInfo: [{flag: false}],
       entrustInfoItem: {},
       title: '',
@@ -394,82 +256,6 @@ export default {
           },
         },
       ],
-      // columns1: [
-      //   {
-      //     title: '试品名称',
-      //     dataIndex: 'productName',
-      //   },
-      //   {
-      //     title: '试品编号',
-      //     dataIndex: 'productCode',
-      //   },
-      //   {
-      //     title: '试品代号',
-      //     dataIndex: 'productAlias',
-      //   },
-      //   {
-      //     title: '试品编号',
-      //     dataIndex: 'pieceNo'
-      //   }
-      // ],
-      columns1: {
-        1: [
-          {
-            title: '#',
-            dataIndex: '',
-            key: 'rowIndex',
-            width: 60,
-            align: 'center',
-            customRender: function (t, r, index) {
-              return parseInt(index) + 1
-            },
-          },
-          {
-            title: '试品名称',
-            dataIndex: 'productName',
-          },
-          {
-            title: '试品工号',
-            dataIndex: 'productCode',
-          },
-          {
-            title: '试品代号',
-            dataIndex: 'productAlias',
-          },
-          {
-            title: '试品编号',
-            dataIndex: 'pieceNo'
-          }
-        ],
-        2: [
-          {
-            title: '#',
-            dataIndex: '',
-            key: 'rowIndex',
-            width: 60,
-            align: 'center',
-            customRender: function (t, r, index) {
-              return parseInt(index) + 1
-            },
-          },
-          {
-            title: '试品名称',
-            dataIndex: 'productName',
-          },
-          {
-            title: '试品型号',
-            dataIndex: 'productAlias',
-          },
-          {
-            title: '试品数量',
-            dataIndex: 'pieceNum',
-          },
-          {
-            title: '试品编号',
-            dataIndex: 'pieceNo'
-          }
-        ],
-      },
       // 试前检查
       beforeCheckInfo: () => {
         return postAction(this.url.CheckInfo, {id: this.checkId}).then((res) => {
@@ -609,9 +395,6 @@ export default {
     },
   },
   methods: {
-    entrustReview() {
-      this.$refs.testEntrustReviewPdf.show(this.entrustInfoItem.reportPath)
-    },
     handleDownload(filePath, fileName) {
       let fileAccessUrl = getFileAccessHttpUrl(filePath)
       downloadFile(fileAccessUrl, fileName)
@@ -632,9 +415,7 @@ export default {
           let testEquipInfo = []
           let testPersonInfo = []
           this.detailData = data
-          this.projectInfo = data.testTaskInfo[0]
-          this.projectAbilityInfo = data.projectInfo[0].abilityRequire || []
-          this.curveUrl = data.projectInfo[0].curveUrl || ''
+          this.projectInfo = data.testTaskInfo
           if (testEquipInfoArr.length) {
             testEquipInfoArr.forEach((item) => {
               testEquipInfo.push(item.equipName + (item.innerName ? '(' + item.innerName + ')' : ''))

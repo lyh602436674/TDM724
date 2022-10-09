@@ -75,7 +75,7 @@ export default {
         {
           title: '委托单号',
           align: 'left',
-          dataIndex: 'entrustCode',
+          dataIndex: 'entrustNo',
         },
         {
           title: '项目名称',
@@ -130,7 +130,7 @@ export default {
       searchBar: [
         {
           title: '委托单号',
-          key: 'entrustCode',
+          key: 'entrustNo',
           formType: 'input',
         },
         {

@@ -24,9 +24,12 @@
       :rowKey="(record) => record.id"
       :scroll="{ x: true }"
     >
-      <span slot="entrustCode" slot-scope="text, record">
+      <span slot="entrustNo" slot-scope="text, record">
         <h-icon v-if="record.entrustType === '1'" type='icon-nei'/>
         <h-icon v-else type='icon-wai'/>
+        <a @click="handleDetail(record)"> {{ record.entrustNo || '--' }}</a>
+      </span>
+      <span slot="entrustCode" slot-scope="text, record">
         <a @click="handleDetail(record)"> {{ record.entrustCode || '--' }}</a>
       </span>
       <span slot="status" slot-scope="text, record">
@@ -79,6 +82,11 @@ export default {
       searchBar: [
         {
           title: "委托单号",
+          key: "c_entrustNo_7",
+          formType: "input",
+        },
+        {
+          title: "运行单号",
           key: "c_entrustCode_7",
           formType: "input",
         },
@@ -89,110 +97,163 @@ export default {
         },
         {
           title: "联系人",
-          key: "c_custLinkName_7",
+          key: "c_linkName_7",
           formType: "input",
         },
         {
           title: "联系方式",
-          key: "c_custLinkMobile_7",
+          key: "c_LinkMobile_7",
           formType: "input",
         },
       ],
       columns: [
         {
-          title: "委托单号",
-          align: "left",
+          title: '委托单号',
+          align: 'left',
+          width: 160,
+          dataIndex: 'entrustNo',
+          scopedSlots: {customRender: 'entrustNo'},
+          fixed: 'left'
+        },
+        {
+          title: '运行单号',
+          align: 'left',
           width: 140,
-          dataIndex: "entrustCode",
-          scopedSlots: {customRender: "entrustCode"},
+          dataIndex: 'entrustCode',
+          scopedSlots: {customRender: 'entrustCode'},
+          fixed: 'left'
         },
         {
-          title: "状态",
-          align: "left",
-          width: 100,
-          dataIndex: "status",
-          scopedSlots: {customRender: "status"},
+          title: '状态',
+          align: 'left',
+          dataIndex: 'status',
+          minWidth: 100,
+          scopedSlots: {customRender: 'status'}
         },
         {
-          title: "试品工号",
+          title: '是否外包',
+          align: 'left',
+          dataIndex: 'isExternalManage',
+          minWidth: 100,
+          scopedSlots: {customRender: 'isExternalManage'},
+        },
+        {
+          title: '试验项目',
+          align: 'left',
+          dataIndex: 'unitNames',
+          minWidth: 100,
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '样品名称',
+          align: 'left',
+          minWidth: 200,
+          dataIndex: 'productNames',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: "型号/规格",
           align: "left",
-          dataIndex: "productCodes",
+          dataIndex: "productModel",
+          minWidth: 100,
           customRender: (text, record) => {
             return text || "--";
           },
         },
         {
-          title: "试品代号",
+          title: "图号",
           align: "left",
-          dataIndex: "productAliass",
+          dataIndex: "productAlias",
+          minWidth: 100,
           customRender: (text, record) => {
             return text || "--";
           },
         },
         {
-          title: "试品名称",
-          align: "left",
-          dataIndex: "productNames",
+          title: '委托单位',
+          align: 'left',
+          minWidth: 100,
+          dataIndex: 'custName',
           customRender: (text, record) => {
             return text || "--";
-          },
+          }
         },
+
         {
-          title: "试品编号",
-          align: "left",
-          dataIndex: "pieceNo",
-          customRender: (text, record) => {
-            return text || "--";
-          },
-        },
-        {
-          title: "委托单位",
-          align: "left",
-          dataIndex: "custName",
-          customRender: (text, record) => {
-            return text || "--";
-          },
+          title: '委托日期',
+          align: 'left',
+          dataIndex: 'entrustTime',
+          minWidth: 100,
+          customRender: (time) => {
+            return time && time != 0 ? moment(parseInt(time)).format('YYYY-MM-DD') : '--'
+          }
         },
         {
           title: "联系人",
-          align: "left",
+          align: "center",
           dataIndex: "linkName",
+          width: 120,
           customRender: (text, record) => {
             return text || "--";
           },
         },
         {
           title: "联系方式",
-          align: "left",
+          align: "center",
+          width: 150,
           dataIndex: "linkMobile",
           customRender: (text, record) => {
             return text || "--";
           },
         },
         {
-          title: "创建人",
-          align: "left",
-          dataIndex: "createUserName",
+          title: "委托人",
+          align: "center",
+          dataIndex: "entrustPerson",
+          width: 120,
           customRender: (text, record) => {
             return text || "--";
           },
         },
         {
-          title: "创建时间",
-          align: "left",
-          dataIndex: "createTime",
-          customRender: (time, record) => {
-            return time && time != 0 ? moment(parseInt(time)).format("YYYY-MM-DD") : "--";
+          title: "委托人手机号",
+          align: "center",
+          width: 150,
+          dataIndex: "entrustPersonPhone",
+          customRender: (text, record) => {
+            return text || "--";
           },
         },
-        // {
-        //   title: "操作",
-        //   dataIndex: "action",
-        //   fixed: "right",
-        //   width: 100,
-        //   align: "center",
-        //   scopedSlots: {customRender: "action"},
-        // },
+        {
+          title: '创建人 ',
+          align: 'left',
+          minWidth: 100,
+          dataIndex: 'createUserName',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '创建时间 ',
+          align: 'left',
+          minWidth: 140,
+          dataIndex: 'createTime',
+          customRender: (text, record) => {
+            return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD HH:mm:ss') : '--'
+          }
+        },
+        {
+          title: '操作',
+          dataIndex: 'actions',
+          fixed: 'right',
+          width: 100,
+          align: 'center',
+          scopedSlots: {customRender: 'actions'}
+        }
       ],
       loadData: (params) => {
         let data = {

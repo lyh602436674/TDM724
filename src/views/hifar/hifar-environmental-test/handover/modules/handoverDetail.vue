@@ -75,7 +75,7 @@
           {
             title: '委托单号',
             align: 'left',
-            dataIndex: 'entrustCode',
+            dataIndex: 'entrustNo',
             minWidth: 10,
             customRender: (text, record) => {
               return text || '--'

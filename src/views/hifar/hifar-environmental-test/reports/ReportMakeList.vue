@@ -1,10 +1,9 @@
 <!--
- * @Author: 赵峰
- * @Date: 2021-09-03 16:29:46
- * @LastEditTime: 2021-11-30 10:50:42
- * @LastEditors: 马潭龙
- * @Descripttion: 报告生成
- * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\reports\ReportMakeList.vue
+ * @Author: 雷宇航
+ * @Date: 2022-10-08 15:50:24
+ * @fileName: ReportMakeList.vue
+ * @FilePath: tdm724-client\src\views\hifar\hifar-environmental-test\reports\ReportMakeList.vue
+ * @Description: 报告生成页面
 -->
 <template>
   <div ref="pageWrapper" class="h-custom-layout" style="height: 100%; position: relative">
@@ -162,7 +161,7 @@ export default {
       searchBar: [
         {
           title: '委托单号',
-          key: 'c_entrustCode_7',
+          key: 'c_entrustNo_7',
           formType: 'input',
         },
         {
@@ -265,23 +264,15 @@ export default {
         {
           title: '委托单号',
           align: 'left',
+          dataIndex: 'entrustNo',
+          customRender: (text, record) => {
+            return text || '--'
+          },
+        },
+        {
+          title: '运行单号',
+          align: 'left',
           dataIndex: 'entrustCode',
-          customRender: (text, record) => {
-            return text || '--'
-          },
-        },
-        {
-          title: '总号',
-          align: 'left',
-          dataIndex: 'sumMark',
-          customRender: (text, record) => {
-            return text || '--'
-          },
-        },
-        {
-          title: '分号',
-          align: 'left',
-          dataIndex: 'separateMark',
           customRender: (text, record) => {
             return text || '--'
           },

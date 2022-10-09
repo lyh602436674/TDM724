@@ -215,14 +215,12 @@
         </template>
       </div>
     </h-card>
-    <ensure-modal ref='ensureModal'/>
   </h-modal>
 </template>
 
 <script>
 import {postAction} from '@/api/manage'
 import {cloneDeep, isArray, isObject} from 'lodash'
-import ensureModal from '../modules/components/CheckEnsureModal'
 import {randomUUID} from "@/utils/util";
 
 export default {
@@ -231,9 +229,7 @@ export default {
       default: () => document.body
     }
   },
-  components: {
-    ensureModal
-  },
+  components: {},
   data() {
     return {
       visible: false,
@@ -370,7 +366,7 @@ export default {
           itemRes: item.itemRes
         })
       }
-      this.$refs.ensureModal.show(record, this.handleFillSubmit)
+      this.handleFillSubmit()
     },
     handleDelete(item, index, type) {
       //  如果时手动新增的，那就前台删除
@@ -404,14 +400,13 @@ export default {
           id: item.id
         })
       }
-      this.$refs.ensureModal.show(record, this.handleCheckSubmit)
+      this.handleCheckSubmit()
     },
-    handleFillSubmit(values) {
-      postAction(this.url.fill, values).then((res) => {
+    handleFillSubmit() {
+      postAction(this.url.fill).then((res) => {
         if (res.code === 200) {
           this.$message.success('检查审核成功')
           this.getCheckDetail()
-          this.$refs.ensureModal.handleCancel()
           this.resetCheckedState()
         }
       })
@@ -489,12 +484,11 @@ export default {
         })
       }
     },
-    handleCheckSubmit(values) {
-      postAction(this.url.check, values).then((res) => {
+    handleCheckSubmit() {
+      postAction(this.url.check).then((res) => {
         if (res.code === 200) {
           this.$message.success('检查复核成功')
           this.getCheckDetail()
-          this.$refs.ensureModal.handleCancel()
           this.resetCheckedState()
         }
       })

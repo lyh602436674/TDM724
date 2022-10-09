@@ -13,7 +13,7 @@
         <ul class="content-wrapper-item">
           <li v-for="(item, index) in shiftData" :key="index">
             <div>
-              <img style="width: 100%;height: 100%;display: block" :src="item.headUrl ? item.headUrl : noHead" alt="">
+              <img style="width: 100%;height: 100%;display: block" :src="item.headUrl ? item.headUrl : noHead" alt="图像">
             </div>
             <div>{{ item.idName }}</div>
             <div>{{ item.mobile }}</div>
@@ -38,7 +38,6 @@ export default {
         singleHeight: 30,
       },
       url: {
-        // list: '/LargeScreenDisplay/changeShiftsRecord',
         list: '/HfRecordHandover/getRecordHandover',
       },
     }
@@ -46,9 +45,15 @@ export default {
   methods: {
     moment,
     loadData() {
-      getAction(this.url.list).then((response) => {
-        if (response.code === 200) {
-          this.shiftData = response.data
+      getAction(this.url.list).then((res) => {
+        let defaultData = [
+          {headUrl: "", idName: "暂无排班人员",},
+          {headUrl: "", idName: "暂无排班人员",}
+        ]
+        if (res.code === 200) {
+          this.shiftData = res.data && res.data.length ? res.data : defaultData
+        } else {
+          this.shiftData = defaultData
         }
       })
     },

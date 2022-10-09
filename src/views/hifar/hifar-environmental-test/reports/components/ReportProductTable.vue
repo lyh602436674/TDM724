@@ -48,7 +48,7 @@ export default {
       searchBar: [
         {
           title: '委托单号',
-          key: 'c_entrustCode_7',
+          key: 'c_entrustNo_7',
           formType: 'input',
         },
         {
@@ -87,7 +87,7 @@ export default {
         {
           title: '委托单号',
           align: 'left',
-          dataIndex: 'entrustCode',
+          dataIndex: 'entrustNo',
         },
         {
           title: '试品编号 ',

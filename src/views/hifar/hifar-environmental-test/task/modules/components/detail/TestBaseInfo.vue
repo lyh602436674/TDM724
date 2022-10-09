@@ -1,10 +1,9 @@
 <!--
- * @Author: 赵峰
- * @Date: 2021-11-04 16:46:50
- * @LastEditTime: 2021-11-10 14:25:17
- * @LastEditors: 赵峰
- * @Descripttion: 试验设备基本信息
- * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\task\modules\components\detail\TestBaseInfo.vue
+ * @Author: 雷宇航
+ * @Date: 2022-10-09 14:12:47
+ * @fileName: TestBaseInfo.vue
+ * @FilePath: tdm724-client\src\views\hifar\hifar-environmental-test\task\modules\components\detail\TestBaseInfo.vue
+ * @Description: 对此文件的描述...
 -->
 <template>
   <div>
@@ -22,94 +21,13 @@
                 ? '--'
                 : moment(parseFloat(item.value)).format('YYYY-MM-DD HH:mm:ss')
               : item.value
-              ? item.value
-              : '--'
+                ? item.value
+                : '--'
           }}
         </h-desc-item>
       </h-desc>
     </h-card>
-    <h-card title="项目信息" v-for="(item, index) in projectData" :key="index" style="margin-bottom: 10px">
-      <h-desc slot="content" size="small" labelWidth="130px">
-        <h-desc-item label="项目名称">
-          {{ item.unitName ? item.unitName : '--' }}
-        </h-desc-item>
-        <h-desc-item label="试验名称">
-          {{ item.testName ? item.testName : '--' }}
-        </h-desc-item>
-        <h-desc-item label="试验标准">
-          {{item.standardCode + item.standardName || '--' }}
-        </h-desc-item>
-        <h-desc-item label="预计时长（h）">
-          {{ item.predictDuration ? item.predictDuration + '小时' : '--' }}
-        </h-desc-item>
-        <h-desc-item label="总号">
-          {{ item.sumMark ? item.sumMark : '--' }}
-        </h-desc-item>
-        <h-desc-item label="分号">
-          {{ item.separateMark ? item.separateMark : '--' }}
-        </h-desc-item>
-        <h-desc-item label="试验依据" :span="4">
-          {{ item.checkRequire ? item.checkRequire : '--' }}
-        </h-desc-item>
-        <h-desc-item label="其他条件" :span="4">
-          {{ item.testCondition ? item.testCondition : '--' }}
-        </h-desc-item>
-        <h-desc-item :span='4' label='附件'>
-          <div slot='content'>
-            <template v-if='item.fileInfo && item.fileInfo.length'>
-              <div v-for='(item, index) in item.fileInfo' :key='index' class='url-list'>
-                <span>{{ index + 1 }}、{{ item.fileName }}</span>
-                <a-button icon='download' size='small' type='primary' style="margin-left: 10px"
-                          @click='handleDownload(item.filePath, item.fileName)'>
-                  下载
-                </a-button>
-              </div>
-            </template>
-            <span v-else>暂无附件</span>
-          </div>
-        </h-desc-item>
-        <h-desc-item :span="3" label="试验条件要求">
-          <template slot="content">
-            <template v-if="!item.abilityRequire.length"><a-empty style="width: 100%"></a-empty></template>
-            <a-tabs v-else :default-active-key="0" style="width: 100%">
-              <template v-for="(proItem,itemIndex) in item.abilityRequire">
-                <a-tab-pane :key="itemIndex"
-                            :tab="proItem.type === 'stage' ? proItem.title + itemIndex : proItem.title">
-                  <vxe-table
-                    :key="itemIndex + '-only'"
-                    :auto-resize="true"
-                    :data="proItem.abilityInfo"
-                    border
-                    highlight-hover-row
-                    keep-source
-                    size="mini"
-                    style="width: 100%"
-                  >
-                    <vxe-table-column type="seq" width="60"></vxe-table-column>
-                    <vxe-table-column field="paramName" title="设备能力"></vxe-table-column>
-                    <vxe-table-column field="unitName" title="单位"></vxe-table-column>
-                    <vxe-table-column field="curveType" title="曲线类型">
-                      <template #default="{ row }">
-                        <span>{{ row.curveType === '1' ? '温度/℃' : row.curveType === '2' ? '湿度/RH' : '--' }}</span>
-                      </template>
-                    </vxe-table-column>
-                    <vxe-table-column field="conditionTypeDesc" title="条件">
-                      <template #default="{ row }">
-                      <span v-if="row.paramName === '初始类型'">{{
-                          row.conditionTypeDesc === '1' ? '先高温' : row.curveType === '2' ? '先低温' : '--'
-                        }}</span>
-                        <span v-else>{{ row.conditionTypeDesc }}</span>
-                      </template>
-                    </vxe-table-column>
-                  </vxe-table>
-                </a-tab-pane>
-              </template>
-            </a-tabs>
-          </template>
-        </h-desc-item>
-      </h-desc>
-    </h-card>
-    <h-card title="试品信息" style="height: auto" :showCollapse="true">
+    <h-card title="样品信息" style="height: auto" :showCollapse="true">
       <div slot="content">
         <a-table
           size="small"
@@ -122,6 +40,10 @@
         </a-table>
       </div>
     </h-card>
+    <h-card title="项目信息" v-for="(item, index) in projectData" :key="index" style="margin-bottom: 10px">
+      <project-detail-template title="" :model="item"/>
+    </h-card>
+
     <h-card title="参试人员" style="height: auto" :showCollapse="true">
       <div slot="content">
         <a-table
@@ -158,15 +80,19 @@
 
 <script>
 import moment from 'moment'
+import ProjectDetailTemplate from "@views/hifar/hifar-environmental-test/entrustment/components/ProjectDetailTemplate";
+
 export default {
   props: {
     basicData: {
       type: [Array, Object],
-      default: () => {},
+      default: () => {
+      },
     },
     testTaskData: {
       type: [Array, Object],
-      default: () => {},
+      default: () => {
+      },
     },
     projectData: {
       type: [Array, Object],
@@ -190,14 +116,16 @@ export default {
     },
     sensorData: {
       type: [Array, Object],
-      default: () => {},
+      default: () => {
+      },
     },
     toolsProductData: {
       type: [Array, Object],
-      default: () => {},
+      default: () => {
+      },
     },
   },
-  components: {},
+  components: {ProjectDetailTemplate},
   data() {
     return {
       moment,
@@ -435,7 +363,7 @@ export default {
         },
       ],
       testProductColumns:{
-        1:[
+        1: [
           {
             title: '#',
             dataIndex: '',
@@ -447,23 +375,27 @@ export default {
             },
           },
           {
-            title: '试品名称',
+            title: '样品名称',
             dataIndex: 'productName',
+            align: 'center',
           },
           {
-            title: '试品工号',
-            dataIndex: 'productCode',
+            title: '型号/规格',
+            dataIndex: 'productModel',
+            align: 'center',
           },
           {
-            title: '试品代号',
-            dataIndex: 'productAlias',
+            title: '样品编号',
+            dataIndex: 'pieceNo',
+            align: 'center',
           },
           {
-            title: '试品编号',
-            dataIndex: 'pieceNo'
+            title: '样品数量',
+            dataIndex: 'pieceNum',
+            align: 'center',
           }
         ],
-        2:[
+        2: [
           {
             title: '#',
             dataIndex: '',
@@ -475,21 +407,25 @@ export default {
             },
           },
           {
-            title: '试品名称',
+            title: '样品名称',
             dataIndex: 'productName',
+            align: 'center',
           },
           {
-            title: '试品型号',
+            title: '图号',
             dataIndex: 'productAlias',
+            align: 'center',
           },
           {
-            title: '试品数量',
+            title: '样品编号',
+            dataIndex: 'pieceNo',
+            align: 'center',
+          },
+          {
+            title: '样品数量',
             dataIndex: 'pieceNum',
+            align: 'center',
           },
-          {
-            title: '试品编号',
-            dataIndex: 'pieceNo'
-          }
         ],
       },
       personColumns: [

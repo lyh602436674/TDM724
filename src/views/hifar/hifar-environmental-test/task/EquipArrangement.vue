@@ -62,8 +62,7 @@
       <h-card fixed style="height: 100%">
         <div ref="epContent" slot="content" class="ep-content">
           <div class="ea-equip-info-wrapper">
-            <template v-if="equipDetail.id">
-              <div class="ea-equip-info">
+              <div class="ea-equip-info" v-if="selectedKeys.length">
                 <!-- card -->
                 <h-card fixed style="width: 100%">
                   <a-tabs v-model="basickey" style="height: 100%;">
@@ -220,8 +219,7 @@
                   </h-vex-table>
                 </h-card>
               </div>
-            </template>
-            <a-empty v-else description="请在左侧选择设备"/>
+            <!--            <a-empty v-else description="请在左侧选择设备"/>-->
           </div>
         </div>
       </h-card>
@@ -259,7 +257,6 @@ import HEditTree from '@/views/components/HEditTree.js'
 import TestCheckModal from './checkModal/TestCheckModal'
 import TestBaseEdit from './checkModal/TestBaseEdit'
 import TestTaskBaseInfoModal from './TestTaskBaseInfoModal'
-import {isEmpty} from 'lodash'
 import mixin from '@/views/hifar/mixin.js'
 import EquipBasicBar from './modules/components/equipBasicEcharts/EquipBasicBar.vue'
 import EquipBasicLine from './modules/components/equipBasicEcharts/EquipBasicLine.vue'
@@ -650,6 +647,8 @@ export default {
       this.buttons.map((item, index) => {
         item.type = 'primary'
       })
+      // this.selectedKeys = [selectedRow[0].equipId]
+      // this.getEquipDetail()
     },
     async loadleftTree() {
       this.treeSpinning = true
@@ -716,7 +715,7 @@ export default {
       this.selectedRow = []
     },
     onSelect(selectedKeys, event) {
-      if (isEmpty(selectedKeys)) return
+      // if (isEmpty(selectedKeys)) return
       //关闭弹窗
       this.$refs.taskStartModal.visible = false
       this.$refs.taskSuspendModal.visible = false

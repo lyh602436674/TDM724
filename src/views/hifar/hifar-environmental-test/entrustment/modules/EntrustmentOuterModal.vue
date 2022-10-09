@@ -1,9 +1,9 @@
 <!--
  * @Author: 雷宇航
- * @Date: 2022-06-16 15:36:11
- * @fileName: NewEntrustmentModal.vue
- * @FilePath: \tdm200-client\tdm200-client\src\views\hifar\hifar-environmental-test\entrustment\modules\NewTestEntrustmentModal.vue
- * @Description: 新版委托单（由之前的三个步骤填写改为一个页面）
+ * @Date: 2022-10-08 13:43:35
+ * @fileName: EntrustmentOuterModal.vue
+ * @FilePath: tdm724-client\src\views\hifar\hifar-environmental-test\entrustment\modules\EntrustmentOuterModal.vue
+ * @Description: 外部委托单新增编辑弹框
 -->
 <template>
   <h-modal
@@ -21,7 +21,7 @@
       <a-button type='primary' @click='handleSubmit'>提交</a-button>
     </div>
     <h-card bordered>
-      <template slot='title'> {{ handleType === 'add' ? '新增' : '编辑' }}委托试验</template>
+      <template slot='title'> {{ handleType === 'add' ? '新增' : '编辑' }}外部委托试验</template>
       <a-spin :spinning="submitLoading">
         <div class="item-wrapper">
           <div class="item-wrapper-title">
@@ -51,9 +51,9 @@
                 size='small'
                 style='margin-right: 10px'
                 type='ghost-primary'
-                @click='outerProductAdd'
+                @click='handleAddPiece'
               >
-                外部新增
+                新增样品
               </a-button>
               <a-button v-if='selectedRowKeys.length' icon='minus' size='small' type='danger' @click='handleDelete'> 删除
               </a-button>
@@ -66,7 +66,7 @@
                 :edit-config="{
                   trigger: 'click',
                   mode: 'cell',
-                  activeMethod: activeCellMethod
+                  activeMethod: ()=>true,
                 }"
                 :edit-rules='validRules'
                 :valid-config='{ showMessage: false }'
@@ -81,9 +81,9 @@
                 <vxe-table-column type='seq' width='60'></vxe-table-column>
                 <vxe-table-column
                   :edit-render="{
-                  name: 'input',
-                  attrs: { type: 'text', placeholder: '请输入样品名称' },
-                }"
+                      name: 'input',
+                      attrs: { type: 'text', placeholder: '请输入样品名称' },
+                    }"
                   field='productName'
                   title="样品名称"
                 />
@@ -143,8 +143,8 @@
       </a-spin>
     </h-card>
     <project-add-modal ref='projectAddModal' @change='projectModalCallback'></project-add-modal>
-    <outside-product-add-modal ref='outsideProductAddModal'
-                               @callback='outsideProductAddCallback'></outside-product-add-modal>
+    <product-add-modal ref='productAddModal' :entrustType="entrustType"
+                       @callback='productAddCallback'></product-add-modal>
   </h-modal>
 </template>
 
@@ -157,11 +157,11 @@ import PhemismCustomSelect from "@views/components/PhhemismCustomSelect";
 import {cloneDeep, isArray} from 'lodash'
 import {postAction} from "@api/manage";
 import {randomUUID} from "@/utils/util";
-import OutsideProductAddModal from "@views/hifar/hifar-environmental-test/entrustment/modules/OutsideProductAddModal";
+import ProductAddModal from "@views/hifar/hifar-environmental-test/entrustment/modules/ProductAddModal";
 
 export default {
   name: "NewEntrustmentModal",
-  components: {OutsideProductAddModal, ProductSelectModal, ProjectAddModal, NewTestProjectForm, PhemismCustomSelect},
+  components: {ProductAddModal, ProductSelectModal, ProjectAddModal, NewTestProjectForm, PhemismCustomSelect},
   inject: {
     getContainer: {
       default: () => document.body
@@ -455,19 +455,19 @@ export default {
       })
     },
     // 外部样品新增
-    outerProductAdd() {
-      this.$refs.outsideProductAddModal.show()
+    handleAddPiece() {
+      this.$refs.productAddModal.show()
     },
-    // 外部新增弹框返回数据
-    outsideProductAddCallback(values) {
+    // 新增样品弹框返回数据
+    productAddCallback(values) {
       let tableData = []
       this.tableData = []
       if (values.pieceNo.includes('-') && values.pieceNo.includes(',')) {
-        this.tableData = this.splitByBoth(values)
+        this.tableData = this.tableData.concat(this.splitByBoth(values))
       } else if (values.pieceNo.includes(',')) {
-        this.tableData = this.splitByComma(values, values.pieceNo.split(','))
+        this.tableData = this.tableData.concat(this.splitByComma(values, values.pieceNo.split(',')))
       } else if (values.pieceNo.includes('-')) {
-        this.tableData = this.splitByHorizontalLine(values, values.pieceNo.split('-'))
+        this.tableData = this.tableData.concat(this.splitByHorizontalLine(values, values.pieceNo.split('-')))
       } else {
         tableData.push({
           id: randomUUID(),
@@ -475,9 +475,8 @@ export default {
           pieceNum: 1,
           productAlias: values.productAlias,
           pieceNo: (values.piecePrefix || '') + values.pieceNo,
-          type: "outside"
         })
-        this.tableData = tableData
+        this.tableData = this.tableData.concat(tableData)
       }
       this.setProjectPieceNos()
     },
@@ -565,10 +564,6 @@ export default {
         }, 1)
       }
     },
-    activeCellMethod({row, column}) {
-      // return row.type === 'inside' || (row.type === 'selected' && column.property === 'pieceNo')
-      return row.type === 'inside' || row.type === 'selected'
-    },
     selectCustomerChange(val, record) {
       let [customer] = record
       this.entrustModel.custName = customer.custName ? customer.custName : ''
@@ -617,9 +612,7 @@ export default {
       this.projectInfoData = this.projectInfoData.concat(extendRecord.map(item => {
         return {
           ...item,
-          needProcess: 2,
-          craftUnitId: 0,
-          separateMark: 1,
+          testCondition: item.remarks,
           pieceIds: tableData.map(item => item.id).toString(),
           pieceNos: tableData.map(item => item.pieceNo).toString()
         }
@@ -713,6 +706,7 @@ export default {
       entrustModelInfo.attachIds = attachIds.length > 0 ? attachIds.join(',') : ''
       entrustModelInfo.custId = isArray(entrustModelInfo.custId) && entrustModelInfo.custId.length > 0 ? entrustModelInfo.custId[0] : entrustModelInfo.custId
       entrustModelInfo.entrustTime = entrustModelInfo.entrustTime ? entrustModelInfo.entrustTime.valueOf() : ''
+      entrustModelInfo.requireCompletionTime = entrustModelInfo.requireCompletionTime ? entrustModelInfo.requireCompletionTime.valueOf() : ''
       this.entrustModelInfo = entrustModelInfo
     },
     // 给附件设置密级

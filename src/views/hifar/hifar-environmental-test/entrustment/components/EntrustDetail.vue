@@ -11,17 +11,7 @@
     <!-- 委托信息 -->
     <detail-base-info :detailDataObj="detailData"></detail-base-info>
     <!--样品信息-->
-    <h-desc labelWidth="120px" title="样品信息">
-      <a-table
-        :columns="columns[detailData.entrustType]"
-        :dataSource="detailData.pieceInfo"
-        :pagination="false"
-        bordered
-        rowKey="id"
-        size="small"
-        style="width: 100%; height: 100%"
-      ></a-table>
-    </h-desc>
+    <piece-detail-template :entrust-type="detailData.entrustType" :dataSource="detailData.pieceInfo"/>
     <!-- 项目信息 -->
     <detail-project-info
       :projectInfoArr="detailData && detailData.projectInfo ? detailData.projectInfo : []"
@@ -34,9 +24,11 @@
 import {postAction} from '@/api/manage'
 import DetailBaseInfo from './DetailBaseInfo.vue'
 import DetailProjectInfo from './DetailProjectInfo.vue'
+import PieceDetailTemplate from "@views/hifar/hifar-environmental-test/entrustment/components/PieceDetailTemplate";
 
 export default {
   components: {
+    PieceDetailTemplate,
     DetailBaseInfo,
     DetailProjectInfo,
   },

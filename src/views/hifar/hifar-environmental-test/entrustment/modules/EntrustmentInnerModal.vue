@@ -21,7 +21,7 @@
       <a-button type='primary' @click='handleSubmit'>提交</a-button>
     </div>
     <h-card bordered>
-      <template slot='title'> {{ handleType === 'add' ? '新增' : '编辑' }}委托试验</template>
+      <template slot='title'> {{ handleType === 'add' ? '新增' : '编辑' }}内部委托试验</template>
       <a-spin :spinning="submitLoading">
         <div class="item-wrapper">
           <div class="item-wrapper-title">
@@ -47,22 +47,13 @@
           <div class="item-wrapper-content">
             <div style="margin-top:20px">
               <a-button
-                  icon='plus'
-                  size='small'
-                  style='margin-right: 10px'
-                  type='ghost-primary'
-                  @click='selectProductHandle'
+                icon='plus'
+                size='small'
+                style='margin-right: 10px'
+                type='ghost-primary'
+                @click='handleAddPiece'
               >
-                选择样品
-              </a-button>
-              <a-button
-                  icon='plus'
-                  size='small'
-                  style='margin-right: 10px'
-                  type='ghost-primary'
-                  @click='handleManuallyAdd'
-              >
-                内部新增
+                新增样品
               </a-button>
               <a-button v-if='selectedRowKeys.length' icon='minus' size='small' type='danger' @click='handleDelete'>
                 删除
@@ -76,7 +67,7 @@
                 :edit-config="{
                   trigger: 'click',
                   mode: 'cell',
-                  activeMethod: activeCellMethod
+                  activeMethod: ()=>true,
                 }"
                 :edit-rules='validRules'
                 :valid-config='{ showMessage: false }'
@@ -91,9 +82,9 @@
                 <vxe-table-column type='seq' width='60'></vxe-table-column>
                 <vxe-table-column
                     :edit-render="{
-                  name: 'input',
-                  attrs: { type: 'text', placeholder: '请输入样品名称' },
-                }"
+                      name: 'input',
+                      attrs: { type: 'text', placeholder: '请输入样品名称' },
+                    }"
                     field='productName'
                     title="样品名称"
                 />
@@ -154,24 +145,25 @@
       </a-spin>
     </h-card>
     <project-add-modal ref='projectAddModal' @change='projectModalCallback'></project-add-modal>
-    <product-select-modal ref='ProductSelectModal' @change='productSelectModalCallback'></product-select-modal>
+    <product-add-modal ref='productAddModal' :entrustType="entrustType"
+                       @callback='productAddCallback'></product-add-modal>
   </h-modal>
 </template>
 
 <script>
 import NewTestProjectForm from "@views/hifar/hifar-environmental-test/entrustment/components/NewTestProjectForm";
 import ProjectAddModal from "@views/hifar/hifar-environmental-test/entrustment/modules/ProjectAddModal";
-import ProductSelectModal from "@views/hifar/hifar-environmental-test/entrustment/modules/ProductSelectModal";
 import moment from "moment";
 import PhemismCustomSelect from "@views/components/PhhemismCustomSelect";
 import store from '@/store'
 import {cloneDeep, isArray} from 'lodash'
 import {postAction} from "@api/manage";
 import {randomUUID} from "@/utils/util";
+import ProductAddModal from "@views/hifar/hifar-environmental-test/entrustment/modules/ProductAddModal";
 
 export default {
   name: "NewEntrustmentModal",
-  components: {ProductSelectModal, ProjectAddModal, NewTestProjectForm, PhemismCustomSelect},
+  components: {ProductAddModal, ProjectAddModal, NewTestProjectForm, PhemismCustomSelect},
   inject: {
     getContainer: {
       default: () => document.body
@@ -196,7 +188,7 @@ export default {
       handleType: 'add',
       submitStatus: 1,
       entrustModel: {},
-      entrustType: '',
+      entrustType: '1',
       tableData: [],
       selectedRowKeys: [],
       projectInfoData: [],
@@ -514,42 +506,79 @@ export default {
         this.submitLoading = false
       })
     },
-    // 选择样品
-    selectProductHandle() {
-      this.$refs.ProductSelectModal.show()
+    //内部新增样品
+    handleAddPiece() {
+      this.$refs.productAddModal.show()
     },
-    //选择样品返回数据
-    async productSelectModalCallback(val) {
-      let tableData = [{
-        projectUseFlag: false,
-        productId: val.productId,
-        productName: val.productName,
-        productModel: val.productModel,
-        pieceNo: val.pieceNo,
-        id: randomUUID(),
-        type: 'selected'
-      }]
-      const $table = this.$refs.pieceTable
-      await $table.insertAt(tableData, -1)
-      const {insertRecords} = $table.getRecordset()
-      this.insertRecords = insertRecords
-      this.tableData = this.tableData.concat(insertRecords)
-      this.staticTableData = cloneDeep(this.tableData)
-      this.setProjectPieceNos()
-    },
-    //内部样品手动新增
-    handleManuallyAdd() {
-      let product = {
-        projectUseFlag: false,
-        productId: '',
-        productName: '',
-        productModel: '',
-        pieceNo: '',
-        id: randomUUID(),
-        type: 'inside'
+    // 新增样品弹框返回数据
+    productAddCallback(values) {
+      let tableData = []
+      this.tableData = []
+      if (values.pieceNo.includes('-') && values.pieceNo.includes(',')) {
+        this.tableData = this.tableData.concat(this.splitByBoth(values))
+      } else if (values.pieceNo.includes(',')) {
+        this.tableData = this.tableData.concat(this.splitByComma(values, values.pieceNo.split(',')))
+      } else if (values.pieceNo.includes('-')) {
+        this.tableData = this.tableData.concat(this.splitByHorizontalLine(values, values.pieceNo.split('-')))
+      } else {
+        tableData.push({
+          id: randomUUID(),
+          productName: values.productName,
+          pieceNum: 1,
+          productModel: values.productModel,
+          pieceNo: (values.piecePrefix || '') + values.pieceNo,
+        })
+        this.tableData = this.tableData.concat(tableData)
       }
-      this.tableData.push(product)
       this.setProjectPieceNos()
+    },
+    splitByHorizontalLine(values, arr) {
+      //根据横杠分隔
+      let tableData = []
+      let num = +arr[1] + 1 - +arr[0] > +values.pieceNum ? +arr[0] + +values.pieceNum - 1 : +arr[1]
+      for (let i = +arr[0]; i <= num; i++) {
+        tableData.push({
+          id: randomUUID(),
+          productName: values.productName,
+          pieceNum: 1,
+          productModel: values.productModel,
+          pieceNo: (values.piecePrefix || '') + i,
+        })
+      }
+      return tableData
+    },
+    splitByComma(values, arr) {
+      // 根据逗号分隔
+      let tableData = []
+      arr.forEach(item => {
+        tableData.push({
+          id: randomUUID(),
+          productName: values.productName,
+          pieceNum: 1,
+          productModel: values.productModel,
+          pieceNo: (values.piecePrefix || '') + item,
+        })
+      })
+      return tableData
+    },
+    splitByBoth(values) {
+      // 逗号和横杠都存在
+      let commaArr = values.pieceNo.split(',')
+      let tableData = []
+      for (let i = 0; i < commaArr.length; i++) {
+        if (commaArr[i].includes('-')) {
+          tableData.push(...this.splitByHorizontalLine(values, commaArr[i].split('-')))
+        } else {
+          tableData.push({
+            id: randomUUID(),
+            productName: values.productName,
+            pieceNum: 1,
+            productModel: values.productModel,
+            pieceNo: (values.piecePrefix || '') + commaArr[i],
+          })
+        }
+      }
+      return tableData
     },
     pieceNoBlur({row}) {
       this.setProjectPieceNos()
@@ -584,10 +613,6 @@ export default {
         }, 1)
       }
     },
-    activeCellMethod({row, column}) {
-      // return row.type === 'inside' || (row.type === 'selected' && column.property === 'pieceNo')
-      return row.type === 'inside' || row.type === 'selected'
-    },
     //  多选
     onSelectChange(records) {
       this.selectedRowKeys = records.records
@@ -607,7 +632,6 @@ export default {
     },
     // 选择项目弹框返回数据
     projectModalCallback(recordId, record) {
-      console.log(recordId, record, 'recordId, record')
       let tableData = this.$refs.pieceTable.getData()
       let extendRecord = cloneDeep(record)
       if (this.projectInfoData.length) {
