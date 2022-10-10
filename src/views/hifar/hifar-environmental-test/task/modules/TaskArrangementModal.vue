@@ -106,11 +106,7 @@ export default {
       this.model = Object.assign({}, record, {
         predictUseTime: record.predictDuration || 1,
         sampleNum: record.productNums || 1,
-        // predictStartTime: record.predictStartTime == '0' ? moment() : moment(parseFloat(record.predictStartTime)),
-        /**
-         * 2022-2-9 雷宇航 修改：分配设备时的预计开始时间应该时委托单项目信息中的预计时间
-         * **/
-        predictStartTime: record.expectStartTime !== '0' ? moment(parseFloat(record.expectStartTime)).format('YYYY-MM-DD HH:mm:ss') : moment(),
+        predictStartTime: moment(),
         expectTime: moment(parseFloat(record.expectStartTime)).format('YYYY-MM-DD HH:mm:ss'),
         checkValid:
           record.checkValid == '0' && record.checkValid != undefined ? '--' : moment(parseFloat(record.checkValid)),

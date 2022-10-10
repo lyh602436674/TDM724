@@ -32,6 +32,7 @@
 
 <script>
 import NewTestProjectFormItem from '@views/hifar/hifar-environmental-test/entrustment/components/NewTestProjectFormItem'
+import moment from 'moment'
 
 export default {
   props: {
@@ -103,6 +104,7 @@ export default {
                 let projectFormValue = val
                 let attachIds = val.attachIds.map(item => item.fileId).toString()
                 projectFormValue.unitName = that.model.unitName;
+                projectFormValue.taskExpectStartTime = moment(val.taskExpectStartTime).format('x');
                 projectFormValue.attachIds = attachIds;
                 projectResult.push(projectFormValue)
               }
@@ -112,6 +114,7 @@ export default {
           } else {
             let projectFormValue = projectForm.form.getFieldsValue()
             projectFormValue.unitName = that.model.unitName
+            projectFormValue.taskExpectStartTime = moment(projectFormValue.taskExpectStartTime).format('x');
             projectResult.push(projectFormValue)
           }
         }

@@ -75,7 +75,7 @@
 
 <script>
 import moment from 'moment'
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
 import AccessInfo from '../components/AccessInfo.vue'
 import TaskInfo from '../components/TaskInfo.vue'
 import TestTaskInfo from '../components/TestTaskInfo.vue'
@@ -151,10 +151,10 @@ export default {
         }
       })
     },
-    show(id) {
+    show(id, type) {
       this.visible = true
       this.entrustId = id
-      this.loadDetail(id)
+      this.loadDetail(id, type)
     },
     handleCancel() {
       // this.saveFile(this.detailData.id, this.detailData.fileInfo)
@@ -177,9 +177,9 @@ export default {
         })
       }
     },
-    loadDetail(id) {
+    loadDetail(id, type) {
       let url = this.url.detailById
-      postAction(url, { id: id }).then((res) => {
+      postAction(url, {id, type}).then((res) => {
         if (res.code == 200) {
           let record = res.data
           let status = record.status

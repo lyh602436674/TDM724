@@ -39,16 +39,12 @@
               text === '1' ? '是' : text === '0' ? '否' : '--'
             }}</span>
         </template>
-        <span slot='entrustNo' slot-scope='text, record'>
-          {{ record.entrustNo || '--' }}
-        </span>
-        <span slot='entrustCode' slot-scope='text, record'>
-          <h-icon v-if="record.entrustType == '1'" type='icon-nei'/>
-          <h-icon v-else type='icon-wai'/>
-          <a href='javascript:;' @click='handleDetailCode(record)'>
-            {{ record.entrustCode ? record.entrustCode : '--' }}</a
-          >
-        </span>
+        <template #entrustNo="text, record">
+          <a @click='handleDetailCode(record)'>{{ record.entrustNo || '--' }}</a>
+        </template>
+        <template #entrustCode="text, record">
+          <a @click='handleDetailCode(record,"1")'>{{ record.entrustCode || '--' }}</a>
+        </template>
         <span slot='status' slot-scope='text, record'>
           <a-badge :color='record.status | wtStatusColorFilter' :text='record.status | wtStatusFilter'/>
         </span>
@@ -415,12 +411,12 @@ export default {
       })
     },
     // 详情
-    handleDetail(record) {
-      this.$refs.EntrustmentDetailModal.show(record.id)
+    handleDetail(record, type) {
+      this.$refs.EntrustmentDetailModal.show(record.id, type)
     },
     // 编辑
     handleEdit(record) {
-      let type = 'editor'
+      let type = 'edit'
       this.$refs.EntrustmentModal.show(record, type)
     },
     // 删除
@@ -451,11 +447,11 @@ export default {
       }
     },
     //1 草稿 10 提交 20审核通过 30审核驳回 40检测完成 50 已出报告 80终止 99逻辑删除
-    handleDetailCode(record) {
+    handleDetailCode(record, type) {
       if (record.status == 1 || record.status == 30) {
         this.handleEdit(record)
       } else if (record.status >= 10 && record.status != 30) {
-        this.handleDetail(record)
+        this.handleDetail(record, type)
       }
     },
   }

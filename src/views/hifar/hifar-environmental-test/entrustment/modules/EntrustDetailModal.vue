@@ -20,8 +20,6 @@
       <template v-if="detailData.status == 10">
         <a-button v-has="'entrustCheck:pass'" type="primary" @click="handleCheckPass(detailData.id,0)"> 审核通过</a-button>
         <a-button v-has="'entrustCheck:reject'" type="ghost-primary" @click="handleCheck(detailData)"> 审核驳回</a-button>
-        <a-button v-has="'entrustCheck:epiboly'" type="ghost-primary" @click="handleEpiboly(detailData, '外包')"> 外包
-        </a-button>
       </template>
       <a-button type="ghost-danger" @click="handleCancel"> 关闭</a-button>
     </div>
@@ -89,11 +87,11 @@ export default {
     }
   },
   methods: {
-    show(record) {
+    show(record, type) {
       this.visible = true
       this.entrustId = record.id
       this.model = record
-      this.loadDetail(record.id)
+      this.loadDetail(record.id, type)
     },
     handleCancel() {
       this.visible = false
@@ -102,9 +100,9 @@ export default {
     handleTabsChange(v) {
       this.activeKey = v
     },
-    loadDetail(id) {
+    loadDetail(id, type) {
       let url = this.url.detail
-      postAction(url, {id}).then((res) => {
+      postAction(url, {id, type}).then((res) => {
         if (res.code === 200) {
           this.detailData = res.data
         }
@@ -126,64 +124,7 @@ export default {
         },
       })
     },
-    handleEpiboly(record) {
-      this.$confirm({
-        title: '提示:请填写外包单位',
-        // content: '是否要申请外包?',
-        content: h => <a-input v-model={this.outsourcingUnit} placeholder={"请输入外包单位"}><span
-          slot="addonBefore">外包单位</span>
-        </a-input>,
-        onOk: () => {
-          return new Promise((resolve, reject) => {
-            if (!this.outsourcingUnit.replace(/\s*/g, "")) {
-              this.$message.warning('请输入外包单位！')
-              reject()
-            } else {
-              postAction(this.url.externalManage, {id: record.id, outsourcingUnit: this.outsourcingUnit}).then(res => {
-                if (res.code === 200) {
-                  this.$message.success('操作成功')
-                  this.handleCancel();
-                } else {
-                  this.$message.warning(res.msg)
-                }
-              }).finally(() => {
-                this.outsourcingUnit = ''
-                resolve()
-              })
-            }
-          })
-        },
-      })
-    },
     handleCheckPass(id, isForce) {
-      // let {entrustType} = this.detailData
-      // this.$confirm({
-      //   title: entrustType === '1' ? '提示' : '提示:请勾选试验条件和进度是否满足要求',
-      //   // content: '是否要申请外包?',
-      //   content: entrustType === '1' ? '确定审核通过吗' : h => {
-      //     return (
-      //       <div>
-      //         <div>
-      //           <span>试验条件:</span>
-      //           <a-radio-group v-model={this.testCondition}>
-      //             <a-radio-button value={1}>{'是'}</a-radio-button>
-      //             <a-radio-button value={2}>{'是'}</a-radio-button>
-      //           </a-radio-group>
-      //         </div>
-      //         <div>
-      //           <span>进度:</span>
-      //           <a-radio-group v-model={this.testProgress}>
-      //             <a-radio-button value={1}>{'是'}</a-radio-button>
-      //             <a-radio-button value={2}>{'是'}</a-radio-button>
-      //           </a-radio-group>
-      //         </div>
-      //       </div>
-      //     )
-      //   },
-      //   onOk: () => {
-      //     console.log(this.testCondition, this.testProgress)
-      //   }
-      // })
       postAction(this.url.check, {id, isForce}).then((res) => {
         if (res.code === 200) {
           this.$message.success('操作成功')

@@ -17,8 +17,8 @@
     @cancel='handleCancel'
     @submit='handleSave'
   >
-    <!-- 试品信息 -->
-    <h-desc title='试品信息'>
+    <!-- 样品信息 -->
+    <h-desc title='样品信息'>
       <h-card :bordered='false' style='width: 100%'>
         <template slot='table-operator'>
           <a-button icon='plus' size='small' style='margin-bottom: 10px' type='primary' @click='productAdd'>
@@ -193,14 +193,15 @@
         </div>
       </h-card>
     </h-desc>
-    <h-desc style='margin-top: 20px' title='曲线/图谱图片'>
-      <h-form ref="imageForm" v-model="model_img" :column="1" :formData="imageData" style="width: 100%"/>
+    <h-desc style='margin-top: 20px' title='附件上传'>
+      <h-upload-file accept="image/png,image/gif,image/jpg,image/jpeg" style="width: 100%" v-model="imageData"
+                     isWriteRemarks></h-upload-file>
     </h-desc>
     <handle-select-modal
       ref='productHandleSelectModal'
       :columns='addProductColumns'
       :data-url='productList'
-      :title="'添加试品信息'"
+      :title="'添加样品信息'"
       type='product'
       @callback='productCallback'
     />
@@ -269,6 +270,7 @@ export default {
   data() {
     return {
       moment,
+      imageData: [],
       visible: false,
       entrustType: 2,
       title: '',
@@ -285,25 +287,6 @@ export default {
         attachList: '/MinioBusiness/listByRefId',
         deleteImg: '/MinioBusiness/logicRemoveById',
       },
-      imageData: [
-        {
-          title: '曲线/图谱图片',
-          key: 'attachIds',
-          span: 1,
-          component: (
-            <h-upload-img
-              multiple={true}
-              max={100}
-              isCollect={true}
-              customParams={{refType: 'test_picture', refId: this.testId}}
-              accept="image/png,image/gif,image/jpg,image/jpeg"
-              v-decorator={['attachIds', {initialValue: []}]}
-              on-delete={this.handleDeleteImg}
-              on-collect={this.handlecCollect}
-            />
-          ),
-        },
-      ],
       equipSearchData: [
         {
           title: '设备编号',
@@ -406,44 +389,7 @@ export default {
           component: (
             <h-time-select v-decorator={['realEndTime', {rules: [{required: false, message: '请选择结束时间'}]}]}/>
           )
-        }, {
-          title: '温度',
-          key: 'temperature',
-          formType: 'input',
-          options: [],
-          span: 1,
-          validate: {
-            rules: [{required: true, message: '请输入温度'}]
-          }
-        }, {
-          title: '湿度',
-          key: 'humidity',
-          formType: 'input',
-          options: [],
-          span: 1,
-          validate: {
-            rules: [{required: true, message: '请输入湿度'}]
-          }
         },
-        // {
-        //   title: '试验结果',
-        //   key: 'processDesc',
-        //   validate: {
-        //     rules: [{required: true, message: '请输入或者选择试验结果'}]
-        //   },
-        //   span: 2,
-        //   component: (
-        //     <h-input-select
-        //       v-decorator={['processDesc', {initialValue: []}]}
-        //       options={[
-        //         {title: "满足试验条件"},
-        //         {title: "满足试验条件，附试验谱型"},
-        //       ]} onoptionChange={(item) => {
-        //       console.log(item,'item')
-        //       this.$refs.carryOutProcessForm.form.setFieldsValue({processDesc: item})
-        //     }}/>
-        //   )
-        // },
         {
           title: '试验结果',
           key: 'processDesc',
@@ -483,49 +429,49 @@ export default {
           }
         },
         {
-          title: '试品单位',
+          title: '样品单位',
           dataIndex: 'custName',
           customRender: (t) => {
             return t ? t : '--'
           }
         },
         {
-          title: '试品编号',
+          title: '样品编号',
           dataIndex: 'pieceCode',
           customRender: (t) => {
             return t ? t : '--'
           }
         },
         {
-          title: '试品名称',
+          title: '样品名称',
           dataIndex: 'productName',
           customRender: (t) => {
             return t ? t : '--'
           }
         },
         {
-          title: '试品代号',
+          title: '样品代号',
           dataIndex: 'productAlias',
           customRender: (t) => {
             return t ? t : '--'
           }
         },
         {
-          title: '试品型号',
+          title: '样品型号',
           dataIndex: 'productModel',
           customRender: (t) => {
             return t ? t : '--'
           }
         },
         {
-          title: '试品规格',
+          title: '样品规格',
           dataIndex: 'productSpec',
           customRender: (t) => {
             return t ? t : '--'
           }
         },
         {
-          title: '试品数量',
+          title: '样品数量',
           dataIndex: 'pieceNum',
           customRender: (t) => {
             return t ? t : '--'
@@ -597,20 +543,24 @@ export default {
             }
           },
           {
-            title: '试品名称',
+            title: '样品名称',
             dataIndex: 'productName',
+            align: 'center',
           },
           {
-            title: '试品工号',
-            dataIndex: 'productCode',
+            title: '型号/规格',
+            dataIndex: 'productModel',
+            align: 'center',
           },
           {
-            title: '试品代号',
-            dataIndex: 'productAlias',
+            title: '样品编号',
+            dataIndex: 'pieceNo',
+            align: 'center',
           },
           {
-            title: '试品编号',
-            dataIndex: 'pieceNo'
+            title: '样品数量',
+            dataIndex: 'pieceNum',
+            align: 'center',
           },
           {
             title: '操作',
@@ -633,20 +583,24 @@ export default {
             }
           },
           {
-            title: '试品名称',
+            title: '样品名称',
             dataIndex: 'productName',
+            align: 'center',
           },
           {
-            title: '试品型号',
+            title: '图号',
             dataIndex: 'productAlias',
+            align: 'center',
           },
           {
-            title: '试品数量',
+            title: '样品编号',
+            dataIndex: 'pieceNo',
+            align: 'center',
+          },
+          {
+            title: '样品数量',
             dataIndex: 'pieceNum',
-          },
-          {
-            title: '试品编号',
-            dataIndex: 'pieceNo'
+            align: 'center',
           },
           {
             title: '操作',
@@ -932,7 +886,7 @@ export default {
   methods: {
     show(record) {
       this.testId = record.id
-      this.imageData[0].component.componentOptions.propsData.customParams.refId = record.id
+      // this.imageData[0].component.componentOptions.propsData.customParams.refId = record.id
       this.visible = true
       this.getTestDetail(record.id)
       this.$nextTick(() => {
@@ -1198,8 +1152,6 @@ export default {
           realStartTime: values[0].realStartTime ? values[0].realStartTime.valueOf() : '',
           realEndTime: values[0].realEndTime ? values[0].realEndTime.valueOf() : '',
           workId: values[0].workId,
-          temperature: values[0].temperature, //温度
-          humidity: values[0].humidity, //湿度
           processDesc: values[0].processDesc, //试验结果
           remarks: values[0].remarks, //备注
           personArr: this.personArr, //参试人员集合

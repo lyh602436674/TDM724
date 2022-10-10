@@ -46,24 +46,32 @@
           :data="loadData"
         >
           <!-- 操作 -->
-          <span slot="action" slot-scope="text, record">
-        <a-icon
-          type="edit"
-          title="编辑"
-          class="primary-text"
-          style="cursor: pointer"
-          @click="edit(record)"
-        />
-    </span>
+          <template slot="temperature" slot-scope="text, record">
+            <a-input-number style="width: 100%" v-model="record.temperature"
+                            @blur="(e)=>handleTableChange(e,record)"></a-input-number>
+          </template>
+          <template #humidity="text, record">
+            <a-input-number style="width: 100%" v-model="record.humidity"
+                            @blur="(e)=>handleTableChange(e,record)"></a-input-number>
+          </template>
+          <!--          <span slot="action" slot-scope="text, record">-->
+          <!--              <a-icon-->
+          <!--                type="edit"-->
+          <!--                title="编辑"-->
+          <!--                class="primary-text"-->
+          <!--                style="cursor: pointer"-->
+          <!--                @click="edit(record)"-->
+          <!--              />-->
+          <!--          </span>-->
         </h-vex-table>
       </div>
-      <edit-history-temperature ref="editHistory" @change="refresh"></edit-history-temperature>
+      <!--      <edit-history-temperature ref="editHistory" @change="refresh"></edit-history-temperature>-->
     </h-card>
   </h-modal>
 </template>
 
 <script>
-import { downloadFile, postAction } from '@api/manage'
+import {downloadFile, postAction} from '@api/manage'
 import EditHistoryTemperature
   from '@views/hifar/hifar-environmental-test/resource/equipment/components/editHistoryTemperature'
 
@@ -83,25 +91,31 @@ export default {
         {
           title: '采集时间',
           dataIndex: 'timestamp',
-          minWidth: 120
         },
         {
           title: '温度值',
-          dataIndex: 'tagvalue',
-          minWidth: 140
+          dataIndex: 'temperature',
+          scopedSlots: {customRender: 'temperature'}
         },
         {
-          title: '操作',
-          dataIndex: 'action',
-          // fixed: 'right',
-          width: 60,
-          scopedSlots: { customRender: 'action' }
-        }
+          title: '湿度值',
+          dataIndex: 'humidity',
+          scopedSlots: {customRender: 'humidity'}
+        },
+        // {
+        //   title: '操作',
+        //   dataIndex: 'action',
+        //   width: 60,
+        //   scopedSlots: {customRender: 'action'}
+        // }
       ],
       url: '/HfResHistroyTemperauter/historyTemperature'
     }
   },
   methods: {
+    handleTableChange(e, record) {
+      console.log(e, record, 'rrrrr')
+    },
     async handleExportXls() {
       let params = {
         ...this.queryParams,
@@ -144,8 +158,9 @@ export default {
         equipCode: this.equipCode
       }
       return postAction(this.url, data).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           return res.data
+          // return [{timestamp: "2021-10-09", temperature: "20", humidity: 30}]
         }
       })
     }

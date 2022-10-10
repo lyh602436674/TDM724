@@ -162,10 +162,9 @@ export default {
           ),
         },
         {
-          title: '试验费用',
-          key: 'testCost',
+          title: '设备速率',
+          key: 'testRate',
           formType: 'input',
-          type: 'number',
         },
 
         {

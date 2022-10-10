@@ -145,7 +145,12 @@ export default {
     isShowForm: {
       type: Boolean,
       default: false
-    }
+    },
+    // 是否可以给文件填写备注
+    isWriteRemarks: {
+      type: Boolean,
+      default: false
+    },
   },
   watch: {
     value: {
@@ -216,6 +221,7 @@ export default {
             title: '操作',
             dataIndex: 'actions',
             width: 80,
+            fixed: 'right',
             align: 'center',
             scopedSlots: {
               customRender: 'actions'
@@ -230,14 +236,25 @@ export default {
             scopedSlots: {
               customRender: 'remarks'
             }
-          }, {
-          title: '表单标签',
-          dataIndex: 'label',
-          width: 180,
-          scopedSlots: {
-            customRender: 'label'
+          },
+          {
+            title: '表单标签',
+            dataIndex: 'label',
+            width: 180,
+            scopedSlots: {
+              customRender: 'label'
+            }
           }
-        }
+        ],
+        [
+          {
+            title: '备注',
+            dataIndex: 'descriptions',
+            width: 250,
+            scopedSlots: {
+              customRender: 'descriptions'
+            }
+          }
         ]
       ]
     }
@@ -302,6 +319,9 @@ export default {
         } else {
           columns = columns.concat(this.columns[0], this.columns[1], this.columns[2])
         }
+        if (this.isWriteRemarks) {
+          columns = columns.concat(this.columns[4])
+        }
         if (!this.isEdit) {
           columns = filter(columns, o => {
             return o.dataIndex != 'percent'
@@ -340,6 +360,13 @@ export default {
                   <div>
                     <span>{text}</span>
                   </div>
+                )
+              },
+              descriptions: (text, record) => {
+                return (
+                  <aInput value={record.descriptions} onChange={(e) => {
+                    record.descriptions = e.target.value
+                  }}/>
                 )
               },
               name: (text, record) => {

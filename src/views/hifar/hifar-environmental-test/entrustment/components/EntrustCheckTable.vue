@@ -30,7 +30,7 @@
         <a @click="handleDetail(record)"> {{ record.entrustNo || '--' }}</a>
       </span>
       <span slot="entrustCode" slot-scope="text, record">
-        <a @click="handleDetail(record)"> {{ record.entrustCode || '--' }}</a>
+        <a @click="handleDetail(record,'1')"> {{ record.entrustCode || '--' }}</a>
       </span>
       <span slot="status" slot-scope="text, record">
         <a-badge :color='record.status | wtStatusColorFilter' :text='record.status | wtStatusFilter'/>
@@ -276,8 +276,8 @@ export default {
         this.$refs.dataCheckTable.refresh(bool);
       })
     },
-    handleDetail(record) {
-      this.$refs.EntrustDetailModal.show(record);
+    handleDetail(record,type) {
+      this.$refs.EntrustDetailModal.show(record,type);
     },
     // 提交--需要下一处理人
     handleSubmit(record) {

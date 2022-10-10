@@ -150,23 +150,6 @@ export default {
             validate: { rules: [{ required: true, message: '请选择类型' }] },
           },
           {
-            title: '试验类别',
-            key: 'typeCode',
-            formType: 'dict',
-            dictCode: 'hf_unit_type',
-            validate: { rules: [{ required: true, message: '请设置试验类别' }] },
-            change: (v, option) => {
-              this.$refs.envTestForm.form.setFieldsValue({
-                typeName: option.title,
-              })
-            },
-          },
-          {
-            key: 'typeName',
-            formType: 'input',
-            hidden: true,
-          },
-          {
             title: '项目类别',
             key: 'classifyId',
             component: (

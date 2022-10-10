@@ -73,10 +73,10 @@ import classifyAndUnitModal from './modules/ClassifyAndUnitModal'
 import classifyInfo from './modules/ClassifyInfo'
 import unitInfo from './modules/UnitInfo.vue'
 export default {
-  components: { HEditTree, 
+  components: { HEditTree,
   classifyAndUnitModal,
    classifyInfo,
-    unitInfo 
+    unitInfo
     },
   provide() {
     return {

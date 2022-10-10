@@ -39,13 +39,11 @@
               text === '1' ? '是' : text === '0' ? '否' : '--'
             }}</span>
         </template>
-        <span slot='entrustNo' slot-scope='text, record'>
-          {{ record.entrustNo }}
-        </span>
+        <template #entrustNo="text, record">
+          <a style="padding-left:5px" @click='handleDetailCode(record)'>{{ record.entrustNo || '--' }}</a>
+        </template>
         <template #entrustCode="text, record">
-          <h-icon v-if="record.entrustType == '1'" type='icon-nei'/>
-          <h-icon v-else type='icon-wai'/>
-          <a style="padding-left:5px" @click='handleDetailCode(record)'>{{ record.entrustCode || '--' }}</a>
+          <a style="padding-left:5px" @click='handleDetailCode(record,"1")'>{{ record.entrustCode || '--' }}</a>
         </template>
         <template #runningCode="text,record">
           <span>{{ text }}</span>
@@ -418,12 +416,12 @@ export default {
       })
     },
     // 详情
-    handleDetail(record) {
-      this.$refs.EntrustmentDetailModal.show(record.id)
+    handleDetail(record, type) {
+      this.$refs.EntrustmentDetailModal.show(record.id, type)
     },
     // 编辑
     handleEdit(record) {
-      let type = 'editor'
+      let type = 'edit'
       this.$refs.EntrustmentModal.show(record, type)
     },
     // 删除
@@ -454,11 +452,11 @@ export default {
       }
     },
     //1 草稿 10 提交 20审核通过 30审核驳回 40检测完成 50 已出报告 80终止 99逻辑删除
-    handleDetailCode(record) {
+    handleDetailCode(record, type) {
       if (record.status == 1 || record.status == 30) {
         this.handleEdit(record)
       } else if (record.status >= 10 && record.status != 30) {
-        this.handleDetail(record)
+        this.handleDetail(record, type)
       }
     },
   }

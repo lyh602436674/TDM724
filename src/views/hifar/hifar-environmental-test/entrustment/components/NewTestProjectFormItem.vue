@@ -6,7 +6,7 @@
  * @Description: 项目信息表单
 -->
 <template>
-  <div id="projectFormItem" style="height: 100%; position: relative">
+  <div style="height: 100%; position: relative">
     <h-form
       :ref="'projectInfoForm' + index"
       v-model="model"
@@ -49,7 +49,7 @@ export default {
       handler(val) {
         if (isObject(val) && Object.keys(val).length) {
           let obj = Object.assign({}, val)
-          obj.standardId = obj.standardId && obj.standardId != 0 ? obj.standardId : ''
+          obj.taskExpectStartTime = obj.taskExpectStartTime && obj.taskExpectStartTime != 0 ? moment(+obj.taskExpectStartTime).format('YYYY-MM-DD HH:mm:ss') : ''
           obj.unitId = obj.unitId ? obj.unitId : obj.id
           obj.testName = obj.unitName
           let fileList = []
@@ -85,12 +85,6 @@ export default {
     }
   },
   data() {
-    const validatorTestCondition = (rule, value, callback) => {
-      if (value.length >= 240) {
-        callback('最多输入240个字符，其他试验条件请以附件的形式提供！')
-      }
-      callback()
-    }
     return {
       moment,
       model: {},
@@ -197,6 +191,7 @@ export default {
           key: 'taskExpectStartTime',
           formType: 'datePick',
           showTime: true,
+          format: "YYYY-MM-DD HH:mm:ss"
         },
         {
           title: '试验条件',
@@ -208,7 +203,7 @@ export default {
           maxLength: 240,
           rows: 4,
           validate: {
-            rules: [{required: true, message: '请输入试验条件'}, {validator: validatorTestCondition}],
+            rules: [{required: true, message: '请输入试验条件'}],
           },
         },
         {

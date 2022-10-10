@@ -63,7 +63,6 @@
         <div ref="epContent" slot="content" class="ep-content">
           <div class="ea-equip-info-wrapper">
               <div class="ea-equip-info" v-if="selectedKeys.length">
-                <!-- card -->
                 <h-card fixed style="width: 100%">
                   <a-tabs v-model="basickey" style="height: 100%;">
                     <a-tab-pane :key="1" style="display: flex" tab="基本信息">

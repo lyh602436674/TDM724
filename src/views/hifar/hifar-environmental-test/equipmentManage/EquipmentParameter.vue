@@ -50,43 +50,6 @@
                 <equipment-detail ref="equipmentDetail" :equipId="selectedKeys.join('')"/>
               </div>
             </a-tab-pane>
-            <a-tab-pane :key="2" style="height: 100%" tab="能力参数">
-              <h-card :title="title + ' 能力参数'" fixed>
-                <h-search
-                  slot="search-form"
-                  v-model="queryParams"
-                  :data="searchForm"
-                  :showToggleButton="false"
-                  size="small"
-                  @change="refresh"/>
-                <template slot="table-operator">
-                  <a-button icon="plus" size="small" type="ghost-primary" @click="handleAdd">添加参数</a-button>
-                </template>
-                <h-vex-table
-                  ref='equipmentParameterTable'
-                  slot='content'
-                  :columns='columns'
-                  :data='loadData'
-                  :rowSelection='{ selectedRowKeys: selectedRowKeys, onChange: onSelect }'
-                  :scroll='{ x: true }'
-                  fixed
-                >
-                  <a
-                    slot='conditionType'
-                    slot-scope='text, record'
-                    href='javascript:;'
-                    @click='() => handleAddCondition(record)'
-                  >
-                    {{ record.conditionTypeDesc || '未设置' }}
-                  </a>
-                  <template slot='actions' slot-scope='text, record'>
-                    <a-popconfirm title='确认删除？' @confirm='() => handleDelete(record.id)'>
-                      <h-icon class='danger-text' style='cursor: pointer' type='icon-shanchu'/>
-                    </a-popconfirm>
-                  </template>
-                </h-vex-table>
-              </h-card>
-            </a-tab-pane>
             <a-tab-pane :key="3" style="height: 100%" tab="修正参数">
               <h-card :title="title + ' 修正参数'" fixed>
                 <template slot="table-operator">
@@ -920,11 +883,8 @@ export default {
       this.selectedRowKeys = []
       // 关闭所有弹窗
       this.$refs.hSelectModal.handleCancel()
-      let activeTab = this.activeTab || 1
+      let activeTab = this.activeTab
       switch (activeTab) {
-        case 2:
-          this.$refs.equipmentParameterTable.refresh(true)
-          break
         case 3:
           this.$refs.equipmentAmendmentParameterTable.refresh(true)
           break

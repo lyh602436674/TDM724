@@ -14,9 +14,6 @@
           <a-descriptions slot="content" :column="2" bordered size="small">
             <a-descriptions-item label="项目名称"> {{ unitInfo.unitName || '--' }}</a-descriptions-item>
             <a-descriptions-item label="项目编码"> {{ unitInfo.unitCode || '--' }}</a-descriptions-item>
-            <a-descriptions-item label="试验分类">
-              {{ unitInfo.typeName || '--' }}
-            </a-descriptions-item>
             <a-descriptions-item label="所属分类">{{ unitInfo.classifyName || '--' }}</a-descriptions-item>
             <a-descriptions-item :span="2" label="备注">{{ unitInfo.remarks || '--' }}</a-descriptions-item>
           </a-descriptions>
@@ -37,15 +34,6 @@
             <a-button icon="plus" size="small" type="ghost-primary" @click="() => handleShowAddModal(1)">
               添加方法
             </a-button>
-            <!-- <a-button
-              v-if="selectedRowKeys.length"
-              size="small"
-              type="danger"
-              icon="delete"
-              @click="() => deleteBatch(1)"
-            >
-              批量删除
-            </a-button> -->
             <template>
               <a-button
                 v-has="'entrustment:delete'"
@@ -75,126 +63,6 @@
           </h-vex-table>
         </h-card>
       </a-tab-pane>
-      <!-- 设备库 -->
-      <!-- <a-tab-pane :key="2" tab="设备库">
-        <h-card fixed :bordered="false" :title="title + ' 设备库'">
-          <h-search
-            v-model="equipmentQueryParams"
-            slot="search-form"
-            size="small"
-            :showToggleButton="false"
-            :data="equipmentSearchBar"
-            @change="() => handleSearch('equipment')"
-          />
-          <template slot="table-operator">
-            <a-button size="small" type="ghost-primary" icon="plus" @click="() => handleShowAddModal(2)">
-              添加设备
-            </a-button>
-            <a-button
-              size="small"
-              type="danger"
-              icon="delete"
-              @click="() => deleteBatch(2)"
-            >
-              批量删除
-            </a-button>
-          </template>
-          <h-vex-table
-            slot="content"
-            ref="equipment"
-            :scroll="{ x: true }"
-            :columns="equipmentColumns"
-            :data="equipmentLoadData"
-            :rowKey="(record) => record.id"
-            :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-          >
-            <template slot="actions" slot-scope="text, record">
-              <a-tooltip title="删除">
-                <h-icon class="danger-text" type="icon-shanchu" @click="() => handleDelete(2, record.id)" />
-              </a-tooltip>
-            </template>
-          </h-vex-table>
-        </h-card>
-      </a-tab-pane> -->
-      <!-- 试验条件 -->
-      <a-tab-pane :key="3" tab="试验条件">
-        <h-card :bordered="false" :title="title + ' 试验条件'" fixed>
-          <h-search
-            slot="search-form"
-            v-model="parameterQueryParams"
-            :data="parameterSearchBar"
-            :showToggleButton="false"
-            size="small"
-            @change="() => handleSearch('parameter')"
-          />
-          <template slot="table-operator">
-            <a-button icon="plus" size="small" type="ghost-primary" @click="() => handleShowAddModal(3)">
-              新增参数
-            </a-button>
-            <a-button icon="delete" size="small" type="danger" @click="() => deleteBatch(3)"> 批量删除</a-button>
-          </template>
-          <h-vex-table
-            ref="parameter"
-            slot="content"
-            :columns="parameterColumns"
-            :data="parameterLoadData"
-            :rowKey="(record) => record.id"
-            :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-            :scroll="{ x: true }"
-          >
-            <template slot="actions" slot-scope="text, record">
-              <a-tooltip title="删除">
-                <h-icon class="danger-text" type="icon-shanchu" @click="() => handleDelete(3, record.id)"/>
-              </a-tooltip>
-            </template>
-          </h-vex-table>
-        </h-card>
-      </a-tab-pane>
-      <!-- 记录模板 -->
-      <!-- <a-tab-pane :key="4" tab="记录模板">
-        <h-card fixed :bordered="false" :title="title + ' 记录模板'">
-          <h-search
-            v-model="dataTempParams"
-            slot="search-form"
-            size="small"
-            :showToggleButton="false"
-            :data="tempSearchBar"
-            @change="() => handleSearch('dataTemp')"
-          />
-          <template slot="table-operator">
-            <a-button size="small" type="ghost-primary" icon="plus" @click="() => handleShowAddModal(4)">
-              添加模板
-            </a-button>
-            <a-button v-if="selectedRowKeys.length" size="small" type="danger" icon="delete" @click="deleteBatch(4)">
-              批量删除
-            </a-button>
-          </template>
-
-          <h-vex-table
-            slot="content"
-            ref="dataTemp"
-            :scroll="{ x: true }"
-            :columns="tempColumns"
-            :data="dataTempLoadData"
-            :rowKey="(record) => record.id"
-            :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-          >
-            <template slot="actions" slot-scope="text, record">
-              <a-tooltip :title="record.isDefault == 1 ? '取消默认' : '设置成默认'">
-                <h-icon
-                  type="icon-moren"
-                  :class="record.isDefault == 2 ? 'primary-text' : 'danger-text'"
-                  @click="() => handleSetDefault(record, 'data')"
-                />
-              </a-tooltip>
-              <a-divider type="vertical" />
-              <a-tooltip title="删除">
-                <h-icon class="danger-text" type="icon-shanchu" @click="() => handleDelete(4, record.id)" />
-              </a-tooltip>
-            </template>
-          </h-vex-table>
-        </h-card>
-      </a-tab-pane> -->
       <!-- 报告模板 -->
       <a-tab-pane :key="5" tab="报告模板">
         <h-card :bordered="false" :title="title + ' 报告模板'" fixed>
@@ -238,41 +106,6 @@
               </a-tooltip>
               <a-tooltip title="删除">
                 <h-icon class="danger-text" type="icon-shanchu" @click="() => handleDelete(5, record.id)"/>
-              </a-tooltip>
-            </template>
-          </h-vex-table>
-        </h-card>
-      </a-tab-pane>
-      <!-- 工作中心 -->
-      <a-tab-pane :key="6" tab="工作中心">
-        <h-card :bordered="false" :title="title + ' 工作中心'" fixed>
-          <h-search
-            slot="search-form"
-            v-model="workcenterParams"
-            :data="workcenterSearchBar"
-            :showToggleButton="false"
-            size="small"
-            @change="() => handleSearch('workcenter')"
-          />
-          <template slot="table-operator">
-            <a-button icon="plus" size="small" type="ghost-primary" @click="() => handleShowAddModal(6)">
-              添加中心
-            </a-button>
-            <a-button icon="delete" size="small" type="danger" @click="deleteBatch(6)"> 批量删除</a-button>
-          </template>
-          <h-vex-table
-            ref="workcenter"
-            slot="content"
-            :columns="workcenterColumns"
-            :data="workcenterLoadData"
-            :rowKey="(record) => record.id"
-            :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-            :scroll="{ x: true }"
-            fixed
-          >
-            <template slot="actions" slot-scope="text, record">
-              <a-tooltip title="删除">
-                <h-icon class="danger-text" type="icon-shanchu" @click="() => handleDelete(6, record.id)"/>
               </a-tooltip>
             </template>
           </h-vex-table>
@@ -414,45 +247,6 @@
               </span>
               <a-tooltip title="删除">
                 <h-icon class="danger-text" type="icon-shanchu" @click="() => handleDelete(7, record.id, 3)"/>
-              </a-tooltip>
-            </template>
-          </h-vex-table>
-        </h-card>
-      </a-tab-pane>
-      <!-- 实施过程 -->
-      <a-tab-pane :key="10" tab="实施过程">
-        <h-card :bordered="false" :title="title + ' 实施过程'" fixed>
-          <h-search
-            slot="search-form"
-            v-model="processDescParams"
-            :data="processDescSearchBar"
-            :showToggleButton="false"
-            size="small"
-            @change="() => handleSearch('processDesc')"
-          />
-          <template slot="table-operator">
-            <a-button icon="plus" size="small" type="ghost-primary" @click="() => handleProcessDescAdd()">
-              添加
-            </a-button>
-            <a-button icon="delete" size="small" type="danger" @click="deleteBatch(8)"> 批量删除</a-button>
-          </template>
-          <h-vex-table
-            ref="processDesc"
-            slot="content"
-            :columns="processDescColumns"
-            :data="processDescLoadData"
-            :rowKey="(record) => record.id"
-            :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-            :scroll="{ x: true }"
-            fixed
-          >
-            <template slot="actions" slot-scope="text, record">
-              <a-tooltip title="编辑">
-                <a-icon class="primary-text" type="edit" @click="() => handleProcessDescEdit(record)"/>
-              </a-tooltip>
-              <a-divider type="vertical"/>
-              <a-tooltip title="删除">
-                <h-icon class="danger-text" type="icon-shanchu" @click="() => handleDelete(8, record.id)"/>
               </a-tooltip>
             </template>
           </h-vex-table>
