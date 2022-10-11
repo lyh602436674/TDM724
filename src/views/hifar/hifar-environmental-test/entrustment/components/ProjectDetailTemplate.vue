@@ -6,7 +6,7 @@
  * @Description: 委托单项目信息
 -->
 <template>
-  <h-desc size="small" lableWidth="130px" style="margin-top: 20px" :title="title">
+  <h-desc size="small" lableWidth="130px"  :title="title">
     <h-desc-item label="项目名称">{{ model.unitName || '--' }}</h-desc-item>
     <h-desc-item label="试验名称">{{ model.testName || '--' }}</h-desc-item>
     <h-desc-item label="技术文件">{{ model.technicalFile || '--' }}</h-desc-item>

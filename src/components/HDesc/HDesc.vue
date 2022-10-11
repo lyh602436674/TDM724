@@ -131,6 +131,8 @@ export default {
   }
   .bordered {
     border: 1px solid #e8e8e8;
+    border-right: none;
+    border-bottom: none;
   }
 }
 </style>

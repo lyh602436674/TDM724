@@ -6,7 +6,7 @@
  * @Description: 委托单样品信息
 -->
 <template>
-  <h-desc :title="title">
+  <h-desc :title="title" :bordered="false">
     <a-table
       :columns="columns[entrustType]"
       :dataSource="dataSource"

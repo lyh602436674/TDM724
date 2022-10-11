@@ -313,24 +313,6 @@ export default {
           },
         },
         {
-          title: "委托人",
-          align: "center",
-          dataIndex: "entrustPerson",
-          width: 120,
-          customRender: (text, record) => {
-            return text || "--";
-          },
-        },
-        {
-          title: "委托人手机号",
-          align: "center",
-          width: 150,
-          dataIndex: "entrustPersonPhone",
-          customRender: (text, record) => {
-            return text || "--";
-          },
-        },
-        {
           title: '创建人 ',
           align: 'left',
           minWidth: 100,
@@ -404,7 +386,7 @@ export default {
     handleCopyItem(record) {
       let url = this.url.copy
       postAction(url, {id: record.id}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('复制成功!')
           this.refresh(true)
         }

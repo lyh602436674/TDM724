@@ -32,6 +32,11 @@
       <span slot="entrustCode" slot-scope="text, record">
         <a @click="handleDetail(record,'1')"> {{ record.entrustCode || '--' }}</a>
       </span>
+      <template #isExternalManage="text">
+          <span :style="{color:text === '1' ? 'red':text === '0'?'green':'black' }">{{
+              text === '1' ? '是' : text === '0' ? '否' : '--'
+            }}</span>
+      </template>
       <span slot="status" slot-scope="text, record">
         <a-badge :color='record.status | wtStatusColorFilter' :text='record.status | wtStatusFilter'/>
       </span>

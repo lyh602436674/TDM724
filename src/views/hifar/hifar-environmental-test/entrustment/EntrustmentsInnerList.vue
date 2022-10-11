@@ -40,13 +40,12 @@
             }}</span>
         </template>
         <template #entrustNo="text, record">
-          <a style="padding-left:5px" @click='handleDetailCode(record)'>{{ record.entrustNo || '--' }}</a>
+          <a v-if="record.entrustNo" @click='handleDetailCode(record)'>{{ record.entrustNo }}</a>
+          <span v-else>--</span>
         </template>
         <template #entrustCode="text, record">
-          <a style="padding-left:5px" @click='handleDetailCode(record,"1")'>{{ record.entrustCode || '--' }}</a>
-        </template>
-        <template #runningCode="text,record">
-          <span>{{ text }}</span>
+          <a v-if="record.entrustCode" @click='handleDetailCode(record,"1")'>{{ record.entrustCode }}</a>
+          <span v-else>--</span>
         </template>
         <span slot='status' slot-scope='text, record'>
           <a-badge :color='record.status | wtStatusColorFilter' :text='record.status | wtStatusFilter'/>

@@ -512,23 +512,20 @@ export default {
     },
     // 新增样品弹框返回数据
     productAddCallback(values) {
-      let tableData = []
-      this.tableData = []
       if (values.pieceNo.includes('-') && values.pieceNo.includes(',')) {
-        this.tableData = this.tableData.concat(this.splitByBoth(values))
+        this.tableData.push(...this.splitByBoth(values))
       } else if (values.pieceNo.includes(',')) {
-        this.tableData = this.tableData.concat(this.splitByComma(values, values.pieceNo.split(',')))
+        this.tableData.push(...this.splitByComma(values, values.pieceNo.split(',')))
       } else if (values.pieceNo.includes('-')) {
-        this.tableData = this.tableData.concat(this.splitByHorizontalLine(values, values.pieceNo.split('-')))
+        this.tableData.push(...this.splitByHorizontalLine(values, values.pieceNo.split('-')))
       } else {
-        tableData.push({
+        this.tableData.push({
           id: randomUUID(),
           productName: values.productName,
           pieceNum: 1,
           productModel: values.productModel,
           pieceNo: (values.piecePrefix || '') + values.pieceNo,
         })
-        this.tableData = this.tableData.concat(tableData)
       }
       this.setProjectPieceNos()
     },

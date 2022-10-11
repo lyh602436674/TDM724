@@ -103,16 +103,20 @@
               <template slot="productNames" slot-scope="text, record">
                 <span>{{ record.productNames }}-{{ record.productAliass }}</span>
               </template>
-              <span slot="entrustCode" slot-scope="text, record">
-                <a href="javascript:;" @click="$refs.taskDetail.show(record)">
-                  <h-icon :type="record.overFlag == '1' ? 'icon-jingbaobaojing2' : ''" style="font-size: 20px"/>
-                  <span :style="{ marginLeft: record.overFlag == '1' ? 0 : '20px' }">{{ text ? text : '--' }}</span>
+              <span slot="entrustNo" slot-scope="text, record">
+                <a @click="$refs.taskDetail.show(record)" v-if="text">
+                  <h-icon :type="record.overFlag === '1' ? 'icon-jingbaobaojing2' : ''" style="font-size: 20px"/>
+                  <span :style="{ marginLeft: record.overFlag === '1' ? 0 : '20px' }">{{ text }}</span>
                 </a>
+                <span v-else> -- </span>
+              </span>
+              <span slot="entrustCode" slot-scope="text, record">
+                <a @click="$refs.taskDetail.show(record)" v-if="text">{{ text ? text : '--' }}</a>
+                <span v-else> -- </span>
               </span>
               <a
                 slot="testNum"
                 slot-scope="text, record"
-                href="javascript:;"
                 @click="$refs.TestInfoListModal.show(record)"
               >
                 {{ text ? text : '--' }}
@@ -254,6 +258,14 @@ export default {
       columns: [
         {
           title: '委托单号',
+          dataIndex: 'entrustNo',
+          minWidth: 160,
+          scopedSlots: {
+            customRender: 'entrustNo',
+          },
+        },
+        {
+          title: '运行单号',
           dataIndex: 'entrustCode',
           minWidth: 140,
           scopedSlots: {
