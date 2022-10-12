@@ -20,7 +20,7 @@ export default {
   data() {
     return {
       title: '设备状态',
-      bgImg: require('./image/kzxt.png'),
+      // bgImg: require('./image/kzxt.png'),
     }
   },
 }

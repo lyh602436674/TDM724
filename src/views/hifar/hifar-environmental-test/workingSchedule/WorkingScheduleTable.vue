@@ -2,7 +2,6 @@
   <div style="height: 100%">
     <vxe-table ref='workTable'
                :data='tableData'
-               row-key="id"
                @cell-click="handleCellClick"
                height="100%"
                size="medium"

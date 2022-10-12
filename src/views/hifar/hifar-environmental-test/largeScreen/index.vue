@@ -78,7 +78,7 @@ export default {
     },
     bgImg: {
       type: String,
-      default: require('./image/kzxt.png'),
+      default: require('./image/main.png'),
     },
   },
   components: {
@@ -129,31 +129,44 @@ export default {
   created() {
   },
   mounted() {
-    this.init()
-    this.showLocale(new Date())
-    getAction('/SysSwitchBusiness/queryByItemKeyPrefix', {itemKey: 'setInterval'}).then((result) => {
-      if (result.code === 200) {
-        result.data.map((item) => {
-          if (item.itemKey === 'setIntervalTime4k') {
-            this.setIntervalTime = setInterval(() => {
-              this.init()
-            }, +item.itemValue * 1000)
-          }
-        })
-      }
+
+  },
+  beforeRouteEnter(to, from, next) {
+    next((vm)=>{
+      vm.init()
+      vm.showLocale(new Date())
+      getAction('/SysSwitchBusiness/queryByItemKeyPrefix', {itemKey: 'setInterval'}).then((result) => {
+        if (result.code === 200) {
+          result.data.map((item) => {
+            if (item.itemKey === 'setIntervalTime4k') {
+              vm.setIntervalTime = setInterval(() => {
+                vm.init()
+              }, +item.itemValue * 1000)
+            }
+          })
+        }
+      })
+      vm.currentTimeInterval = setInterval(() => {
+        vm.showLocale(new Date())
+      }, 1000)
     })
-    this.currentTimeInterval = setInterval(() => {
-      this.showLocale(new Date())
-    }, 1000)
   },
   beforeRouteLeave(to, from, next) {
     //页面离开后关闭定时器
-    if (to.path !== '/HRElectricFittingCenter' || to.path !== '/ControlSystemDev') {
+    if (to.path !== '/LargeScreenPage') {
       clearInterval(this.setIntervalTime)
       clearInterval(this.currentTimeInterval)
     }
     next()
   },
+  // deactivated() {
+  //   clearInterval(this.setIntervalTime)
+  //   clearInterval(this.currentTimeInterval)
+  // },
+  // beforeDestroy() {
+  //   clearInterval(this.setIntervalTime)
+  //   clearInterval(this.currentTimeInterval)
+  // },
   methods: {
     init() {
       this.$refs.equipUsageRate.initCharts()

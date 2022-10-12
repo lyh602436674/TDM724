@@ -69,7 +69,7 @@
                       <!-- 基本信息 -->
                       <!-- 图片 -->
                       <div class="ea-equip-image">
-                        <img v-if="equipDetail.imgUrl" :src="equipDetail.imgUrl" alt="图片损坏了" srcset=""/>
+                        <img v-if="equipDetail.imgUrl" :src="equipDetail.imgUrl" alt=""/>
                         <img v-else alt="" src="@/assets/shebei.png" srcset=""/>
                       </div>
                       <h-desc :column="2" bordered class="ea-equip-desc" size="small">
@@ -90,10 +90,6 @@
                           }}
                         </h-desc-item>
                       </h-desc>
-                      <!-- 柱形图 -->
-                      <!--        <div class="h-echarts-bar">
-                                <equip-basic-bar ref="equipBasicBar"></equip-basic-bar>
-                              </div>-->
                     </a-tab-pane>
                     <!-- 曲线 -->
                     <a-tab-pane :key="2" :forceRender="true" style="display: flex;height: 100%;" tab="曲线">

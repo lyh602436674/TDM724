@@ -56,8 +56,6 @@ export default {
       postAction(this.url.list).then((res) => {
         if (res.code === 200) {
           let {monthly, history, nextMonth} = res.data
-          console.log(monthly, history, nextMonth, 'monthly, history, nextMonth')
-
           function setRandomUUID(arr) {
             return arr.map(item => {
               return {...item, id: randomUUID()}

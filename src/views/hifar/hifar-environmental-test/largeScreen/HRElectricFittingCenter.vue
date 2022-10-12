@@ -3,7 +3,7 @@
  * @Date: 2022-04-12 15:54:06
  * @LastEditTime: 2022-04-12 16:03:59
  * @LastEditors: 雷宇航
- * @Description: 
+ * @Description:
  * @FilePath: \tdm200-client\tdm200-client\src\views\hifar\hifar-environmental-test\largeScreen\HRElectricFittingCenter.vue
 -->
 <template>
@@ -20,7 +20,7 @@ export default {
   data() {
     return {
       title: '怀柔电装中心配楼',
-      bgImg: require('./image/hrdz.png'),
+      // bgImg: require('./image/hrdz.png'),
     }
   },
 }
