@@ -355,8 +355,8 @@ export default {
                 <img src=""/> --
               </div>
               <ul>
-                <li>送试单位：--</li>
-                <li>试品：--</li>
+                <li>委托单位：--</li>
+                <li>样品名称：--</li>
                 <li>试验项目：--</li>
                 <li>预计开始时间：--</li>
                 <li>实际开始时间：--</li>
@@ -477,8 +477,8 @@ export default {
                 <img src="${testIcon}"/> ${task.testNames}
               </div>
               <ul>
-                <li>送试单位：${task.custNames || '--'}</li>
-                <li>试品：${task.products || '--'}</li>
+                <li>委托单位：${task.custNames || '--'}</li>
+                <li>样品：${task.products || '--'}</li>
                 <li>试验项目：${task.testNames}</li>
                 <li>预计开始时间：${
                   task.predictStartTime == 0

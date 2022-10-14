@@ -97,6 +97,9 @@ export default {
   methods: {
     show() {
       this.visible = true
+      this.$nextTick(() => {
+        this.$refs.outsideProductForm.form.resetFields()
+      })
     },
     formChange(values) {
       this.$emit('callback', values)

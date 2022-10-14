@@ -218,15 +218,6 @@ export default {
           }
         },
         {
-          title: '试验费用(元)',
-          align: 'left',
-          width: 100,
-          dataIndex: 'testCost',
-          customRender: (text, record) => {
-            return text || '--'
-          }
-        },
-        {
           title: '过程描述',
           align: 'left',
           minWidth: 200,

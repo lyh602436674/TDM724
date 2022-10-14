@@ -41,6 +41,14 @@
       <h-desc-item label='联系方式'>
         {{ detailData.linkMobile || '--' }}
       </h-desc-item>
+      <template v-if="detailData.entrustType == 1">
+        <h-desc-item label='委托人'>
+          {{ detailData.entrustPerson || '--' }}
+        </h-desc-item>
+        <h-desc-item label='委托人手机号'>
+          {{ detailData.entrustPersonPhone || '--' }}
+        </h-desc-item>
+      </template>
       <h-desc-item label='单位地址' v-if="detailData.entrustType == 1">
         {{ detailData.custAddress || '--' }}
       </h-desc-item>
@@ -83,12 +91,6 @@
         </h-desc-item>
         <h-desc-item label='报告领取方式'>
           {{ detailData.reportCollectionMethod_dictText || '--' }}
-        </h-desc-item>
-        <h-desc-item label='委托人'>
-          {{ detailData.entrustPerson || '--' }}
-        </h-desc-item>
-        <h-desc-item label='委托人手机号'>
-          {{ detailData.entrustPersonPhone || '--' }}
         </h-desc-item>
       </template>
       <template v-if="detailData.entrustType == 2">

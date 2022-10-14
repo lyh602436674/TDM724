@@ -117,14 +117,6 @@
             }
           },
           {
-            title: '试验费用(元)',
-            align: 'left',
-            dataIndex: 'testCost',
-            customRender: (text, record) => {
-              return text || '--'
-            }
-          },
-          {
             title: '过程描述',
             align: 'left',
             dataIndex: 'processDesc',

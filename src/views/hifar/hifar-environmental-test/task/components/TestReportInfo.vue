@@ -86,7 +86,7 @@ export default {
           }
         },
         {
-          title: '送试单位',
+          title: '委托单位',
           align: 'left',
           key: 'custName',
           cellRender: {

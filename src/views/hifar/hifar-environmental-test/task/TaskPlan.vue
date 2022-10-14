@@ -114,21 +114,12 @@
                 <a @click="$refs.taskDetail.show(record)" v-if="text">{{ text ? text : '--' }}</a>
                 <span v-else> -- </span>
               </span>
-              <a
-                slot="testNum"
-                slot-scope="text, record"
-                @click="$refs.TestInfoListModal.show(record)"
-              >
-                {{ text ? text : '--' }}
-              </a>
-              <a
-                slot="workName"
-                slot-scope="text, record"
-                href="javascript:;"
-                @click="$refs.WorkCenterDetailModal.show(record.workId)"
-              >
-                {{ text }}
-              </a>
+              <span slot="testNum" slot-scope="text, record">
+                <a v-if="text" @click="$refs.TestInfoListModal.show(record)">
+                  {{ text }}
+                </a>
+                <span v-else> -- </span>
+              </span>
               <template slot="actions" slot-scope="text, record">
 
                 <a-tooltip title="详情">
@@ -194,11 +185,16 @@ export default {
       searchForm: [
         {
           title: '委托单号',
+          key: 'c_entrustNo_7',
+          formType: 'input',
+        },
+        {
+          title: '运行单号',
           key: 'c_entrustCode_7',
           formType: 'input',
         },
         {
-          title: '送试单位',
+          title: '委托单位',
           key: 'c_custName_7',
           formType: 'input',
         },

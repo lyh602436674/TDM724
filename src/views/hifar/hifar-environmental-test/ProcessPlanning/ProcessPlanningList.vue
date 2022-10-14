@@ -72,7 +72,7 @@ export default {
           formType: 'input'
         },
         {
-          title: '送试单位',
+          title: '委托单位',
           key: 'c_custName_7',
           formType: 'input'
         },
@@ -195,7 +195,7 @@ export default {
           },
         },
         {
-          title: '送试单位',
+          title: '委托单位',
           align: 'left',
           dataIndex: 'custName',
           minWidth: 100,

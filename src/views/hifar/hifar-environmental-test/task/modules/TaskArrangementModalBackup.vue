@@ -203,13 +203,6 @@ export default {
             this.errorMessage = null
           },
         },
-
-        {
-          title: '试验费用',
-          key: 'testCost',
-          formType: 'input',
-          type: 'number',
-        },
         {
           title: '备注',
           key: 'remarks',

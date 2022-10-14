@@ -212,7 +212,6 @@ export default {
           span: 3,
           component: (
             <h-upload-img
-              multiple={false}
               accept={"image/png,image/gif,image/jpg,image/jpeg"}
               v-decorator={['attachIds', {initialValue: []}]}
             />

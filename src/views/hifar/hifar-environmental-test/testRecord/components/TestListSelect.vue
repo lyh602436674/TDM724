@@ -127,7 +127,7 @@ export default {
           formType: 'input',
         },
         {
-          title: '送试单位',
+          title: '委托单位',
           key: 'custName',
           formType: 'input',
         },
@@ -159,7 +159,7 @@ export default {
           minWidth: 100,
         },
         {
-          title: '送试单位',
+          title: '委托单位',
           dataIndex: 'custNames',
           minWidth: 100,
         },

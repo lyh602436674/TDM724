@@ -178,6 +178,11 @@ export default {
       searchForm: [
         {
           title: '委托单号',
+          key: 'entrustNo',
+          formType: 'input',
+        },
+        {
+          title: '运行单号',
           key: 'entrustCode',
           formType: 'input',
         },
@@ -227,14 +232,9 @@ export default {
               value: 60,
             },
           ],
-        },/*
+        },
         {
-          title: '任务编号',
-          key: 'taskCode',
-          formType: 'input',
-        },*/
-        {
-          title: '送试单位',
+          title: '委托单位',
           key: 'custName',
           formType: 'input',
         },
@@ -249,44 +249,29 @@ export default {
           showTime: true,
           formType: 'dateRangePick',
         },
-        // {
-        //   title: '是否外包',
-        //   key: 'isExternalManage',
-        //   formType: 'select',
-        //   options: [
-        //     {title: '是',
-        //       key: 1,
-        //       value: 1,
-        //     },
-        //     {
-        //       title: '否',
-        //       key: '0',
-        //       value: '0'
-        //     }
-        //   ]
-        // },
-        // {
-        //   title: '外包单位',
-        //   key: 'outsourcingUnit',
-        //   formType: 'input',
-        // },
         {
           title: '报告编号',
           key: 'reportCodes',
           formType: 'input',
         },
         {
-          title: '试品名称',
+          title: '样品名称',
           key: 'productName',
           formType: 'input',
         },
         {
-          title: '试品编号',
-          key: 'productCode',
-          formType: 'input',
-        },{
-          title: '试品型号',
+          title: '型号/规格',
           key: 'productModel',
+          formType: 'input',
+        },
+        {
+          title: '图号',
+          key: 'productAlias',
+          formType: 'input',
+        },
+        {
+          title: '样品编号',
+          key: 'productCode',
           formType: 'input',
         },
       ],
@@ -299,6 +284,11 @@ export default {
         },
         {
           title: '委托单号',
+          dataIndex: 'entrustNos',
+          minWidth: 120,
+        },
+        {
+          title: '运行单号',
           dataIndex: 'entrustCodes',
           minWidth: 120,
         },
@@ -306,7 +296,6 @@ export default {
           title: '报告编号',
           dataIndex: 'reportCodes',
           minWidth: 140,
-          hidden: true
         },
         {
           title: '状态',
@@ -315,25 +304,7 @@ export default {
           minWidth: 100,
         },
         {
-          title: "试品工号",
-          align: "left",
-          dataIndex: "productCode",
-          minWidth: 100,
-          customRender: (text, record) => {
-            return text || "--";
-          },
-        },
-        {
-          title: "试品代号",
-          align: "left",
-          dataIndex: "productAlias",
-          minWidth: 100,
-          customRender: (text, record) => {
-            return text || "--";
-          },
-        },
-        {
-          title: "试品名称",
+          title: "样品名称",
           align: "left",
           dataIndex: "productName",
           minWidth: 100,
@@ -342,7 +313,25 @@ export default {
           },
         },
         {
-          title: "试品编号",
+          title: "型号/规格",
+          align: "left",
+          dataIndex: "productModel",
+          minWidth: 100,
+          customRender: (text, record) => {
+            return text || "--";
+          },
+        },
+        {
+          title: "图号",
+          align: "left",
+          dataIndex: "productAlias",
+          minWidth: 100,
+          customRender: (text, record) => {
+            return text || "--";
+          },
+        },
+        {
+          title: "样品编号",
           align: "left",
           dataIndex: "pieceNo",
           minWidth: 100,
@@ -351,7 +340,7 @@ export default {
           },
         },
         {
-          title: '送试单位',
+          title: '委托单位',
           dataIndex: 'custNames',
           minWidth: 100,
         },
@@ -371,7 +360,7 @@ export default {
           customRender: (time) => {
             return time && time != 0 ? moment(parseFloat(time)).format('YYYY-MM-DD HH:mm:ss') : '--'
           },
-          minWidth: 100,
+          minWidth: 150,
         },
         {
           title: '预计用时(h)',

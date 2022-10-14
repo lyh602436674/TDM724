@@ -15,8 +15,12 @@
     inner
     width='95%'
     @cancel='handleCancel'
-    @submit='handleSave'
   >
+    <div slot='footer' class='footer'>
+      <a-button style='margin-right: 8px' type='ghost-danger' @click='handleCancel'> 关闭
+      </a-button>
+      <a-button :loading="submitLoading" type='primary' @click='handleSave'>保存</a-button>
+    </div>
     <!-- 样品信息 -->
     <h-desc title='样品信息'>
       <h-card :bordered='false' style='width: 100%'>
@@ -242,7 +246,6 @@ import {cloneDeep} from 'lodash'
 import {postAction} from '@/api/manage'
 import HandleSelectModal from '../modules/components/HandleSelectModal.vue'
 import PostionModal from '../modules/PostionModal'
-import HInputSelect from '@comp/HInputSelect'
 
 export default {
   inject: {
@@ -265,13 +268,13 @@ export default {
   components: {
     HandleSelectModal,
     PostionModal,
-    HInputSelect
   },
   data() {
     return {
       moment,
       imageData: [],
       visible: false,
+      submitLoading: false,
       entrustType: 2,
       title: '',
       testId: '',
@@ -1134,6 +1137,7 @@ export default {
     },
     // 保存
     handleSave() {
+      this.submitLoading = true
       const {
         $refs: {carryOutProcessForm}
       } = this
@@ -1165,7 +1169,11 @@ export default {
             this.$message.success('保存成功')
             this.handleCancel()
           }
+        }).finally(() => {
+          this.submitLoading = false
         })
+      }).catch(() => {
+        this.submitLoading = false
       })
     }
   }

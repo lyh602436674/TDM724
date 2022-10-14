@@ -83,7 +83,6 @@ export default {
       }
     },
     handleClickDrag() {
-      console.log('xxxx')
       this.isCollapse = !this.isCollapse
       if (this.isCollapse) {
         this.$refs.dragBox.classList.add('drag-collapse')

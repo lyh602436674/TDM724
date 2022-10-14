@@ -271,12 +271,12 @@ export default {
           key: 'custId',
           formType: 'input',
           validate: {
-            rules: [{required: true, message: '请选择送试单位'}]
+            rules: [{required: true, message: '请选择委托单位'}]
           },
           component: (
             <phemism-custom-select
               ref='PhemismCustomSelect'
-              placeholder={'请选择送试单位'}
+              placeholder={'请选择委托单位'}
               v-decorator={['custId', {rules: [{required: true, initialValue: []}]}]}
               selectedName={() => {
                 return this.entrustModel.custName
@@ -461,7 +461,6 @@ export default {
     // 新增样品弹框返回数据
     productAddCallback(values) {
       let tableData = []
-      this.tableData = []
       if (values.pieceNo.includes('-') && values.pieceNo.includes(',')) {
         this.tableData = this.tableData.concat(this.splitByBoth(values))
       } else if (values.pieceNo.includes(',')) {

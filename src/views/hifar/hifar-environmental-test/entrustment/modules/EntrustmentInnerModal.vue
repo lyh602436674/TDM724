@@ -200,19 +200,7 @@ export default {
       projectModelInfo: [],
       secretLevelArr: [],
       staticTableData: [],
-      url: {
-        save: "HfEnvEntrustBusiness/saveEntrust",
-        setSecretLevel: '/MinioBusiness/modifyAttachSecretLevelByIds',
-        edit: "/HfEnvEntrustBusiness/queryById"
-      },
-    }
-  },
-  computed: {
-    pieceTableData() {
-      return this.tableData
-    },
-    entrustFormData() {
-      return [
+      entrustFormData: [
         {
           key: 'id',
           formType: 'input',
@@ -274,6 +262,21 @@ export default {
           formType: 'input',
           validate: {
             rules: [{required: false, message: '请输入联系方式'}]
+          }
+        },
+        {
+          title: '委托人',
+          key: 'entrustPerson',
+          formType: 'input',
+          validate: {
+            rules: [{required: true, message: '请输入委托人'}]
+          }
+        }, {
+          title: '委托人手机号',
+          key: 'entrustPersonPhone',
+          formType: 'input',
+          validate: {
+            rules: [{required: true, message: '请输入委托人手机号'}]
           }
         },
         {
@@ -443,8 +446,18 @@ export default {
             <h-upload-file showSecret={true} secretLevel={1} v-decorator={['attachIds', {initialValue: []}]}/>
           )
         }
-      ]
+      ],
+      url: {
+        save: "HfEnvEntrustBusiness/saveEntrust",
+        setSecretLevel: '/MinioBusiness/modifyAttachSecretLevelByIds',
+        edit: "/HfEnvEntrustBusiness/queryById"
+      },
     }
+  },
+  computed: {
+    pieceTableData() {
+      return this.tableData
+    },
   },
   methods: {
     show(record, type) {
@@ -461,9 +474,9 @@ export default {
       let userInfo = store.getters.userInfo
       this.entrustModel = {
         linkName: userInfo.idName,
+        entrustPerson: userInfo.idName,
         linkMobile: userInfo.mobile,
-        isReport: 2,
-        isExternalManage: '0',
+        entrustPersonPhone: userInfo.mobile,
         entrustTime: moment(),
         attachIds: [],
         entrustType: '1',
@@ -512,20 +525,22 @@ export default {
     },
     // 新增样品弹框返回数据
     productAddCallback(values) {
+      let tableData = []
       if (values.pieceNo.includes('-') && values.pieceNo.includes(',')) {
-        this.tableData.push(...this.splitByBoth(values))
+        this.tableData = this.tableData.concat(this.splitByBoth(values))
       } else if (values.pieceNo.includes(',')) {
-        this.tableData.push(...this.splitByComma(values, values.pieceNo.split(',')))
+        this.tableData = this.tableData.concat(this.splitByComma(values, values.pieceNo.split(',')))
       } else if (values.pieceNo.includes('-')) {
-        this.tableData.push(...this.splitByHorizontalLine(values, values.pieceNo.split('-')))
+        this.tableData = this.tableData.concat(this.splitByHorizontalLine(values, values.pieceNo.split('-')))
       } else {
-        this.tableData.push({
+        tableData.push({
           id: randomUUID(),
           productName: values.productName,
           pieceNum: 1,
-          productModel: values.productModel,
+          productAlias: values.productAlias,
           pieceNo: (values.piecePrefix || '') + values.pieceNo,
         })
+        this.tableData = this.tableData.concat(tableData)
       }
       this.setProjectPieceNos()
     },
@@ -737,8 +752,6 @@ export default {
       })
       this.secretLevelArr = secretLevelArr
       entrustModelInfo.attachIds = attachIds.length > 0 ? attachIds.join(',') : ''
-      entrustModelInfo.isReport = entrustModelInfo.isReport ? entrustModelInfo.isReport : 2
-      entrustModelInfo.isExternalManage = entrustModelInfo.isExternalManage ? entrustModelInfo.isExternalManage : '0'
       entrustModelInfo.custId = isArray(entrustModelInfo.custId) && entrustModelInfo.custId.length > 0 ? entrustModelInfo.custId[0] : entrustModelInfo.custId
       entrustModelInfo.entrustTime = entrustModelInfo.entrustTime ? entrustModelInfo.entrustTime.valueOf() : ''
       this.entrustModelInfo = entrustModelInfo

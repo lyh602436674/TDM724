@@ -69,6 +69,7 @@ export default {
           customRender: (text) => {
             return text ? text : '--'
           },
+          minWidth: 120
         },
         {
           title: '设备型号',
@@ -76,6 +77,7 @@ export default {
           customRender: (text) => {
             return text ? text : '--'
           },
+          minWidth: 120
         },
         {
           title: '内部名称',
@@ -83,6 +85,7 @@ export default {
           customRender: (text) => {
             return text ? text : '--'
           },
+          minWidth: 120
         },
         {
           title: '试验编号',
@@ -90,6 +93,7 @@ export default {
           customRender: (text) => {
             return text ? text : '--'
           },
+          minWidth: 120
         },
         {
           title: '试验项目',
@@ -97,6 +101,7 @@ export default {
           customRender: (text) => {
             return text ? text : '--'
           },
+          minWidth: 120
         },
         {
           title: '状态',
@@ -104,6 +109,7 @@ export default {
           scopedSlots: {
             customRender: 'status',
           },
+          minWidth: 100
         },
         {
           title: '试验员',
@@ -111,6 +117,15 @@ export default {
           customRender: (text) => {
             return text ? text : '--'
           },
+          minWidth: 80
+        },
+        {
+          title: '设备速率',
+          dataIndex: 'testRate',
+          customRender: (text) => {
+            return text ? text : '--'
+          },
+          minWidth: 80
         },
         {
           title: '预计开始时间',
@@ -118,11 +133,13 @@ export default {
           customRender: (text) => {
             return text && text != 0 ? moment(parseFloat(text)).format('YYYY-MM-DD HH:mm:ss') : '--'
           },
+          minWidth: 150
         },
         {
           title: '预计时长（小时）',
           dataIndex: 'predictUseTime',
           align: 'center',
+          minWidth: 150
         },
         {
           title: '实际开始时间',
@@ -130,6 +147,7 @@ export default {
           customRender(text) {
             return text != 0 ? moment(parseFloat(text)).format('YYYY-MM-DD HH:mm:ss') : '--'
           },
+          minWidth: 150
         },
         {
           title: '实际结束时间',
@@ -137,19 +155,14 @@ export default {
           customRender(text) {
             return text != 0 ? moment(parseFloat(text)).format('YYYY-MM-DD HH:mm:ss') : '--'
           },
-        },
-        {
-          title: '试验费用（元）',
-          dataIndex: 'testCost',
-          customRender: (text) => {
-            return text ? text : '--'
-          },
+          minWidth: 150
         },
         {
           title: '操作',
           width: 90,
           align: 'center',
           dataIndex: 'actions',
+          fixed: 'right',
           scopedSlots: {
             customRender: 'actions',
           },

@@ -419,8 +419,8 @@ export default {
                 <img src="${testIcon}"/> ${task.testNames}
               </div>
               <ul>
-                <li>送试单位：${task.custNames || '--'}</li>
-                <li>试品：${task.products || '--'}</li>
+                <li>委托单位：${task.custNames || '--'}</li>
+                <li>样品名称：${task.products || '--'}</li>
                 <li>试验项目：${task.testNames}</li>
                 <li>预计开始时间：${
                 task.predictStartTime == 0

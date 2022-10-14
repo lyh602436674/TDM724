@@ -142,11 +142,14 @@
                     }"
                     style="width: 100%"
                   >
+                    <template #entrustNos="text, record">
+                      <a @click="$refs.testTaskBaseInfoModal.show(record,'20px')">{{ text }}</a>
+                    </template>
                     <template #entrustCodes="text, record">
-                      <a href="javascript:;" @click="$refs.testTaskBaseInfoModal.show(record,'20px')">{{ text }}</a>
+                      <a @click="$refs.testTaskBaseInfoModal.show(record,'20px')">{{ text }}</a>
                     </template>
                     <template #exceptionNum="text, record">
-                      <a href="javascript:;" @click="$refs.abnormalDetailModal.show(record)">{{ text }}</a>
+                      <a @click="$refs.abnormalDetailModal.show(record)">{{ text }}</a>
                     </template>
                     <template slot="status" slot-scope="text,record">
                       <div v-if="record.forceEndStatus==10">
@@ -307,6 +310,11 @@ export default {
       searchForm: [
         {
           title: '委托单号',
+          key: 'entrustNo',
+          formType: 'input',
+        },
+        {
+          title: '运行单号',
           key: 'entrustCode',
           formType: 'input',
         },
@@ -358,7 +366,7 @@ export default {
           formType: 'input',
         },
         {
-          title: '送试单位',
+          title: '委托单位',
           key: 'custName',
           formType: 'input',
         },
@@ -374,17 +382,6 @@ export default {
         title: 'equipName',
         key: 'id',
       },
-      equipColumns: [
-        {
-          title: '设备',
-          dataIndex: 'equipName',
-        },
-        {
-          title: '待执行任务',
-          dataIndex: 'testNum',
-        },
-      ],
-      // 按钮
       buttons: [
         {
           title: '试前检查',
@@ -528,8 +525,14 @@ export default {
       taskColumns: [
         {
           title: '委托单号',
-          dataIndex: 'entrustCodes',
+          dataIndex: 'entrustNos',
           // hidden: isHiddenColumns('ArrangeMent:suspend'),
+          minWidth: 120,
+          scopedSlots: {customRender: 'entrustNos'},
+        },
+        {
+          title: '运行单号',
+          dataIndex: 'entrustCodes',
           minWidth: 120,
           scopedSlots: {customRender: 'entrustCodes'},
         },
@@ -545,11 +548,46 @@ export default {
           minWidth: 140,
         },
         {
-          title: '送试单位',
+          title: '委托单位',
           dataIndex: 'custNames',
           minWidth: 100,
         },
-
+        {
+          title: '样品名称',
+          align: 'left',
+          minWidth: 120,
+          dataIndex: 'productNames',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: "型号/规格",
+          align: "left",
+          dataIndex: "productModel",
+          minWidth: 100,
+          customRender: (text, record) => {
+            return text || "--";
+          },
+        },
+        {
+          title: '图号',
+          align: 'left',
+          minWidth: 100,
+          dataIndex: 'productAliass',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: "样品编号",
+          align: "left",
+          dataIndex: "productNos",
+          minWidth: 100,
+          customRender: (text, record) => {
+            return text || "--";
+          },
+        },
         {
           title: '试验项目',
           dataIndex: 'unitNames',

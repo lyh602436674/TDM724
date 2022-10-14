@@ -9,17 +9,15 @@
 <template>
   <div class="sys-product-select">
     <div :class="['sys-product-select-wrapper', type]" @click="showSelectModal">
-      <div
-        v-if="type === 'radio'"
-        :placeholder="placeholder"
-        class="sys-product-select"
-        tabindex="2"
-        v-html="localSelectedName"
-      ></div>
-      <div v-else-if="type === 'checkbox'" class="sys-product-select"></div>
-      <!-- <a-button type="primary" :size="size">
-        {{ title }}
-      </a-button> -->
+      <a-tooltip  :title="localSelectedName">
+        <div
+          v-if="type === 'radio'"
+          class="sys-product-select"
+          tabindex="2"
+          v-html="localSelectedName"
+        ></div>
+        <div v-else-if="type === 'checkbox'" class="sys-product-select"></div>
+      </a-tooltip>
       <a-button :size="size" icon='select' type="ghost-primary"/>
     </div>
     <h-modal

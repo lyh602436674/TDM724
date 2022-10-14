@@ -47,11 +47,13 @@
           <a-button
             v-if="detailData.isExternalManage=='1'"
             @click='addReport(detailData.id)'
-            type='primary' style="margin: 0 5px 10px">添加</a-button>
-          <report-info ref='ReportInfo' :entrustCode='detailData.entrustCode' :isExternalManage="detailData.isExternalManage" class='autoHeight'></report-info>
+            type='primary' style="margin: 0 5px 10px">添加
+          </a-button>
+          <report-info ref='ReportInfo' :entrustCode='detailData.entrustCode'
+                       :isExternalManage="detailData.isExternalManage" class='autoHeight'></report-info>
         </a-tab-pane>
-<!--        委托的不是草稿和-->
-        <a-tab-pane key='5' tab='委托单预览' v-if='detailData.status!==1'>
+        <!--        委托单预览 功能只在非草稿状态和外部委托单下显示-->
+        <a-tab-pane key='5' tab='委托单预览' v-if='detailData.status !==1 && detailData.entrustType === "2"'>
           <div class='autoHeight'>
             <iframe
               v-if='detailData.reportPath'
@@ -65,9 +67,6 @@
             <a-empty v-else style='margin-top: 160px' />
           </div>
         </a-tab-pane>
-<!--        <a-tab-pane key='6' tab='附件' v-if="detailData.isExternalManage=='1'">
-          <h-upload-file :showSecret='true' secretLevel='1' v-model='detailData.fileInfo' />
-        </a-tab-pane>-->
       </h-tabs>
     </h-card>
   </h-modal>
