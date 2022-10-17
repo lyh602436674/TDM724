@@ -115,11 +115,6 @@ export default {
           key: 'c_custLinkName_7',
           formType: 'input',
         },
-        {
-          title: '总号',
-          key: 'c_sumMark_7',
-          formType: 'input',
-        },
       ],
       columns: [
         {
@@ -181,22 +176,6 @@ export default {
           title: '委托单号',
           align: 'left',
           dataIndex: 'entrustNo',
-          customRender: (text, record) => {
-            return text || '--'
-          },
-        },
-        {
-          title: '总号',
-          align: 'left',
-          dataIndex: 'sumMark',
-          customRender: (text, record) => {
-            return text || '--'
-          },
-        },
-        {
-          title: '分号',
-          align: 'left',
-          dataIndex: 'separateMark',
           customRender: (text, record) => {
             return text || '--'
           },

@@ -281,8 +281,9 @@ export default {
                 this.form.setFieldsValue(data)
                 this.triggleChange()
               }
-            }} autoSize={com.autoSize} rows={com.rows} placeholder={com.placeholder || '请输入'} disabled={com.disabled} readOnly={com.readOnly} maxLength={com.maxLength}
-                        style={com.style} vDecorator={[com.key, com.validate || {}]}></a-textarea>
+            }} autoSize={com.autoSize} rows={com.rows} placeholder={com.placeholder || '请输入'} disabled={com.disabled}
+                        readOnly={com.readOnly} maxLength={com.maxLength}
+                        style={com.style} vDecorator={[com.key, com.validate || {}]}/>
           )
         case 'dict':
           return (
@@ -295,7 +296,7 @@ export default {
                 this.form.setFieldsValue(data)
                 this.triggleChange()
               }
-            }} disabled={com.disabled} vDecorator={[com.key, com.validate || {}]}></h-dict-select>
+            }} disabled={com.disabled} vDecorator={[com.key, com.validate || {}]}/>
           )
         case 'radio':
           return (
@@ -309,13 +310,13 @@ export default {
                 this.triggleChange()
               }
             }} defaultValue={com.defaultValue} disabled={com.disabled} options={com.options}
-                     vDecorator={[com.key, com.validate || {}]}></h-radio>
+                     vDecorator={[com.key, com.validate || {}]}/>
           )
         case 'switch':
           return (
             <h-switch options={com.options} checkedTxt={com.checkedTxt} uncheckedTxt={com.uncheckedTxt}
                       defaultChecked={com.defaultChecked} onchange={com.change || this.triggleChange}
-                      disabled={com.disabled} vDecorator={[com.key, com.validate || {}]}></h-switch>
+                      disabled={com.disabled} vDecorator={[com.key, com.validate || {}]}/>
           )
         case 'text':
           return h('div', {

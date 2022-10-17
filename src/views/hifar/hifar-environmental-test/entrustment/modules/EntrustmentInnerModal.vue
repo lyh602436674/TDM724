@@ -414,21 +414,6 @@ export default {
           }
         },
         {
-          title: '委托人',
-          key: 'entrustPerson',
-          formType: 'input',
-          validate: {
-            rules: [{required: true, message: '请输入委托人'}]
-          }
-        }, {
-          title: '委托人手机号',
-          key: 'entrustPersonPhone',
-          formType: 'input',
-          validate: {
-            rules: [{required: true, message: '请输入委托人手机号'}]
-          }
-        },
-        {
           title: '备注',
           key: 'remarks',
           formType: 'textarea',
@@ -537,7 +522,7 @@ export default {
           id: randomUUID(),
           productName: values.productName,
           pieceNum: 1,
-          productAlias: values.productAlias,
+          productModel: values.productModel,
           pieceNo: (values.piecePrefix || '') + values.pieceNo,
         })
         this.tableData = this.tableData.concat(tableData)

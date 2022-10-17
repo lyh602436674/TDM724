@@ -8,7 +8,7 @@
 -->
 <template>
   <a-radio-group :value="valueRadio" :disabled='disabled' :default-value='defaultValue' @change="onChangeHandle">
-    <template v-if="radioType == 'radioText'">
+    <template v-if="radioType === 'radioText'">
       <a-radio
         :value="item.value"
         :data-title="item.title"
@@ -72,6 +72,13 @@ export default {
       immediate: true,
       handler(val) {
         this.valueRadio = val
+      },
+    },
+    defaultValue: {
+      immediate: true,
+      handler(val) {
+        this.valueRadio = val
+        this.$emit('change', this.valueRadio)
       },
     },
     radioType: {

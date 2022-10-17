@@ -104,7 +104,7 @@ export default {
                 let projectFormValue = val
                 let attachIds = val.attachIds.map(item => item.fileId).toString()
                 projectFormValue.unitName = that.model.unitName;
-                projectFormValue.taskExpectStartTime = moment(val.taskExpectStartTime).format('x');
+                projectFormValue.taskExpectStartTime = val.taskExpectStartTime && moment(val.taskExpectStartTime).format('x');
                 projectFormValue.attachIds = attachIds;
                 projectResult.push(projectFormValue)
               }
@@ -113,8 +113,9 @@ export default {
             if (errMap) return this.$emit('emptyData')
           } else {
             let projectFormValue = projectForm.form.getFieldsValue()
+            debugger
             projectFormValue.unitName = that.model.unitName
-            projectFormValue.taskExpectStartTime = moment(projectFormValue.taskExpectStartTime).format('x');
+            projectFormValue.taskExpectStartTime = projectFormValue.taskExpectStartTime && moment(projectFormValue.taskExpectStartTime).format('x');
             projectResult.push(projectFormValue)
           }
         }

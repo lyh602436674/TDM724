@@ -40,11 +40,11 @@
             }}</span>
         </template>
         <template #entrustNo="text, record">
-          <a v-if="record.entrustNo" @click='handleDetailCode(record)'>{{ record.entrustNo }}</a>
+          <a v-if="record.entrustNo" @click='handleDetailCode(record,"1")'>{{ record.entrustNo }}</a>
           <span v-else>--</span>
         </template>
         <template #entrustCode="text, record">
-          <a v-if="record.entrustCode" @click='handleDetailCode(record,"1")'>{{ record.entrustCode }}</a>
+          <a v-if="record.entrustCode" @click='handleDetailCode(record)'>{{ record.entrustCode }}</a>
           <span v-else>--</span>
         </template>
         <span slot='status' slot-scope='text, record'>
@@ -198,7 +198,7 @@ export default {
           ]
         },
         {
-          title: '是否外包',
+          title: '是否分包',
           key: 'c_isExternalManage_1',
           formType: 'select',
           options: [
@@ -213,11 +213,6 @@ export default {
               value: 0
             }
           ]
-        },
-        {
-          title: '委托单位',
-          key: 'c_custName_7',
-          formType: 'input'
         },
       ],
       columns: [
@@ -245,7 +240,7 @@ export default {
           scopedSlots: {customRender: 'status'}
         },
         {
-          title: '是否外包',
+          title: '是否分包',
           align: 'left',
           dataIndex: 'isExternalManage',
           minWidth: 100,
@@ -364,7 +359,7 @@ export default {
         let data = {
           ...params,
           ...this.queryParams,
-          entrustType: '1'
+          c_entrustType_1: '1'
         }
         return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {

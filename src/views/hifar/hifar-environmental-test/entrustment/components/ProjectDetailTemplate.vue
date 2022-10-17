@@ -13,7 +13,7 @@
     <h-desc-item label="检测依据">{{ model.standardCode + model.standardName || '--' }}</h-desc-item>
     <h-desc-item label="是否分包">{{ model.isSubpackage == 1 ? '是' : '否' }}</h-desc-item>
     <h-desc-item label="期望开始时间">{{
-        moment(+model.taskExpectStartTime).format('YYYY-MM-DD HH:mm:ss') || '--'
+        +model.taskExpectStartTime && moment(+model.taskExpectStartTime).format('YYYY-MM-DD HH:mm:ss') || '--'
       }}
     </h-desc-item>
     <h-desc-item :span="3" label="试验条件">{{ model.testCondition || '--' }}</h-desc-item>

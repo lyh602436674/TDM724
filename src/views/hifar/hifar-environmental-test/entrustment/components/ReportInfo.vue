@@ -157,6 +157,17 @@ export default {
           }
         },
         {
+          title: '运行单号',
+          align: 'left',
+          key: 'entrustCode',
+          cellRender: {
+            name: 'cell',
+            renderCell: (h, renderOpts, {row, column}) => {
+              return row[column.property] || '--'
+            },
+          }
+        },
+        {
           title: '试验项目',
           align: 'left',
           key: 'testName',

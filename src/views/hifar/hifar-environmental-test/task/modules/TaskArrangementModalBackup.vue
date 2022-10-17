@@ -339,7 +339,7 @@ export default {
       postAction(this.url.equipList, params)
         .then((res) => {
           if (res.code == 200) {
-            let list = res.data
+            let list = res.data.sort((a,b)=> a.rowSort - b.rowSort)
             let selectOptions = []
             let ext = res.ext
 

@@ -27,19 +27,10 @@
           <h-desc-item label='试验编号'>
             {{ detailData.testCode ? detailData.testCode : '--' }}
           </h-desc-item>
-<!--          <h-desc-item label='密级'>-->
-<!--            {{ detailData.secretLevel | secretFilter }}-->
-<!--          </h-desc-item>-->
           <h-desc-item label='试验项目' :span='4'>
             <div slot='content' v-if='detailData.projectInfo'>
               <a-tag v-for='item in detailData.projectInfo' :key='item.id'>{{ item.unitName }}</a-tag>
             </div>
-          </h-desc-item>
-          <h-desc-item label='总号'>
-            {{ detailData.sumMark }}
-          </h-desc-item>
-          <h-desc-item label='分号'>
-            {{ detailData.separateMark }}
           </h-desc-item>
           <h-desc-item label='备注' :span='4'>
             {{ detailData.remarks ? detailData.remarks : '--' }}

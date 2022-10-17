@@ -105,11 +105,10 @@ export default {
       setIntervalTime: null,
       currentTimeInterval: null,
       equipItemInfo: [
-        // {title: '任务编号', key: 'taskCode', value: '--'},
-        {title: '委托单号', key: 'entrustCode', value: '--'},
+        {title: '委托单号', key: 'entrustNo', value: '--'},
+        {title: '运行单号', key: 'entrustCode', value: '--'},
         {title: '设备名称', key: 'innerName', value: '--'},
         {title: '设备型号', key: 'equipModel', value: '--'},
-        // {title: '当前温度', key: 'temperature', value: '--'},
         {title: '试验项目', key: 'unitName', value: '--'},
         {title: '试验性质', key: 'testPropertyName', value: '--'},
         {title: '试品名称', key: 'productName', value: '--'},

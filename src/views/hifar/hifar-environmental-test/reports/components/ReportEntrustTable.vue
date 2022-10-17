@@ -83,22 +83,6 @@ export default {
           dataIndex: 'unitName',
         },
         {
-          title: '总号',
-          align: 'left',
-          dataIndex: 'sumMark',
-          customRender: (text, record) => {
-            return text || '--'
-          },
-        },
-        {
-          title: '分号',
-          align: 'left',
-          dataIndex: 'separateMark',
-          customRender: (text, record) => {
-            return text || '--'
-          },
-        },
-        {
           title: '状态',
           align: 'left',
           dataIndex: 'reportFlag',
@@ -166,11 +150,6 @@ export default {
         {
           title: '试品名称',
           key: 'productName',
-          formType: 'input',
-        },
-        {
-          title: '总号',
-          key: 'sumMark',
           formType: 'input',
         },
       ],

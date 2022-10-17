@@ -99,13 +99,14 @@
 </template>
 
 <script>
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
 import moment from 'moment'
 import EquipmentParameterModal from './modules/EquipmentParameterModal.vue'
 import EquipmentSensorModal from './modules/EquipmentSensorModal.vue'
 import EquipmentDetail from './modules/EquipmentDetail.vue'
 import EditorPointModal from '@/views/components/EditorPointModal'
 import mixin from '@/views/hifar/mixin.js'
+
 export default {
   provide() {
     return {
@@ -241,20 +242,17 @@ export default {
   methods: {
     getEquipmentTree() {
       postAction(this.url.tree, { c_equipUse_1: 1 }).then((res) => {
-        if (res.code == 200) {
-          let tree = []
-          tree = res.data.map((item) => {
+        if (res.code === 200) {
+          this.equipmentTree = res.data.map((item) => {
             return {
-              title: item.equipName+'-'+item.equipModel,
+              title: item.equipName + '-' + item.equipModel,
               pid: 0,
               id: item.id,
-
               scopedSlots: {
                 title: 'customTitle',
               },
             }
           })
-          this.equipmentTree = tree
         }
       })
     },

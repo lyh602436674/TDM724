@@ -27,10 +27,10 @@
       <span slot="entrustNo" slot-scope="text, record">
         <h-icon v-if="record.entrustType === '1'" type='icon-nei'/>
         <h-icon v-else type='icon-wai'/>
-        <a @click="handleDetail(record)"> {{ record.entrustNo || '--' }}</a>
+        <a @click="handleDetail(record,'1')"> {{ record.entrustNo || '--' }}</a>
       </span>
       <span slot="entrustCode" slot-scope="text, record">
-        <a @click="handleDetail(record,'1')"> {{ record.entrustCode || '--' }}</a>
+        <a @click="handleDetail(record)"> {{ record.entrustCode || '--' }}</a>
       </span>
       <template #isExternalManage="text">
           <span :style="{color:text === '1' ? 'red':text === '0'?'green':'black' }">{{
@@ -251,14 +251,6 @@ export default {
             return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD HH:mm:ss') : '--'
           }
         },
-        {
-          title: '操作',
-          dataIndex: 'actions',
-          fixed: 'right',
-          width: 100,
-          align: 'center',
-          scopedSlots: {customRender: 'actions'}
-        }
       ],
       loadData: (params) => {
         let data = {
@@ -267,7 +259,7 @@ export default {
           ...this.statusParams
         };
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data;
           }
         });

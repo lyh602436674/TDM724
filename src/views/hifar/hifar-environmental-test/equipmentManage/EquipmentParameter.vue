@@ -859,10 +859,8 @@ export default {
     },
     getEquipmentTree() {
       postAction(this.url.tree, {c_equipUse_1: 1}).then((res) => {
-        if (res.code == 200) {
-          let tree = []
-          tree = res.data.map((item) => {
-            // console.log('item-------',item);
+        if (res.code === 200) {
+          this.equipmentTree = res.data.map((item) => {
             return {
               title: item.equipName + "-" + item.equipModel,
               pid: 0,
@@ -873,8 +871,6 @@ export default {
               }
             }
           })
-          this.equipmentTree = tree
-          // console.log('this.equipmentTree------',this.equipmentTree);
         }
       })
     },

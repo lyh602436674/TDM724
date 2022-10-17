@@ -1142,7 +1142,7 @@ export default {
         $refs: {carryOutProcessForm}
       } = this
       const carryOutProcess_form = new Promise((resolve, reject) => {
-        carryOutProcessForm.form.validateFields((err, values) => {
+        carryOutProcessForm.form.validateFieldsAndScroll((err, values) => {
           if (err) {
             reject(err)
             return

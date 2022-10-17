@@ -77,22 +77,22 @@ export default {
           formType: 'input'
         },
         {
-          title: '试品名称',
+          title: '样品名称',
           key: 'productName',
           formType: 'input'
         },
         {
-          title: "试品工号",
+          title: "样品工号",
           key: "productCode",
           formType: 'input'
         },
         {
-          title: '试品代号',
+          title: '样品代号',
           key: 'productAlias',
           formType: 'input'
         },
         {
-          title: '试品编号',
+          title: '样品编号',
           key: 'pieceNo',
           formType: 'input'
         },
@@ -204,25 +204,7 @@ export default {
           }
         },
         {
-          title: '分号',
-          align: 'left',
-          dataIndex: 'separateMarks',
-          minWidth: 100,
-          customRender: (text, record) => {
-            return text || '--'
-          }
-        },
-        {
-          title: '总号',
-          align: 'left',
-          dataIndex: 'sumMarks',
-          minWidth: 100,
-          customRender: (text, record) => {
-            return text || '--'
-          }
-        },
-        {
-          title: '试品名称',
+          title: '样品名称',
           align: 'left',
           minWidth: 200,
           dataIndex: 'productNames',
@@ -231,7 +213,7 @@ export default {
           }
         },
         {
-          title: "试品代号",
+          title: "样品代号",
           align: "left",
           dataIndex: "productAliass",
           minWidth: 100,
@@ -240,7 +222,7 @@ export default {
           },
         },
         {
-          title: "试品工号",
+          title: "样品工号",
           minWidth: 150,
           dataIndex: "productCodes",
           align: "center",
@@ -249,7 +231,7 @@ export default {
           }
         },
         {
-          title: "试品编号",
+          title: "样品编号",
           align: "left",
           dataIndex: "pieceNo",
           minWidth: 100,
@@ -258,7 +240,7 @@ export default {
           },
         },
         {
-          title: '试品数量',
+          title: '样品数量',
           align: 'center',
           dataIndex: 'productNums',
           minWidth: 100,

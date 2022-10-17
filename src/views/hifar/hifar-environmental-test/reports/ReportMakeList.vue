@@ -54,12 +54,6 @@
             @click="() => handleDetail(record)"
           />
           <a-divider v-if="record.status != 2" style="color: #409eff" type="vertical"/>
-          <!-- 生成 -->
-<!--          <a-popconfirm  title="确定生成报告吗?"-->
-<!--                        @confirm="() => handleMakeReport(record)">-->
-<!--            <a-icon v-has="'report:make'" class="primary-text" style="cursor: pointer" title="生成"-->
-<!--                    type="check-square"/>-->
-<!--          </a-popconfirm>-->
           <span v-if="record.status == 1">
             <a-popconfirm v-if="record.isExternalManage == 0" title="确定生成报告吗?"
                           @confirm="() => handleMakeReport(record)">
@@ -85,10 +79,8 @@
               <h-icon v-if="record.isExternalManage != 1" v-has="'report:submit'" style="cursor: pointer" title="提交"
                       type="icon-tijiao"/>
             </a-popconfirm>
-            <!--            <a-popconfirm title="确定提交吗?" @confirm="() => handleSubmitFlow(record)">-->
-            <!--              <h-icon v-has="'report:submit'" type="icon-tijiao" title="提交流程" style="cursor: pointer" v-if="record.isExternalManage != 1"/>-->
-            <!--            </a-popconfirm>-->
-            <a-divider v-if='record.filePath && record.isExternalManage != 1' v-has="'report:submit'" style="color: #409eff"
+            <a-divider v-if='record.filePath && record.isExternalManage != 1' v-has="'report:submit'"
+                       style="color: #409eff"
                        type="vertical"/>
             <a-icon v-if='record.filePath' v-has="'report:edit'" class="primary-text" style="cursor: pointer"
                     type="edit"
@@ -96,16 +88,21 @@
             <a-divider v-if="record.isExternalManage != 1" v-has="'report:edit'" style="color: #409eff"
                        type="vertical"/>
           </span>
-          <span v-if="record.status >= 3">
-            <a-icon
-              v-has="'report:download'"
-              class="primary-text"
-              style="cursor: pointer"
-              title="下载"
-              type="download"
-              @click="handleDownload(record.pdfPath, record.reportCode)"
-            />
-          </span>
+          <template v-if="record.status >= 3">
+            <span v-has="'report:download'">
+                <a-dropdown>
+                  <a-icon class="primary-text" style="cursor: pointer" title="下载" type="download"/>
+                  <a-menu slot="overlay">
+                    <a-menu-item>
+                      <span>下载word</span>
+                    </a-menu-item>
+                    <a-menu-item>
+                      <span @click="handleDownload(record.pdfPath, record.reportCode)">下载pdf</span>
+                    </a-menu-item>
+                  </a-menu>
+                </a-dropdown>
+            </span>
+          </template>
           <span v-if="record.status == 1 || record.status == 30 || record.status == 50" v-has="'report:delete'">
             <a-divider v-if="record.status == 30 || record.status == 50" style="color: #409eff" type="vertical"/>
             <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id, record.status)">
@@ -213,11 +210,6 @@ export default {
         {
           title: '试验项目',
           key: 'c_testName_7',
-          formType: 'input',
-        },
-        {
-          title: '总号',
-          key: 'c_sumMark_7',
           formType: 'input',
         },
       ],
@@ -367,10 +359,6 @@ export default {
         this.selectedRows = item
       })
     },
-    makeReportHandle() {
-      this.refresh(true)
-      this.loadReportNum()
-    },
     handleDownload(filePath, fileName) {
       downloadFile(filePath, fileName + '.pdf')
     },
@@ -422,8 +410,7 @@ export default {
     },
     // 添加
     handleAdd() {
-      let record = {}
-      this.$refs.ReportMakeListsModal.show(record, '添加')
+      this.$refs.ReportMakeListsModal.show()
       this.loadReportNum()
     },
     // 编辑

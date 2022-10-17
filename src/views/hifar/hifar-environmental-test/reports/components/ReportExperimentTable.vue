@@ -63,25 +63,20 @@ export default {
           formType: 'input'
         },
         {
-          title: '委托单号',
-          key: 'c_entrustNo_7',
-          formType: 'input'
-        },
-        {
           title: '项目名称',
           key: 'c_unitName_7',
           formType: 'input'
         },
         {
-          title: '状态',
-          key: 'c_status_1',
-          formType: 'select',
-          options: [
-            {title: '待出报告', value: 50, key: 50},
-            {title: '已出报告', value: 60, key: 60}
-          ]
+          title: '委托单号',
+          key: 'c_entrustNo_7',
+          formType: 'input'
         },
-
+        {
+          title: '运行单号',
+          key: 'c_entrustCode_7',
+          formType: 'input'
+        },
         {
           title: '委托单位',
           key: 'c_custName_7',
@@ -98,15 +93,10 @@ export default {
           formType: 'input'
         },
         {
-          title: '试品名称',
+          title: '样品名称',
           key: 'c_productName_7',
           formType: 'input'
         },
-        {
-          title: '总号',
-          key: 'c_sumMark_7',
-          formType: 'input'
-        }
       ],
       // 表头
       columns: [
@@ -119,6 +109,11 @@ export default {
           title: '委托单号',
           align: 'left',
           dataIndex: 'entrustNo',
+        },
+        {
+          title: '运行单号',
+          align: 'left',
+          dataIndex: 'entrustCode',
         },
         {
           title: '委托单类型',
@@ -134,28 +129,11 @@ export default {
           dataIndex: 'unitName',
         },
         {
-          title: '总号',
-          align: 'left',
-          dataIndex: 'sumMark',
-          customRender: (text, record) => {
-            return text || '--'
-          },
-        },
-        {
-          title: '分号',
-          align: 'left',
-          dataIndex: 'separateMark',
-          customRender: (text, record) => {
-            return text || '--'
-          },
-        },
-        {
           title: '状态',
           align: 'left',
           dataIndex: 'reportFlag',
           scopedSlots: {customRender: 'reportFlag'},
         },
-
         {
           title: '委托单位',
           align: 'left',
@@ -172,7 +150,7 @@ export default {
           dataIndex: 'custLinkMobile',
         },
         {
-          title: '试品名称',
+          title: '样品名称',
           align: 'left',
           dataIndex: 'productName',
         },

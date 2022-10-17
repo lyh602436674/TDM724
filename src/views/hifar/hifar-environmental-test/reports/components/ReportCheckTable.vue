@@ -130,11 +130,6 @@ export default {
           key: 'c_testName_7',
           formType: 'input',
         },
-        {
-          title: '总号',
-          key: 'c_sumMark_7',
-          formType: 'input',
-        },
       ],
       columns: [
         {
@@ -192,17 +187,9 @@ export default {
           },
         },
         {
-          title: '总号',
+          title: '运行单号',
           align: 'left',
-          dataIndex: 'sumMark',
-          customRender: (text, record) => {
-            return text || '--'
-          },
-        },
-        {
-          title: '分号',
-          align: 'left',
-          dataIndex: 'separateMark',
+          dataIndex: 'entrustCode',
           customRender: (text, record) => {
             return text || '--'
           },

@@ -44,23 +44,12 @@ export default {
   },
   computed: {
     formData() {
-      return [
+      let defaultArr = [
         {
           title: '样品名称',
           key: 'productName',
           formType: 'input',
         },
-        (
-          this.entrustType === '1' ? {
-            title: '型号/规格',
-            key: 'productModel',
-            formType: 'input',
-          } : {
-            title: '图号',
-            key: 'productAlias',
-            formType: 'input',
-          }
-        ),
         {
           title: '编号前缀',
           key: 'piecePrefix',
@@ -86,6 +75,20 @@ export default {
           }
         },
       ]
+      let dynamicArr = [
+        {
+          title: '型号/规格',
+          key: 'productModel',
+          formType: 'input',
+        },
+        {
+          title: '图号',
+          key: 'productAlias',
+          formType: 'input',
+        }
+      ]
+      defaultArr.splice(1, 0, dynamicArr[+this.entrustType - 1])
+      return defaultArr
     },
   },
   data() {
