@@ -42,6 +42,10 @@ export default {
       type: Array,
       default: () => []
     },
+    entrustType: {
+      type: String,
+      default: '1'
+    },
   },
   watch: {
     project: {
@@ -176,6 +180,7 @@ export default {
               selectedName={() => {
                 return this.model.pieceNosName ? this.model.pieceNosName : this.model.pieceNos
               }}
+              entrustType={this.entrustType}
               pieceTableData={this.pieceTableData}
               onchange={(selectedRowKeys, selectedRows, pieceNos) => {
                 let formName = 'projectInfoForm' + this.index

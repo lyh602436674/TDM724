@@ -10,7 +10,7 @@
     <div v-for="(item, index) in formInfoDataList" :key="index" class="panel-custom">
       <div class="panel-custom-item">
         <div class="panel-custom-item-left">
-          <new-test-project-form-item ref="projectFormItem" :index="index"
+          <new-test-project-form-item ref="projectFormItem" :index="index" :entrustType="entrustType"
                                       :pieceTableData="pieceTableData" :project="item"></new-test-project-form-item>
         </div>
         <div class="panel-custom-item-right">
@@ -43,6 +43,10 @@ export default {
     pieceTableData: {
       type: Array,
       default: () => []
+    },
+    entrustType: {
+      type: String,
+      default: '1'
     },
   },
   components: {
@@ -113,7 +117,6 @@ export default {
             if (errMap) return this.$emit('emptyData')
           } else {
             let projectFormValue = projectForm.form.getFieldsValue()
-            debugger
             projectFormValue.unitName = that.model.unitName
             projectFormValue.taskExpectStartTime = projectFormValue.taskExpectStartTime && moment(projectFormValue.taskExpectStartTime).format('x');
             projectResult.push(projectFormValue)

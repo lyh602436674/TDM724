@@ -34,11 +34,6 @@
         :data='loadData'
         :rowSelection='{ selectedRowKeys: selectedRowKeys, onSelect: onSelect }'
       >
-        <template #isExternalManage="text">
-          <span :style="{color:text === '1' ? 'red':text === '0'?'green':'black' }">{{
-              text === '1' ? '是' : text === '0' ? '否' : '--'
-            }}</span>
-        </template>
         <template #entrustNo="text, record">
           <a v-if="record.entrustNo" @click='handleDetailCode(record,"1")'>{{ record.entrustNo }}</a>
           <span v-else>--</span>
@@ -196,23 +191,6 @@ export default {
             }
           ]
         },
-        {
-          title: '是否分包',
-          key: 'c_isExternalManage_1',
-          formType: 'select',
-          options: [
-            {
-              title: '是',
-              key: 1,
-              value: 1
-            },
-            {
-              title: '否',
-              key: 0,
-              value: 0
-            }
-          ]
-        },
       ],
       columns: [
         {
@@ -237,13 +215,6 @@ export default {
           dataIndex: 'status',
           minWidth: 100,
           scopedSlots: {customRender: 'status'}
-        },
-        {
-          title: '是否分包',
-          align: 'left',
-          dataIndex: 'isExternalManage',
-          minWidth: 100,
-          scopedSlots: {customRender: 'isExternalManage'},
         },
         {
           title: '试验项目',

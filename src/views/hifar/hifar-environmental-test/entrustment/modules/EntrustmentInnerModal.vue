@@ -18,7 +18,7 @@
       <a-button :loading="submitLoading" style='margin-right: 8px' type='ghost-success' @click='handleTransientSubmit'>
         暂存
       </a-button>
-      <a-button type='primary' @click='handleSubmit'>提交</a-button>
+      <a-button :loading="submitLoading" type='primary' @click='handleSubmit'>提交</a-button>
     </div>
     <h-card bordered>
       <template slot='title'> {{ handleType === 'add' ? '新增' : '编辑' }}内部委托试验</template>
@@ -42,7 +42,7 @@
         <div class="item-wrapper">
           <div class="item-wrapper-title">
             <span class="title">样品信息</span>
-            <span class="description">选择并填写样品信息</span>
+            <span class="description">填写样品信息</span>
           </div>
           <div class="item-wrapper-content">
             <div style="margin-top:20px">
@@ -67,7 +67,7 @@
                 :edit-config="{
                   trigger: 'click',
                   mode: 'cell',
-                  activeMethod: ()=>true,
+                  activeMethod: ({column})=> { return column.property !== 'pieceNum'},
                 }"
                 :edit-rules='validRules'
                 :valid-config='{ showMessage: false }'
@@ -84,15 +84,23 @@
                     :edit-render="{
                       name: 'input',
                       attrs: { type: 'text', placeholder: '请输入样品名称' },
+                      events:{
+                        blur: this.pieceDataBlur,
+                        focus: this.pieceDataFocus,
+                      }
                     }"
                     field='productName'
                     title="样品名称"
                 />
                 <vxe-table-column
                     :edit-render="{
-                   name:'input',
-                   attrs: { type: 'text', placeholder: '请输入型号/规格' },
-                }"
+                       name:'input',
+                       attrs: { type: 'text', placeholder: '请输入型号/规格' },
+                       events:{
+                          blur: this.pieceDataBlur,
+                          focus: this.pieceDataFocus,
+                       }
+                    }"
                     field='productModel'
                     title="型号/规格"
                 />
@@ -102,18 +110,14 @@
                     name: 'input',
                     attrs: { type: 'text', placeholder: '请输入样品编号' },
                     events:{
-                      blur: this.pieceNoBlur,
+                      blur: this.pieceDataBlur,
+                      focus: this.pieceDataFocus,
                     }
                   }"
                   field='pieceNo'
                   title="样品编号"
                 />
                 <vxe-table-column
-                    :edit-render="{
-                    showAsterisk:true,
-                    name: 'input',
-                    attrs: { type: 'text', placeholder: '请输入数量' },
-                  }"
                     field='pieceNum'
                     title="数量"
                 />
@@ -200,6 +204,7 @@ export default {
       projectModelInfo: [],
       secretLevelArr: [],
       staticTableData: [],
+      pieceSortingResult: [], // 根据样品名称和规格型号分类后的样品数据
       entrustFormData: [
         {
           key: 'id',
@@ -432,6 +437,7 @@ export default {
           )
         }
       ],
+      activePieceRow: "",
       url: {
         save: "HfEnvEntrustBusiness/saveEntrust",
         setSecretLevel: '/MinioBusiness/modifyAttachSecretLevelByIds',
@@ -499,6 +505,7 @@ export default {
           this.entrustModel = obj
           this.tableData = obj.pieceInfo
           this.projectInfoData = obj.projectInfo
+          this.pieceSorting(this.tableData, 'productName', 'productModel')
         }
       }).finally(() => {
         this.submitLoading = false
@@ -577,8 +584,16 @@ export default {
       }
       return tableData
     },
-    pieceNoBlur({row}) {
-      this.setProjectPieceNos()
+    pieceDataFocus({row,column}) {
+      // 记录一下编辑前的数据
+      this.activePieceRow = row[column.property]
+    },
+    pieceDataBlur({row, rowIndex,column}) {
+      // 判断一下输入框失去焦点后数据是否已经改变，改变了再去做变更和提醒
+      console.log(this.$refs.pieceTable.getData()[rowIndex][column.property],this.activePieceRow)
+      if (this.$refs.pieceTable.getData()[rowIndex][row[column.property]] !== this.activePieceRow) {
+        this.setProjectPieceNos()
+      }
     },
     // 样品删除
     handleDelete() {
@@ -597,15 +612,20 @@ export default {
     // 动态设置项目中已选样品
     setProjectPieceNos() {
       if (this.projectInfoData.length) {
+        this.$message.warning('样品数据改变，也将同步项目信息中的已选样品数据改变')
         setTimeout(() => {
           let ProjectForm = this.$refs.ProjectForm
           let projectFormItem = ProjectForm.$refs.projectFormItem
           let tableData = this.$refs.pieceTable.getData()
-          let pieceIds = tableData.map(record => record.id).toString()
-          let pieceNos = tableData.map(record => record.pieceNo).toString()
+          let pieceSorting = this.pieceSorting(tableData, 'productName', 'productModel')
+          let pieceIds = index => pieceSorting[index] ? pieceSorting[index].pieceIds.toString() : ''
+          let pieceNos = index => pieceSorting[index] ? pieceSorting[index].pieceNos.toString() : ''
           for (let i = 0; i < this.projectInfoData.length; i++) {
-            projectFormItem[i].$refs['projectInfoForm' + i].form.setFieldsValue({pieceIds, pieceNos})
-            projectFormItem[i].model.pieceNos = pieceNos
+            projectFormItem[i].$refs['projectInfoForm' + i].form.setFieldsValue({
+              pieceIds: pieceIds(i),
+              pieceNos: pieceNos(i)
+            })
+            projectFormItem[i].model.pieceNos = pieceNos(i)
           }
         }, 1)
       }
@@ -629,7 +649,8 @@ export default {
     },
     // 选择项目弹框返回数据
     projectModalCallback(recordId, record) {
-      let tableData = this.$refs.pieceTable.getData()
+      let pieceTableData = this.$refs.pieceTable.getData()
+      let pieceSorting = this.pieceSorting(pieceTableData, 'productName', 'productModel')
       let extendRecord = cloneDeep(record)
       if (this.projectInfoData.length) {
         for (let i = 0; i < extendRecord.length; i++) {
@@ -642,14 +663,41 @@ export default {
           }
         }
       }
-      this.projectInfoData = this.projectInfoData.concat(extendRecord.map(item => {
+      this.projectInfoData = this.projectInfoData.concat(extendRecord.map((item, index) => {
         return {
           ...item,
           testCondition: item.remarks,
-          pieceIds: tableData.map(item => item.id).toString(),
-          pieceNos: tableData.map(item => item.pieceNo).toString()
+          pieceIds: pieceSorting[index] ? pieceSorting[index].pieceIds.toString() : '',
+          pieceNos: pieceSorting[index] ? pieceSorting[index].pieceNos.toString() : ''
         }
       }))
+    },
+    // 样品分类：根据样品名称和型号/规格进行分类
+    pieceSorting(data, name, model) {
+      let result = [], hash = {}
+      for (let i = 0; i < data.length; i++) {
+        let field = hash[data[i][name] + data[i][model]]
+        if (!field) {
+          result.push({
+            ...data[i],
+            pieceNameModel: data[i][name] + data[i][model],
+            pieceIds: [data[i].id],
+            pieceNos: [data[i].pieceNo],
+          })
+          hash[data[i][name] + data[i][model]] = data[i]
+        } else {
+          for (let j = 0; j < result.length; j++) {
+            let item = result[j];
+            if (item.pieceNameModel === data[i][name] + data[i][model]) {
+              item.pieceIds.push(data[i].id);
+              item.pieceNos.push(data[i].pieceNo);
+              break;
+            }
+          }
+        }
+      }
+      this.pieceSortingResult = result
+      return result
     },
     //项目信息为空时
     emptyDatCallback() {
@@ -693,21 +741,50 @@ export default {
     },
     //提交
     handleSubmit() {
-      this.submitLoading = true
-      this.submitStatus = 10
-      this.validateEntrustForm(true).then(res => {
-        let entrustModelInfo = cloneDeep(res)
-        this.buildEntrustData(entrustModelInfo)
-        this.getPiecesTableData(true).then(data => {
-          if (data.length) {
-            this.pieceModelInfo = data
-            this.$refs.ProjectForm.submitHandle(true, 10)
-          } else {
-            this.submitLoading = false
-            return this.$message.warning('请添加样品！')
+      if (this.pieceSortingResult.length !== this.projectInfoData.length) {
+        let pieceSortingResult = cloneDeep(this.pieceSortingResult)
+        pieceSortingResult.splice(0, this.projectInfoData.length)
+        let pieceNos = [], index = 0
+        for (let i = 0; i < pieceSortingResult.length; i++) {
+          for (let j = 0; j < pieceSortingResult[i].pieceNos.length; j++) {
+            index++
+            pieceNos.push(<div style={{color: 'red'}}>{` ${index}、${pieceSortingResult[i].pieceNos[j]} `}</div>)
+          }
+        }
+        this.$confirm({
+          title: '提示',
+          content: h => {
+            return h('div', {}, [
+              <p>还有如下编号的样品未添加分配试验项目</p>,
+              <p>{pieceNos}</p>,
+              <p>确定继续提交吗？</p>
+            ])
+          },
+          onOk: () => {
+            fn.call(this)
           }
         })
-      })
+      } else {
+        fn.call(this)
+      }
+
+      function fn() {
+        this.submitLoading = true
+        this.submitStatus = 10
+        this.validateEntrustForm(true).then(res => {
+          let entrustModelInfo = cloneDeep(res)
+          this.buildEntrustData(entrustModelInfo)
+          this.getPiecesTableData(true).then(data => {
+            if (data.length) {
+              this.pieceModelInfo = data
+              this.$refs.ProjectForm.submitHandle(true, 10)
+            } else {
+              this.submitLoading = false
+              return this.$message.warning('请添加样品！')
+            }
+          })
+        })
+      }
     },
     // 暂存-提交请求
     submitRequest(status) {

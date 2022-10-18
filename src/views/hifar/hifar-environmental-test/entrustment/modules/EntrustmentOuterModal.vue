@@ -18,7 +18,7 @@
       <a-button :loading="submitLoading" style='margin-right: 8px' type='ghost-success' @click='handleTransientSubmit'>
         暂存
       </a-button>
-      <a-button type='primary' @click='handleSubmit'>提交</a-button>
+      <a-button :loading="submitLoading" type='primary' @click='handleSubmit'>提交</a-button>
     </div>
     <h-card bordered>
       <template slot='title'> {{ handleType === 'add' ? '新增' : '编辑' }}外部委托试验</template>
@@ -42,7 +42,7 @@
         <div class="item-wrapper">
           <div class="item-wrapper-title">
             <span class="title">样品信息</span>
-            <span class="description">选择并填写样品信息</span>
+            <span class="description">填写样品信息</span>
           </div>
           <div class="item-wrapper-content">
             <div style="margin-top:20px">
@@ -590,7 +590,7 @@ export default {
       if (errMap) return this.$message.warning('请填写样品编号')
       if (!this.tableData.length) return this.$message.warning('请先添加样品')
       this.$refs.projectAddModal.visible = true
-      this.$refs.projectAddModal.getProjectTree()
+      await this.$refs.projectAddModal.getProjectTree()
       this.$refs.projectAddModal.selectedRowKeys = this.projectInfoData && this.projectInfoData.length && this.projectInfoData.map(item => item.id) || []
     },
     // 选择项目弹框返回数据

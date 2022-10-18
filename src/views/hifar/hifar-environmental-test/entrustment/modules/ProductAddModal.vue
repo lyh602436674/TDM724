@@ -10,7 +10,7 @@
     :getContainer="getContainer"
     :visible="visible"
     inner
-    title="外部新增"
+    title="新增样品"
     @cancel="handleCancel"
   >
     <template slot="footer">
@@ -18,7 +18,7 @@
       <a-button type="primary" @click="handleOk">确定</a-button>
     </template>
     <h-form
-      ref="outsideProductForm"
+      ref="addProductForm"
       v-model="model"
       :column="1"
       :formData='formData'
@@ -100,16 +100,14 @@ export default {
   methods: {
     show() {
       this.visible = true
-      this.$nextTick(() => {
-        this.$refs.outsideProductForm.form.resetFields()
-      })
     },
     formChange(values) {
       this.$emit('callback', values)
+      this.$refs.addProductForm.form.resetFields()
       this.handleCancel()
     },
     handleOk() {
-      this.$refs.outsideProductForm.validateForm()
+      this.$refs.addProductForm.validateForm()
     },
     handleCancel() {
       this.visible = false

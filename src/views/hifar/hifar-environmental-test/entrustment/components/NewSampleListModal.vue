@@ -107,6 +107,10 @@ export default {
       type: Array,
       default: () => []
     },
+    entrustType: {
+      type: String,
+      default: '1'
+    },
   },
   watch: {
     value: {
@@ -148,16 +152,15 @@ export default {
       url: {
         detailById: '/HfEnvEntrustBusiness/queryById',
       },
-      columns: [
+    }
+  },
+  computed: {
+    columns() {
+      let defaultArr = [
         {
           title: '样品名称',
           align: 'left',
           dataIndex: 'productName',
-        },
-        {
-          title: '型号/规格',
-          align: 'left',
-          dataIndex: 'productModel',
         },
         {
           title: '样品编号',
@@ -169,8 +172,22 @@ export default {
           align: 'left',
           dataIndex: 'pieceNum',
         },
-      ],
-    }
+      ]
+      let dynamicArr = [
+        {
+          title: '型号/规格',
+          dataIndex: 'productModel',
+          align: 'left',
+        },
+        {
+          title: '图号',
+          dataIndex: 'productAlias',
+          align: 'left',
+        }
+      ]
+      defaultArr.splice(1, 0, dynamicArr[+this.entrustType - 1])
+      return defaultArr
+    },
   },
   created() {
 

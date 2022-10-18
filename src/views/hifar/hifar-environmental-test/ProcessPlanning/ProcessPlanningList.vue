@@ -20,11 +20,6 @@
         :data='loadData'
         :rowSelection='{ selectedRowKeys: selectedRowKeys, onSelect: onSelect }'
       >
-        <template #isExternalManage="text">
-          <span :style="{color:text === '1' ? 'red':text === '0'?'green':'black' }">{{
-              text === '1' ? '是' : text === '0' ? '否' : '--'
-            }}</span>
-        </template>
         <span slot='entrustNo' slot-scope='text, record'>
           <h-icon v-if="record.entrustType == '1'" type='icon-nei'/>
           <h-icon v-else type='icon-wai'/>
@@ -139,23 +134,6 @@ export default {
           ]
         },
         {
-          title: '是否外包',
-          key: 'c_isExternalManage_1',
-          formType: 'select',
-          options: [
-            {
-              title: '是',
-              key: 1,
-              value: 1
-            },
-            {
-              title: '否',
-              key: 0,
-              value: 0
-            }
-          ]
-        },
-        {
           title: '外包单位',
           key: 'c_outsourcingUnit_7',
           formType: 'input'
@@ -177,13 +155,6 @@ export default {
           dataIndex: 'status',
           minWidth: 100,
           scopedSlots: {customRender: 'status'}
-        },
-        {
-          title: '是否外包',
-          align: 'left',
-          dataIndex: 'isExternalManage',
-          minWidth: 100,
-          scopedSlots: {customRender: 'isExternalManage'},
         },
         {
           title: '外包单位',
