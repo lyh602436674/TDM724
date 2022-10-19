@@ -7,71 +7,75 @@
  * @FilePath: \tdm200-client\src\views\hifar\hifar-environmental-test\entrustment\EntrustmentsList.vue
 -->
 <template>
-  <div ref='entrustmentList' class='entrustment-list'>
+  <div ref="entrustmentList" class="entrustment-list">
     <h-card fixed>
-      <template slot='title'> 委托管理</template>
-      <h-search slot='search-form' v-model='queryParams' :data='searchForm' size='default' @change='refresh(true)'/>
-      <template slot='table-operator'>
-        <a-button v-has="'entrustment:dataEntry'" icon='qrcode' size='small' type='ghost-primary'
-                  @click='handleDataEntry'>扫码创建
+      <template slot="title"> 委托管理</template>
+      <h-search slot="search-form" v-model="queryParams" :data="searchForm" size="default" @change="refresh(true)"/>
+      <template slot="table-operator">
+        <a-button
+          v-has="'entrustment:dataEntry'"
+          icon="qrcode"
+          size="small"
+          type="ghost-primary"
+          @click="handleDataEntry">扫码创建
         </a-button>
         <template v-has="'entrustment:add'">
-          <a-button icon='plus' size='small' type='ghost-primary' @click='handleAdd'> 添加</a-button>
+          <a-button icon="plus" size="small" type="ghost-primary" @click="handleAdd"> 添加</a-button>
         </template>
         <a-button icon="download" size="small" type="ghost-warning" @click="handleExportXls('委托单信息')">
           导出
         </a-button>
-        <template v-if='selectedRowKeys.length>0'>
-          <a-button v-has="'entrustment:delete'" icon='delete' size='small' type='danger' @click='batchDel'>
+        <template v-if="selectedRowKeys.length>0">
+          <a-button v-has="'entrustment:delete'" icon="delete" size="small" type="danger" @click="batchDel">
             批量删除
           </a-button>
         </template>
       </template>
       <h-vex-table
-        ref='entrustmentListTable'
-        slot='content'
-        :columns='columns'
-        :data='loadData'
-        :rowSelection='{ selectedRowKeys: selectedRowKeys, onSelect: onSelect }'
+        ref="entrustmentListTable"
+        slot="content"
+        :columns="columns"
+        :data="loadData"
+        :rowSelection="{ selectedRowKeys: selectedRowKeys, onSelect: onSelect }"
       >
         <template #entrustNo="text, record">
-          <a v-if="record.entrustNo" @click='handleDetailCode(record,"1")'>{{ record.entrustNo }}</a>
+          <a v-if="record.entrustNo" @click="handleDetailCode(record,&quot;1&quot;)">{{ record.entrustNo }}</a>
           <span v-else>--</span>
         </template>
         <template #entrustCode="text, record">
-          <a v-if="record.entrustCode" @click='handleDetailCode(record)'>{{ record.entrustCode }}</a>
+          <a v-if="record.entrustCode" @click="handleDetailCode(record)">{{ record.entrustCode }}</a>
           <span v-else>--</span>
         </template>
-        <span slot='status' slot-scope='text, record'>
-          <a-badge :color='record.status | wtStatusColorFilter' :text='record.status | wtStatusFilter'/>
+        <span slot="status" slot-scope="text, record">
+          <a-badge :color="record.status | wtStatusColorFilter" :text="record.status | wtStatusFilter"/>
         </span>
-        <template slot='actions' slot-scope='text, record'>
-          <a-tooltip title='详情'>
+        <template slot="actions" slot-scope="text, record">
+          <a-tooltip title="详情">
             <a-icon
-              class='primary-text'
-              style='cursor: pointer'
-              title='详情'
-              type='eye'
-              @click='() => handleDetail(record)'
+              class="primary-text"
+              style="cursor: pointer"
+              title="详情"
+              type="eye"
+              @click="() => handleDetail(record)"
             />
           </a-tooltip>
-          <a-divider type='vertical'/>
+          <a-divider type="vertical"/>
           <a-dropdown>
-            <a-tooltip title='更多'>
-              <a class='ant-dropdown-link'>
-                <h-icon type='icon-gengduo1'/>
+            <a-tooltip title="更多">
+              <a class="ant-dropdown-link">
+                <h-icon type="icon-gengduo1"/>
               </a>
             </a-tooltip>
-            <a-menu slot='overlay'>
-              <a-menu-item v-if='record.status == 1 || record.status == 30'>
-                <a @click='handleEdit(record)'>编辑</a>
+            <a-menu slot="overlay">
+              <a-menu-item v-if="record.status == 1 || record.status == 30">
+                <a @click="handleEdit(record)">编辑</a>
               </a-menu-item>
               <a-menu-item>
-                <a @click='handleCopyItem(record)'>复制</a>
+                <a @click="handleCopyItem(record)">复制</a>
               </a-menu-item>
-              <a-menu-item v-if='record.status == 1'>
-                <a-popconfirm v-has="'entrustment:delete'" title='确定删除吗?' @confirm='() => handleDelete(record.id)'>
-                  <a style='color: #ff4d4f'>删除</a>
+              <a-menu-item v-if="record.status == 1">
+                <a-popconfirm v-has="'entrustment:delete'" title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+                  <a style="color: #ff4d4f">删除</a>
                 </a-popconfirm>
               </a-menu-item>
             </a-menu>
@@ -79,19 +83,19 @@
         </template>
       </h-vex-table>
     </h-card>
-    <entrustment-outer-modal ref='EntrustmentModal' @change='refresh(true)'></entrustment-outer-modal>
-    <entrustment-detail-modal ref='EntrustmentDetailModal'></entrustment-detail-modal>
+    <entrustment-outer-modal ref="EntrustmentModal" @change="refresh(true)"></entrustment-outer-modal>
+    <entrustment-detail-modal ref="EntrustmentDetailModal"></entrustment-detail-modal>
     <entrust-data-entry-modal ref="EntrustDataEntryModal"></entrust-data-entry-modal>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
-import {downloadFile, postAction} from '@/api/manage'
+import { downloadFile, postAction } from '@/api/manage'
 import mixin from '@/views/hifar/hifar-environmental-test/mixin.js'
 import EntrustmentDetailModal from './modules/EntrustmentDetailModal'
 import EntrustDataEntryModal from '@/views/hifar/hifar-environmental-test/entrustment/modules/EntrustDataEntryModal'
-import EntrustmentOuterModal from "@views/hifar/hifar-environmental-test/entrustment/modules/EntrustmentOuterModal";
+import EntrustmentOuterModal from '@views/hifar/hifar-environmental-test/entrustment/modules/EntrustmentOuterModal';
 
 export default {
   provide() {
@@ -113,7 +117,7 @@ export default {
         delete: '/HfEnvEntrustBusiness/logicRemoveById',
         copy: '/HfEnvEntrustBusiness/copyById',
         export: '/HfEnvEntrustBusiness/listAllForExport',
-        signAndIssue: "/HfEnvEntrustBusiness/signAndIssue"
+        signAndIssue: '/HfEnvEntrustBusiness/signAndIssue'
       },
       queryParams: {},
       selectedRowKeys: [],
@@ -190,7 +194,7 @@ export default {
               value: 50
             }
           ]
-        },
+        }
       ],
       columns: [
         {
@@ -198,7 +202,7 @@ export default {
           align: 'left',
           width: 160,
           dataIndex: 'entrustNo',
-          scopedSlots: {customRender: 'entrustNo'},
+          scopedSlots: { customRender: 'entrustNo' },
           fixed: 'left'
         },
         {
@@ -206,7 +210,7 @@ export default {
           align: 'left',
           width: 140,
           dataIndex: 'entrustCode',
-          scopedSlots: {customRender: 'entrustCode'},
+          scopedSlots: { customRender: 'entrustCode' },
           fixed: 'left'
         },
         {
@@ -214,7 +218,7 @@ export default {
           align: 'left',
           dataIndex: 'status',
           minWidth: 100,
-          scopedSlots: {customRender: 'status'}
+          scopedSlots: { customRender: 'status' }
         },
         {
           title: '试验项目',
@@ -235,13 +239,13 @@ export default {
           }
         },
         {
-          title: "图号",
-          align: "left",
-          dataIndex: "productAlias",
+          title: '图号',
+          align: 'left',
+          dataIndex: 'productAlias',
           minWidth: 100,
           customRender: (text, record) => {
-            return text || "--";
-          },
+            return text || '--';
+          }
         },
         {
           title: '委托单位',
@@ -249,7 +253,7 @@ export default {
           minWidth: 100,
           dataIndex: 'custName',
           customRender: (text, record) => {
-            return text || "--";
+            return text || '--';
           }
         },
 
@@ -263,22 +267,22 @@ export default {
           }
         },
         {
-          title: "联系人",
-          align: "center",
-          dataIndex: "linkName",
+          title: '联系人',
+          align: 'center',
+          dataIndex: 'linkName',
           width: 120,
           customRender: (text, record) => {
-            return text || "--";
-          },
+            return text || '--';
+          }
         },
         {
-          title: "联系方式",
-          align: "center",
+          title: '联系方式',
+          align: 'center',
           width: 150,
-          dataIndex: "linkMobile",
+          dataIndex: 'linkMobile',
           customRender: (text, record) => {
-            return text || "--";
-          },
+            return text || '--';
+          }
         },
         {
           title: '创建人 ',
@@ -304,7 +308,7 @@ export default {
           fixed: 'right',
           width: 100,
           align: 'center',
-          scopedSlots: {customRender: 'actions'}
+          scopedSlots: { customRender: 'actions' }
         }
       ],
       loadData: (params) => {
@@ -318,7 +322,7 @@ export default {
             return res.data
           }
         })
-      },
+      }
     }
   },
   methods: {
@@ -343,7 +347,8 @@ export default {
         ...this.queryParams,
         ...model,
         ids: this.selectedRowKeys.join(','),
-        type: "export"
+        entrustType: '2',
+        type: 'export'
       }
       let url = this.url.list
       let params = data
@@ -353,7 +358,7 @@ export default {
     // 复制
     handleCopyItem(record) {
       let url = this.url.copy
-      postAction(url, {id: record.id}).then((res) => {
+      postAction(url, { id: record.id }).then((res) => {
         if (res.code === 200) {
           this.$message.success('复制成功!')
           this.refresh(true)
@@ -371,7 +376,7 @@ export default {
     },
     // 删除
     handleDelete(id) {
-      postAction(this.url.delete, {id: id}).then((res) => {
+      postAction(this.url.delete, { id: id }).then((res) => {
         if (res.code === 200) {
           this.$message.success('删除成功')
           this.refresh(true)
@@ -386,7 +391,7 @@ export default {
           title: '确认删除',
           content: '删除后不可恢复，确认删除？',
           onOk: function () {
-            postAction(_this.url.delete, {id: _this.selectedRowKeys.join()}).then((res) => {
+            postAction(_this.url.delete, { id: _this.selectedRowKeys.join() }).then((res) => {
               if (res.code === 200 && res.data.num) {
                 _this.$message.success('删除成功')
                 _this.refresh()
@@ -396,14 +401,14 @@ export default {
         })
       }
     },
-    //1 草稿 10 提交 20审核通过 30审核驳回 40检测完成 50 已出报告 80终止 99逻辑删除
+    // 1 草稿 10 提交 20审核通过 30审核驳回 40检测完成 50 已出报告 80终止 99逻辑删除
     handleDetailCode(record, type) {
       if (record.status == 1 || record.status == 30) {
         this.handleEdit(record)
       } else if (record.status >= 10 && record.status != 30) {
         this.handleDetail(record, type)
       }
-    },
+    }
   }
 }
 </script>
