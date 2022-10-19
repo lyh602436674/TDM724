@@ -366,7 +366,7 @@ export default {
           itemRes: item.itemRes
         })
       }
-      this.handleFillSubmit()
+      this.handleFillSubmit(record)
     },
     handleDelete(item, index, type) {
       //  如果时手动新增的，那就前台删除
@@ -400,10 +400,10 @@ export default {
           id: item.id
         })
       }
-      this.handleCheckSubmit()
+      this.handleCheckSubmit(record)
     },
-    handleFillSubmit() {
-      postAction(this.url.fill).then((res) => {
+    handleFillSubmit(record) {
+      postAction(this.url.fill, {...record}).then((res) => {
         if (res.code === 200) {
           this.$message.success('检查审核成功')
           this.getCheckDetail()
@@ -484,8 +484,8 @@ export default {
         })
       }
     },
-    handleCheckSubmit() {
-      postAction(this.url.check).then((res) => {
+    handleCheckSubmit(record) {
+      postAction(this.url.check, {...record}).then((res) => {
         if (res.code === 200) {
           this.$message.success('检查复核成功')
           this.getCheckDetail()

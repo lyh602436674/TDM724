@@ -45,7 +45,6 @@
     >
       <h-card :bordered="false">
         <a-table
-          ref="allMethodsTable"
           :bordered="true"
           :columns="columns"
           :customRow="onClickRow"
@@ -60,7 +59,6 @@
 </template>
 
 <script>
-import {getAction} from '@/api/manage'
 import {isArray, isFunction, isString} from 'lodash'
 
 export default {
@@ -133,6 +131,7 @@ export default {
       immediate: true,
       handler(val) {
         this.dataList = val
+        console.log(val, 'vvvvvv')
       }
     }
   },
@@ -244,7 +243,6 @@ export default {
       this.pieceNoArr = pieceNoArr
     },
     handleCancel() {
-      // this.selectedRowKeys
       this.visible = false
     },
     showSelectModal() {
@@ -257,14 +255,6 @@ export default {
     handleChange(v) {
       this.activeKey = v
       this.refresh(true)
-    },
-    loadData(id) {
-      let url = this.url.detailById
-      getAction(url, {id: id}).then((res) => {
-        if (res.code == 200) {
-          this.dataList = res.data.pieceInfo
-        }
-      })
     },
   },
 }

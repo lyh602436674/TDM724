@@ -590,10 +590,11 @@ export default {
     },
     pieceDataBlur({row, rowIndex,column}) {
       // 判断一下输入框失去焦点后数据是否已经改变，改变了再去做变更和提醒
-      console.log(this.$refs.pieceTable.getData()[rowIndex][column.property],this.activePieceRow)
-      if (this.$refs.pieceTable.getData()[rowIndex][row[column.property]] !== this.activePieceRow) {
-        this.setProjectPieceNos()
-      }
+      setTimeout(() => {
+        if (row[column.property] !== this.activePieceRow) {
+          this.setProjectPieceNos()
+        }
+      }, 1)
     },
     // 样品删除
     handleDelete() {
