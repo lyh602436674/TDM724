@@ -95,7 +95,6 @@ export default {
     },
     handleCancel() {
       this.visible = false
-      this.$emit('change', true)
     },
     handleTabsChange(v) {
       this.activeKey = v
@@ -117,6 +116,7 @@ export default {
             if (res.code === 200) {
               this.$message.success('操作成功')
               this.handleCancel();
+              this.$emit('change', true)
             } else {
               this.$message.warning(res.msg)
             }
@@ -139,6 +139,7 @@ export default {
                   if (res.code === 200) {
                     this.$message.success('操作成功')
                     this.handleCancel();
+                    this.$emit('change', true)
                   } else {
                     this.$message.warning(res.msg)
                   }

@@ -40,7 +40,7 @@
       <h-desc id="testInfo" ref="testInfo" lableWidth="110px" style="margin-top: 20px; margin-bottom: 20px"
               title="试验信息">
         <h-desc-item label="试验设备">{{ projectInfo.unitName || '--' }}</h-desc-item>
-        <h-desc-item label="费用（元）">{{ detailData.testCost || '--' }}</h-desc-item>
+        <h-desc-item label="设备速率">{{ detailData.testRate || '--' }}</h-desc-item>
         <h-desc-item label="负责人">{{ detailData.chargeUserName || '--' }}</h-desc-item>
         <h-desc-item label="开始时间">{{
             detailData.realStartTime && detailData.realStartTime != 0
@@ -116,12 +116,7 @@
       </h-desc>
       <!-- 试验数据 -->
       <h-desc id="testData" ref="testData" title="试验数据">
-        <div style="height: 100%; width: 100%; overflow: auto; padding: 20px">
-          <h-desc id="attachForm" :bordered="false">
-            <h-form ref="attachForm" v-model="model_attach" :column="1" :formData="attachData"
-                    style="width: 100%"/>
-          </h-desc>
-        </div>
+        <h-upload-file style="width: 100%" v-model="imageData" isWriteRemarks :isEdit="false"></h-upload-file>
       </h-desc>
     </template>
     <test-entrust-review-pdf ref="testEntrustReviewPdf"/>
@@ -172,7 +167,6 @@ export default {
       moment,
       activeTab: 0,
       checkId: '',
-      curveUrl: '',
       url: {
         detail: '/HfEnvTaskTestBusiness/queryById',
         CheckInfo: '/HfEnvTaskTestBusiness/queryTestCheckItem',
@@ -188,12 +182,6 @@ export default {
       entrustInfoItem: {},
       title: '',
       visible: false,
-      model_cure: {},
-      model_img: {},
-      model_atlas: {},
-      model_attach: {},
-      model_video: {},
-      imglength: 0,
       columns: [
         {
           title: '检查项名称',
@@ -270,101 +258,9 @@ export default {
           }
         })
       },
-      // 试验数据
-      loadData() {
-        this.loadImgData()
-        this.loadCureData()
-        this.loadAtlasData()
-        this.loadAttachData()
-        this.loadVideoData()
-      },
       // 图片
-      imageData: [
-        {
-          title: '曲线/图谱图片',
-          key: 'attachIds',
-          span: 1,
-          component: (
-            <h-upload-img
-              isEdit={false}
-              multiple={true}
-              max={100}
-              customParams={{refType: 'test_picture', refId: this.checkId}}
-              accept="image/png,image/gif,image/jpg,image/jpeg"
-              v-decorator={['attachIds', {initialValue: []}]}
-              on-delete={this.handleDelete}
-            />
-          ),
-        },
-      ],
-      // 曲线
-      curveData: [
-        {
-          title: '曲线',
-          key: 'attachIds',
-          span: 1,
-          component: (
-            <h-upload-file
-              isEdit={false}
-              v-decorator={['attachIds', {initialValue: []}]}
-              customParams={{refType: 'test_cure', refId: this.checkId}}
-              on-delete={this.handleDelete}
-            />
-          ),
-        },
-      ],
-      // 图谱
-      atlasData: [
-        {
-          title: '图谱',
-          key: 'attachIds',
-          span: 1,
-          component: (
-            <h-upload-file
-              isEdit={false}
-              v-decorator={['attachIds', {initialValue: []}]}
-              customParams={{refType: 'test_atlas', refId: this.checkId}}
-              on-delete={this.handleDelete}
-            />
-          ),
-        },
-      ],
-      // 附件
-      attachData: [
-        {
-          title: '附件',
-          key: 'attachIds',
-          span: 1,
-          component: (
-            <h-upload-file
-              isEdit={false}
-              v-decorator={['attachIds', {initialValue: []}]}
-              customParams={{refType: 'test_attach', refId: this.checkId}}
-              on-delete={this.handleDelete}
-            />
-          ),
-        },
-      ],
-      // 视频
-      videoData: [
-        {
-          title: '视频',
-          key: 'attachIds',
-          span: 1,
-          component: (
-            <h-upload-file
-              isEdit={false}
-              v-decorator={['attachIds', {initialValue: []}]}
-              customParams={{refType: 'test_video', refId: this.checkId}}
-              on-delete={this.handleDelete}
-            />
-          ),
-        },
-      ],
+      imageData: [],
     }
-  },
-  created() {
-    this.loadData()
   },
   watch: {
     testId: {
@@ -372,14 +268,7 @@ export default {
       handler(val) {
         if (val) {
           this.loadDetailData(val)
-        }
-      },
-    },
-    top: {
-      immediate: true,
-      handler(val) {
-        if (val) {
-          this.top = val
+          this.loadImgData()
         }
       },
     },
@@ -431,7 +320,6 @@ export default {
         }
       })
     },
-    // 试验数据
     // 图片
     loadImgData() {
       postAction(this.url.attachList, {refType: 'test_picture', refId: this.checkId}).then((res) => {
@@ -458,123 +346,6 @@ export default {
           obj.attachIds = fileArr
           this.model_img = obj
         }
-      })
-    },
-    // 曲线
-    loadCureData() {
-      postAction(this.url.attachList, {refType: 'test_cure', refId: this.checkId}).then((res) => {
-        if (res.code == 200) {
-          const {data} = res
-          let fileArr = []
-          let obj = {}
-          if (data && data.length > 0) {
-            data.forEach((item) => {
-              fileArr.push({
-                fileId: item.id,
-                size: item.fileSize,
-                status: item.status == 9 ? 'success' : 'exception',
-                url: item.filePath,
-                name: item.fileName,
-                uuid: item.id,
-                percent: 100,
-                uploadTime: item.createTime,
-                secretLevel: item.secretLevel,
-                type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
-              })
-            })
-          }
-          obj.attachIds = fileArr
-          this.model_cure = obj
-        }
-      })
-    },
-    // 图谱
-    loadAtlasData() {
-      postAction(this.url.attachList, {refType: 'test_atlas', refId: this.checkId}).then((res) => {
-        if (res.code == 200) {
-          const {data} = res
-          let fileArr = []
-          let obj = {}
-          if (data && data.length > 0) {
-            data.forEach((item) => {
-              fileArr.push({
-                fileId: item.id,
-                size: item.fileSize,
-                status: item.status == 9 ? 'success' : 'exception',
-                url: item.filePath,
-                name: item.fileName,
-                uuid: item.id,
-                percent: 100,
-                uploadTime: item.createTime,
-                secretLevel: item.secretLevel,
-                type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
-              })
-            })
-          }
-          obj.attachIds = fileArr
-          this.model_atlas = obj
-        }
-      })
-    },
-    // 附件
-    loadAttachData() {
-      postAction(this.url.attachList, {refType: 'test_attach', refId: this.checkId}).then((res) => {
-        if (res.code == 200) {
-          const {data} = res
-          let fileArr = []
-          let obj = {}
-          if (data && data.length > 0) {
-            data.forEach((item) => {
-              fileArr.push({
-                fileId: item.id,
-                size: item.fileSize,
-                status: item.status == 9 ? 'success' : 'exception',
-                url: item.filePath,
-                name: item.fileName,
-                uuid: item.id,
-                percent: 100,
-                uploadTime: item.createTime,
-                secretLevel: item.secretLevel,
-                type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
-              })
-            })
-          }
-          obj.attachIds = fileArr
-          this.model_attach = obj
-        }
-      })
-    },
-    // 视频
-    loadVideoData() {
-      postAction(this.url.attachList, {refType: 'test_video', refId: this.checkId}).then((res) => {
-        if (res.code == 200) {
-          const {data} = res
-          let fileArr = []
-          let obj = {}
-          if (data && data.length > 0) {
-            data.forEach((item) => {
-              fileArr.push({
-                fileId: item.id,
-                size: item.fileSize,
-                status: item.status == 9 ? 'success' : 'exception',
-                url: item.filePath,
-                name: item.fileName,
-                uuid: item.id,
-                percent: 100,
-                uploadTime: item.createTime,
-                secretLevel: item.secretLevel,
-                type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
-              })
-            })
-          }
-          obj.attachIds = fileArr
-          this.model_video = obj
-        }
-      })
-    },
-    // 图片删除
-    handleDelete(file, fileList) {
-      postAction(this.url.delete, {id: file.fileId}).then(() => {
       })
     },
   },

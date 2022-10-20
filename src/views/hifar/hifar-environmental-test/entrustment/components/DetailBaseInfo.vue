@@ -110,6 +110,9 @@
               : '--'
           }}
         </h-desc-item>
+        <h-desc-item label='样品制造单位'>
+          {{ detailData.sampleMakeUnit || '--' }}
+        </h-desc-item>
         <h-desc-item label='样品状态'>
           {{ detailData.sampleStatus_dictText || '--' }}
         </h-desc-item>

@@ -12,20 +12,12 @@
       <template slot="title"> 委托管理</template>
       <h-search slot="search-form" v-model="queryParams" :data="searchForm" size="default" @change="refresh(true)"/>
       <template slot="table-operator">
-        <a-button
-          v-has="'entrustment:dataEntry'"
-          icon="qrcode"
-          size="small"
-          type="ghost-primary"
-          @click="handleDataEntry">扫码创建
+        <a-button v-has="'entrustment:add'" icon="plus" size="small" type="ghost-primary" @click="handleAdd"> 添加
         </a-button>
-        <template v-has="'entrustment:add'">
-          <a-button icon="plus" size="small" type="ghost-primary" @click="handleAdd"> 添加</a-button>
-        </template>
         <a-button icon="download" size="small" type="ghost-warning" @click="handleExportXls('委托单信息')">
           导出
         </a-button>
-        <template v-if="selectedRowKeys.length>0">
+        <template v-if="selectedRowKeys.length">
           <a-button v-has="'entrustment:delete'" icon="delete" size="small" type="danger" @click="batchDel">
             批量删除
           </a-button>
@@ -91,7 +83,7 @@
 
 <script>
 import moment from 'moment'
-import { downloadFile, postAction } from '@/api/manage'
+import {downloadFile, postAction} from '@/api/manage'
 import mixin from '@/views/hifar/hifar-environmental-test/mixin.js'
 import EntrustmentDetailModal from './modules/EntrustmentDetailModal'
 import EntrustDataEntryModal from '@/views/hifar/hifar-environmental-test/entrustment/modules/EntrustDataEntryModal'

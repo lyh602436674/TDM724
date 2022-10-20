@@ -364,7 +364,7 @@ export default {
               },
               descriptions: (text, record) => {
                 return (
-                  <aInput value={record.descriptions} onChange={(e) => {
+                  <aInput disabled={!this.isEdit} value={record.descriptions} onChange={(e) => {
                     record.descriptions = e.target.value
                   }}/>
                 )

@@ -19,9 +19,8 @@
           type="ghost-primary"
           @click="handleDataEntry">扫码创建
         </a-button>
-        <template v-has="'entrustment:add'">
-          <a-button icon="plus" size="small" type="ghost-primary" @click="handleAdd"> 添加</a-button>
-        </template>
+          <a-button v-has="'entrustment:add'" icon="plus" size="small" type="ghost-primary" @click="handleAdd"> 添加
+          </a-button>
         <a-button icon="download" size="small" type="ghost-warning" @click="handleExportXls('委托单信息')">
           导出
         </a-button>
@@ -91,7 +90,7 @@
 
 <script>
 import moment from 'moment'
-import { downloadFile, postAction } from '@/api/manage'
+import {downloadFile, postAction} from '@/api/manage'
 import mixin from '@/views/hifar/hifar-environmental-test/mixin.js'
 import EntrustmentDetailModal from '@/views/hifar/hifar-environmental-test/entrustment/modules/EntrustmentDetailModal'
 import EntrustDataEntryModal from '@/views/hifar/hifar-environmental-test/entrustment/modules/EntrustDataEntryModal'

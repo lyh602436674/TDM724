@@ -94,10 +94,10 @@
                   <a-icon class="primary-text" style="cursor: pointer" title="下载" type="download"/>
                   <a-menu slot="overlay">
                     <a-menu-item>
-                      <span>下载word</span>
+                      <span @click="handleDownload(record.filePath, record.reportCode,'.docx')">下载word</span>
                     </a-menu-item>
                     <a-menu-item>
-                      <span @click="handleDownload(record.pdfPath, record.reportCode)">下载pdf</span>
+                      <span @click="handleDownload(record.pdfPath, record.reportCode,'.pdf')">下载pdf</span>
                     </a-menu-item>
                   </a-menu>
                 </a-dropdown>
@@ -359,8 +359,8 @@ export default {
         this.selectedRows = item
       })
     },
-    handleDownload(filePath, fileName) {
-      downloadFile(filePath, fileName + '.pdf')
+    handleDownload(filePath, fileName, fileType) {
+      downloadFile(filePath, fileName + fileType)
     },
     loadReportNum() {
       postAction(this.url.static, {}).then((res) => {

@@ -319,6 +319,14 @@ export default {
           }
         },
         {
+          title: '样品制造单位',
+          key: 'sampleMakeUnit',
+          formType: 'input',
+          validate: {
+            rules: [{required: false, message: '请输入样品制造单位'}]
+          }
+        },
+        {
           title: '样品状态',
           key: 'sampleStatus',
           formType: 'dict',
