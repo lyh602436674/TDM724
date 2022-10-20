@@ -110,6 +110,12 @@
               : '--'
           }}
         </h-desc-item>
+        <h-desc-item label='样品状态'>
+          {{ detailData.sampleStatus_dictText || '--' }}
+        </h-desc-item>
+        <h-desc-item label='样品提供方式'>
+          {{ detailData.sampleProvisionMethod_dictText || '--' }}
+        </h-desc-item>
         <h-desc-item label='样品处置方式'>
           {{ detailData.sampleDisposeMethod_dictText || '--' }}
         </h-desc-item>
@@ -121,6 +127,18 @@
         </h-desc-item>
         <h-desc-item label='检测报告'>
           {{ detailData.testReport_dictText || '--' }}
+        </h-desc-item>
+        <h-desc-item label='检测照片'>
+          {{ detailData.testPicture_dictText || '--' }}
+        </h-desc-item>
+        <h-desc-item label='报告形式'>
+          {{ detailData.reportForm_dictText || '--' }}
+        </h-desc-item>
+        <h-desc-item label='报告份数'>
+          {{ detailData.reportNum || '--' }}
+        </h-desc-item>
+        <h-desc-item label='报告领取方式'>
+          {{ detailData.reportCollectionMethod_dictText || '--' }}
         </h-desc-item>
         <h-desc-item label='试验依据'>
           {{ detailData.testEvidence || '--' }}

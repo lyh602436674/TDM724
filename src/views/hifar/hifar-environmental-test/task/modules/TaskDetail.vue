@@ -27,7 +27,14 @@
           <piece-detail-template :dataSource="pieceInfo" :entrust-type="model.entrustData && model.entrustData.entrustType || 1 "/>
         </div>
         <div class="piece-info">
-          <project-detail-template  :model="model"></project-detail-template>
+          <h-desc :bordered="false" size="small" title="项目信息">
+            <h-card v-for="(item, index) in projectInfo" :key="index" style="margin-bottom: 10px">
+              <div slot="title">{{ item.unitName }}</div>
+              <template slot="content">
+                <project-detail-template :model="item" title=""></project-detail-template>
+              </template>
+            </h-card>
+          </h-desc>
         </div>
         <div class="equip-info">
           <h-desc title="试验信息">
@@ -61,7 +68,7 @@
 </template>
 
 <script>
-import {downloadFile, getFileAccessHttpUrl, postAction} from '@/api/manage'
+import {postAction} from '@/api/manage'
 import moment from 'moment'
 import PiecesRecord from './PiecesRecord'
 import mixin from '@/views/hifar/mixin.js'
@@ -97,8 +104,8 @@ export default {
       fullScreen: false,
       model: {},
       pieceInfo: [],
-      abilityRequire: [],
       equipTestInfo: [],
+      projectInfo: [],
       url: {
         detail: '/HfEnvTaskBusiness/queryById',
       },
@@ -147,24 +154,25 @@ export default {
     }
   },
   methods: {
-    show(record = {}) {
+    show(record = {}, type) {
       this.model = Object.assign({}, record)
       this.title = record.taskCode + '详情'
-      this.getTaskDetail()
+      this.getTaskDetail(type)
       this.$nextTick(() => {
         this.visible = true
       })
     },
-    getTaskDetail() {
+    getTaskDetail(type) {
       let params = {
         id: this.model.id,
+        type,
       }
       postAction(this.url.detail, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.model = Object.assign({}, this.model, res.data)
           this.pieceInfo = res.data.pieceInfo || []
           this.equipTestInfo = res.data.equipTestInfo || []
-          this.abilityRequire = res.data.abilityRequire || []
+          this.projectInfo = res.data.projectInfo || []
         }
       })
     },

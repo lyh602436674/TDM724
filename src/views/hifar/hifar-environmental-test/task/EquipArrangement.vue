@@ -143,7 +143,7 @@
                     style="width: 100%"
                   >
                     <template #entrustNos="text, record">
-                      <a @click="$refs.testTaskBaseInfoModal.show(record,'20px')">{{ text }}</a>
+                      <a @click="$refs.testTaskBaseInfoModal.show(record,'1','20px')">{{ text }}</a>
                     </template>
                     <template #entrustCodes="text, record">
                       <a @click="$refs.testTaskBaseInfoModal.show(record,'20px')">{{ text }}</a>
@@ -533,7 +533,7 @@ export default {
         {
           title: '运行单号',
           dataIndex: 'entrustCodes',
-          minWidth: 120,
+          minWidth: 150,
           scopedSlots: {customRender: 'entrustCodes'},
         },
         {

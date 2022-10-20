@@ -503,6 +503,7 @@ export default {
           obj.entrustTime = obj.entrustTime && obj.entrustTime != 0 ? moment(parseFloat(obj.entrustTime)) : moment()
           this.entrustType = obj.entrustType
           this.entrustModel = obj
+          this.tableData = []
           this.tableData = obj.pieceInfo
           this.projectInfoData = obj.projectInfo
           this.pieceSorting(this.tableData, 'productName', 'productModel')
@@ -517,22 +518,20 @@ export default {
     },
     // 新增样品弹框返回数据
     productAddCallback(values) {
-      let tableData = []
       if (values.pieceNo.includes('-') && values.pieceNo.includes(',')) {
-        this.tableData = this.tableData.concat(this.splitByBoth(values))
+        this.tableData.push(...this.splitByBoth(values))
       } else if (values.pieceNo.includes(',')) {
-        this.tableData = this.tableData.concat(this.splitByComma(values, values.pieceNo.split(',')))
+        this.tableData.push(...this.splitByComma(values, values.pieceNo.split(',')))
       } else if (values.pieceNo.includes('-')) {
-        this.tableData = this.tableData.concat(this.splitByHorizontalLine(values, values.pieceNo.split('-')))
+        this.tableData.push(...this.splitByHorizontalLine(values, values.pieceNo.split('-')))
       } else {
-        tableData.push({
+        this.tableData.push({
           id: randomUUID(),
           productName: values.productName,
           pieceNum: 1,
           productModel: values.productModel,
           pieceNo: (values.piecePrefix || '') + values.pieceNo,
         })
-        this.tableData = this.tableData.concat(tableData)
       }
       this.setProjectPieceNos()
     },
@@ -600,12 +599,16 @@ export default {
     handleDelete() {
       const $table = this.$refs.pieceTable
       $table.removeCheckboxRow()
-      const {removeRecords} = $table.getRecordset()
-      let tableData = this.tableData
-      if (tableData.length > 0) {
-        this.tableData = tableData.filter((items) => {
-          if (!removeRecords.includes(items)) return items
-        })
+      let getRemoveRecords = $table.getRemoveRecords()
+      let getTableData = this.tableData
+      for (let i = 0; i < getTableData.length; i++) {
+        for (let j = 0; j < getRemoveRecords.length; j++) {
+          if (getTableData[i].id === getRemoveRecords[j].id) {
+            this.tableData.splice(i, 1)
+            i--
+            break
+          }
+        }
       }
       this.selectedRowKeys = []
       this.setProjectPieceNos()
@@ -729,7 +732,6 @@ export default {
     },
     //暂存 不需要验证任何表单和表格
     handleTransientSubmit() {
-      this.submitLoading = true
       this.submitStatus = 1
       this.validateEntrustForm(false).then(res => {
         let entrustModelInfo = cloneDeep(res)
@@ -742,14 +744,41 @@ export default {
     },
     //提交
     handleSubmit() {
-      if (this.pieceSortingResult.length !== this.projectInfoData.length) {
+      this.submitStatus = 10
+      this.validateEntrustForm(true).then(res => {
+        let entrustModelInfo = cloneDeep(res)
+        this.buildEntrustData(entrustModelInfo)
+        this.getPiecesTableData(true).then(data => {
+          if (data.length) {
+            this.pieceModelInfo = data
+            this.$refs.ProjectForm.submitHandle(true, 10)
+          } else {
+            this.submitLoading = false
+            return this.$message.warning('请添加样品！')
+          }
+        })
+      })
+    },
+    // 暂存-提交请求
+    submitRequest(status) {
+      let {entrustModelInfo, pieceModelInfo, projectModelInfo} = this
+      if (this.pieceSortingResult.length !== projectModelInfo.length && status === 10) {
         let pieceSortingResult = cloneDeep(this.pieceSortingResult)
-        pieceSortingResult.splice(0, this.projectInfoData.length)
-        let pieceNos = [], index = 0
+        for (let i = 0; i < pieceSortingResult.length; i++) {
+          for (let j = 0; j < projectModelInfo.length; j++) {
+            if (pieceSortingResult[i].pieceIds.sort().toString().includes(projectModelInfo[j].pieceIds.split(',').sort().toString())) {
+              pieceSortingResult.splice(i, 1)
+              i--
+              break
+            }
+          }
+        }
+        let pieceNosDom = [], index = 0, pieceIds = []
         for (let i = 0; i < pieceSortingResult.length; i++) {
           for (let j = 0; j < pieceSortingResult[i].pieceNos.length; j++) {
             index++
-            pieceNos.push(<div style={{color: 'red'}}>{` ${index}、${pieceSortingResult[i].pieceNos[j]} `}</div>)
+            pieceIds.push(pieceSortingResult[i].pieceIds[j])
+            pieceNosDom.push(<div style={{color: 'red'}}>{` ${index}、${pieceSortingResult[i].pieceNos[j]} `}</div>)
           }
         }
         this.$confirm({
@@ -757,51 +786,35 @@ export default {
           content: h => {
             return h('div', {}, [
               <p>还有如下编号的样品未添加分配试验项目</p>,
-              <p>{pieceNos}</p>,
+              <p>{pieceNosDom}</p>,
               <p>确定继续提交吗？</p>
             ])
           },
           onOk: () => {
-            fn.call(this)
+            // 这里需要删除多余没有用到的样品
+            fn.call(this, pieceIds)
           }
         })
       } else {
         fn.call(this)
       }
 
-      function fn() {
+      function fn(pieceIds) {
+        let params = {entrustModelInfo, pieceModelInfo, projectModelInfo, status,}
+        params.pieceModelInfo = pieceIds && pieceIds.length ? params.pieceModelInfo.filter(item => !pieceIds.toString().includes(item.id)) : params.pieceModelInfo
         this.submitLoading = true
-        this.submitStatus = 10
-        this.validateEntrustForm(true).then(res => {
-          let entrustModelInfo = cloneDeep(res)
-          this.buildEntrustData(entrustModelInfo)
-          this.getPiecesTableData(true).then(data => {
-            if (data.length) {
-              this.pieceModelInfo = data
-              this.$refs.ProjectForm.submitHandle(true, 10)
-            } else {
-              this.submitLoading = false
-              return this.$message.warning('请添加样品！')
-            }
-          })
+        postAction(this.url.save, params).then(res => {
+          if (res.code === 200) {
+            this.$message.success(status === 1 ? '暂存成功' : "提交成功")
+            this.handleCancel()
+            this.$emit('change', true)
+          } else {
+            this.$message.warning(res.msg)
+          }
+        }).finally(() => {
+          this.submitLoading = false
         })
       }
-    },
-    // 暂存-提交请求
-    submitRequest(status) {
-      let {entrustModelInfo, pieceModelInfo, projectModelInfo} = this
-      let params = {entrustModelInfo, pieceModelInfo, projectModelInfo, status,}
-      postAction(this.url.save, params).then(res => {
-        if (res.code === 200) {
-          this.$message.success(status === 1 ? '暂存成功' : "提交成功")
-          this.handleCancel()
-          this.$emit('change', true)
-        } else {
-          this.$message.warning(res.msg)
-        }
-      }).finally(() => {
-        this.submitLoading = false
-      })
     },
     // 构建委托表单数据
     buildEntrustData(entrustModelInfo) {

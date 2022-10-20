@@ -27,10 +27,11 @@
       <span slot="entrustNo" slot-scope="text, record">
         <h-icon v-if="record.entrustType === '1'" type='icon-nei'/>
         <h-icon v-else type='icon-wai'/>
-        <a @click="handleDetail(record,'1')"> {{ record.entrustNo || '--' }}</a>
+        <a @click="handleDetail(record,'1')"> {{ text || '--' }}</a>
       </span>
       <span slot="entrustCode" slot-scope="text, record">
-        <a @click="handleDetail(record)"> {{ record.entrustCode || '--' }}</a>
+        <a v-if="text" @click="handleDetail(record)"> {{ text }}</a>
+        <span v-else>--</span>
       </span>
       <span slot="status" slot-scope="text, record">
         <a-badge :color='record.status | wtStatusColorFilter' :text='record.status | wtStatusFilter'/>

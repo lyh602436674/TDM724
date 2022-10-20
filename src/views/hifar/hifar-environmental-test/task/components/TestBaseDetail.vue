@@ -117,21 +117,9 @@
       <!-- 试验数据 -->
       <h-desc id="testData" ref="testData" title="试验数据">
         <div style="height: 100%; width: 100%; overflow: auto; padding: 20px">
-          <h-desc id="imageForm" :bordered="false">
-            <h-form ref="imageForm" v-model="model_img" :column="1" :formData="imageData" style="width: 100%"/>
-          </h-desc>
-<!--          <h-desc id="curveForm" :bordered="false">
-            <h-form ref="curveForm" v-model="model_cure" :column="1" :formData="curveData" style="width: 100%"/>
-          </h-desc>
-          <h-desc id="atlasForm" :bordered="false">
-            <h-form ref="atlasForm" v-model="model_atlas" :column="1" :formData="atlasData" style="width: 100%"/>
-          </h-desc>-->
           <h-desc id="attachForm" :bordered="false">
             <h-form ref="attachForm" v-model="model_attach" :column="1" :formData="attachData"
                     style="width: 100%"/>
-          </h-desc>
-          <h-desc id="videoForm" :bordered="false">
-            <h-form ref="videoForm" v-model="model_video" :column="1" :formData="videoData" style="width: 100%"/>
           </h-desc>
         </div>
       </h-desc>
@@ -166,6 +154,10 @@ export default {
       type: String,
       default: '',
     },
+    viewDetailType: {
+      type: String,
+      default: '',
+    },
     top: {
       type: String,
       default: '',
@@ -189,7 +181,7 @@ export default {
         delete: '/MinioBusiness/logicRemoveById',
       },
       detailData: {},
-      projectInfo: {},
+      projectInfo: [],
       testEquipInfo: [],
       testPersonInfo: [],
       entrustInfo: [{flag: false}],
@@ -202,8 +194,6 @@ export default {
       model_attach: {},
       model_video: {},
       imglength: 0,
-      // testId: '',
-
       columns: [
         {
           title: '检查项名称',
@@ -406,8 +396,8 @@ export default {
     },
     loadDetailData(id) {
       this.checkId = id
-      postAction(this.url.detail, {id: id}).then((res) => {
-        if (res.code == 200) {
+      postAction(this.url.detail, {id: id, type: this.viewDetailType}).then((res) => {
+        if (res.code === 200) {
           const {data} = res
           let testEquipInfoArr = data.testEquipInfo
           let testPersonInfoArr = data.testPersonInfo

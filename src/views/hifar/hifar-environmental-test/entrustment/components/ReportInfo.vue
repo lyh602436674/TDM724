@@ -34,11 +34,11 @@ import {cloneDeep} from "lodash";
 export default {
   mixins: [mixin],
   props: {
-    entrustNo: {
+    entrustCode: {
       type: String
     },
     isExternalManage: {
-      type: String
+      type: Boolean
     }
   },
   components: {
@@ -226,7 +226,7 @@ export default {
                     }
                   }
                 }),
-                this.isExternalManage == '1' ? h('a-upload', {
+                this.isExternalManage ? h('a-upload', {
                   props: {
                     action: this.autoFileUrl,
                     data: {id: params.row.id},
@@ -345,7 +345,7 @@ export default {
         let data = {
           ...this.queryParams,
           ...params,
-          c_entrustNo_7: this.entrustNo,
+          c_entrustCode_7: this.entrustCode,
           isEntrustListReport: true
         }
         return postAction(this.url.list, data).then((res) => {

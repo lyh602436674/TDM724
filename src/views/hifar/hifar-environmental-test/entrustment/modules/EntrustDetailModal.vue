@@ -28,7 +28,7 @@
         <a-tab-pane key="1" tab="委托信息">
           <entrust-detail ref='EntrustDetail' :detailData='detailData'></entrust-detail>
         </a-tab-pane>
-        <a-tab-pane key="2" tab="委托单预览">
+        <a-tab-pane key="2" tab="委托单预览" v-if="detailData.entrustType === '2'">
           <div class='autoHeight'>
             <embed
               v-if='detailData.reportPath'

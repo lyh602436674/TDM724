@@ -29,7 +29,7 @@
         <!--        </a-button>-->
       </div>
       <h-vex-table ref="taskHistoryTable" slot="content" :columns="columns" :data="loadData" :rowSelection='{ selectedRowKeys: selectedRowKeys, onSelect: onSelect }'>
-        <a href="javascript:;" slot="testCode" slot-scope="text, record" @click="() => handleShowDetail(record)">
+        <a slot="testCode" slot-scope="text, record" @click="() => handleShowDetail(record)">
           {{ record.testCode || '--' }}
         </a>
         <template slot="status" slot-scope="text">
@@ -279,7 +279,7 @@ export default {
         {
           title: '试验编号',
           dataIndex: 'testCode',
-          minWidth: 160,
+          minWidth: 120,
           scopedSlots: {customRender: 'testCode'},
         },
         {
@@ -290,7 +290,7 @@ export default {
         {
           title: '运行单号',
           dataIndex: 'entrustCodes',
-          minWidth: 120,
+          minWidth: 140,
         },
         {
           title: '报告编号',
@@ -347,12 +347,12 @@ export default {
         {
           title: '试验项目',
           dataIndex: 'unitNames',
-          minWidth: 100,
+          minWidth: 120,
         },
         {
           title: '试验设备',
           dataIndex: 'equipName',
-          minWidth: 100,
+          minWidth: 150,
         },
         {
           title: '期望开始时间',
@@ -428,8 +428,7 @@ export default {
       this.selectedRows = []
     },
     handleShowDetail(record) {
-      let top = '10px'
-      this.$refs.TaskDetailModal.show(record, top)
+      this.$refs.TaskDetailModal.show(record, '1','10px')
     },
     async handleExportXls(name, model) {
       let data = {

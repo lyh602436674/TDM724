@@ -16,7 +16,6 @@
     destroyOnClose
     :fullScreen='fullScreen'
     :getContainer='getContainer'
-    @submit='handleSubmit'
     @cancel='handleCancel'
   >
     <div class='fullscreenIcon' @click='fullScreenHandle'>
@@ -33,27 +32,22 @@
         <a-tab-pane key='1' tab='委托信息'>
           <entrust-detail ref='EntrustDetail' :detailData='detailData'></entrust-detail>
         </a-tab-pane>
-        <!--        <a-tab-pane key="2" tab="审核信息" v-if="detailData.status == 10 || detailData.status == 20 || detailData.status == 30 || detailData.status == 40 || detailData.status == 50">
-                  <apply-info ref="ApplyInfo" :flowId="flowId" class="autoHeight"></apply-info>
-                </a-tab-pane>-->
-        <!-- <a-tab-pane key="3" tab="任务信息" v-if="detailData.status == 20 || detailData.status == 40 || detailData.status == 50">
-          <task-info ref="TaskInfo" :entrustId="entrustId" class="autoHeight"></task-info>
-        </a-tab-pane> -->
         <a-tab-pane key='3' tab='试验信息'
-                    v-if="detailData.isExternalManage=='0' && (detailData.status == 20 || detailData.status == 40 || detailData.status == 50 || detailData.status == 80)">
+                    v-if="[20,40,50,80].includes(detailData.status)">
           <test-task-info ref='TaskInfo' :entrustId='entrustId' class='autoHeight'></test-task-info>
         </a-tab-pane>
-        <a-tab-pane key='4' tab='报告信息' v-if="detailData.status == 50 || detailData.isExternalManage=='1'">
+        <a-tab-pane key='4' tab='报告信息'
+                    v-if="viewDetailType !== '1' && (detailData.status === 40 || isSubpackage)">
           <a-button
-            v-if="detailData.isExternalManage=='1'"
+            v-if="viewDetailType !== '1' && isSubpackage"
             @click='addReport(detailData.id)'
             type='primary' style="margin: 0 5px 10px">添加
           </a-button>
           <report-info ref='ReportInfo' :entrustCode='detailData.entrustCode'
-                       :isExternalManage="detailData.isExternalManage" class='autoHeight'></report-info>
+                       :isExternalManage="isSubpackage" class='autoHeight'></report-info>
         </a-tab-pane>
         <!--        委托单预览 功能只在非草稿状态和外部委托单下显示-->
-        <a-tab-pane key='5' tab='委托单预览' v-if='detailData.status !==1 && detailData.entrustType === "2"'>
+        <a-tab-pane key='5' tab='委托单预览' v-if='detailData.status !== 1 && detailData.entrustType === "2"'>
           <div class='autoHeight'>
             <iframe
               v-if='detailData.reportPath'
@@ -99,6 +93,7 @@ export default {
   data() {
     return {
       moment,
+      viewDetailType: '',
       entrustCode: '',
       entrustId: '',
       flowId: '',
@@ -135,17 +130,22 @@ export default {
       ],
       url: {
         detailById: '/HfEnvEntrustBusiness/queryById',
-        saveFile: '/HfEnvEntrustBusiness/saveFile',
-        addReport:'/HfEnvEntrustBusiness/addReport'
+        addReport: '/HfEnvEntrustBusiness/addReport'
       }
+    }
+  },
+  computed: {
+    isSubpackage() {
+      // 项目信息中是否外包
+      return Object.keys(this.detailData).length && this.detailData.projectInfo[0].isSubpackage === '1'
     }
   },
   methods: {
     addReport(id) {
-      postAction(this.url.addReport,{id}).then(res=>{
+      postAction(this.url.addReport, {id}).then(res => {
         if (res.code === 200) {
           this.$refs.ReportInfo.refresh();
-        }else {
+        } else {
           this.$message.error(res.msg)
         }
       })
@@ -153,28 +153,15 @@ export default {
     show(id, type) {
       this.visible = true
       this.entrustId = id
+      this.viewDetailType = type
       this.loadDetail(id, type)
     },
     handleCancel() {
-      // this.saveFile(this.detailData.id, this.detailData.fileInfo)
       this.visible = false
       this.fullScreen = false
-      this.detailData = {}
       this.current = 0
       this.activeKey = '1'
-    },
-    saveFile(id, fileInfo) {
-      if (fileInfo && fileInfo.length > 0) {
-        let fileIds = fileInfo.map(item => item.fileId).join(',')
-        console.log('fileIds', fileIds)
-        postAction(this.url.saveFile, { id, fileIds }).then(res => {
-          if (res.code === 200) {
-
-          } else {
-            this.$message.error(res.msg)
-          }
-        })
-      }
+      this.detailData = {}
     },
     loadDetail(id, type) {
       let url = this.url.detailById
@@ -218,8 +205,6 @@ export default {
     },
     handleTabsChange(v) {
       this.activeKey = v
-    },
-    handleSubmit() {
     },
     fullScreenHandle() {
       this.fullScreen = !this.fullScreen

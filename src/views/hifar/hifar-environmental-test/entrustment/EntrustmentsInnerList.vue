@@ -39,7 +39,7 @@
         :rowSelection="{ selectedRowKeys: selectedRowKeys, onSelect: onSelect }"
       >
         <template #entrustNo="text, record">
-          <a v-if="record.entrustNo" @click="handleDetailCode(record,&quot;1&quot;)">{{ record.entrustNo }}</a>
+          <a v-if="record.entrustNo" @click="handleDetailCode(record,'1')">{{ record.entrustNo }}</a>
           <span v-else>--</span>
         </template>
         <template #entrustCode="text, record">

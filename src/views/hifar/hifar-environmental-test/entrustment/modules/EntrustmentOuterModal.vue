@@ -66,7 +66,7 @@
                 :edit-config="{
                   trigger: 'click',
                   mode: 'cell',
-                  activeMethod: ()=>true,
+                  activeMethod: ({column})=> { return column.property !== 'pieceNum'},
                 }"
                 :edit-rules='validRules'
                 :valid-config='{ showMessage: false }'
@@ -83,6 +83,10 @@
                   :edit-render="{
                       name: 'input',
                       attrs: { type: 'text', placeholder: '请输入样品名称' },
+                      events:{
+                        blur: this.pieceDataBlur,
+                        focus: this.pieceDataFocus,
+                      }
                     }"
                   field='productName'
                   title="样品名称"
@@ -91,6 +95,10 @@
                   :edit-render="{
                    name:'input',
                    attrs: { type: 'text', placeholder: '请输入图号' },
+                   events:{
+                        blur: this.pieceDataBlur,
+                        focus: this.pieceDataFocus,
+                      }
                 }"
                   field='productAlias'
                   title="图号"
@@ -101,8 +109,9 @@
                     name: 'input',
                     attrs: { type: 'text', placeholder: '请输入样品编号' },
                     events:{
-                      blur: this.pieceNoBlur,
-                    }
+                        blur: this.pieceDataBlur,
+                        focus: this.pieceDataFocus,
+                     }
                   }"
                   field='pieceNo'
                   title="样品编号"
@@ -198,19 +207,8 @@ export default {
       projectModelInfo: [],
       secretLevelArr: [],
       staticTableData: [],
-      url: {
-        save: "HfEnvEntrustBusiness/saveEntrust",
-        setSecretLevel: '/MinioBusiness/modifyAttachSecretLevelByIds',
-        edit: "/HfEnvEntrustBusiness/queryById"
-      },
-    }
-  },
-  computed: {
-    pieceTableData() {
-      return this.tableData
-    },
-    entrustFormData() {
-      return [
+      pieceSortingResult: [], // 根据样品名称和规格型号分类后的样品数据
+      entrustFormData: [
         {
           key: 'id',
           formType: 'input',
@@ -321,6 +319,28 @@ export default {
           }
         },
         {
+          title: '样品状态',
+          key: 'sampleStatus',
+          formType: 'dict',
+          dictCode: 'en_sample_status',
+          validate: {
+            rules: [{required: true, message: '请选择样品状态'}]
+          },
+          change: (val, option) => {
+          }
+        },
+        {
+          title: '样品提供方式',
+          key: 'sampleProvisionMethod',
+          formType: 'dict',
+          dictCode: 'en_sample_pro_method',
+          validate: {
+            rules: [{required: true, message: '请选择样品提供方式'}]
+          },
+          change: (val, option) => {
+          }
+        },
+        {
           title: '样品处置方式',
           key: 'sampleDisposeMethod',
           formType: 'dict',
@@ -354,12 +374,53 @@ export default {
           }
         },
         {
+          title: '检测照片',
+          key: 'testPicture',
+          formType: 'dict',
+          dictCode: 'en_test_picture',
+          validate: {
+            rules: [{required: true, message: '请选择检测照片'}]
+          },
+          change: (val, option) => {
+          }
+        },
+        {
           title: '检测报告',
           key: 'testReport',
           formType: 'dict',
           dictCode: 'en_test_report',
           validate: {
             rules: [{required: true, message: '请选择检测报告'}]
+          },
+          change: (val, option) => {
+          }
+        },
+        {
+          title: '报告形式',
+          key: 'reportForm',
+          formType: 'dict',
+          dictCode: 'en_report_form',
+          validate: {
+            rules: [{required: true, message: '请选择报告形式'}]
+          },
+          change: (val, option) => {
+          }
+        },
+        {
+          title: '报告份数',
+          key: 'reportNum',
+          formType: 'input-number',
+          style: {
+            width: '100%'
+          }
+        },
+        {
+          title: '报告领取方式',
+          key: 'reportCollectionMethod',
+          formType: 'dict',
+          dictCode: 'en_report_coll_method',
+          validate: {
+            rules: [{required: true, message: '请选择报告领取方式'}]
           },
           change: (val, option) => {
           }
@@ -398,8 +459,19 @@ export default {
             <h-upload-file showSecret={true} secretLevel={1} v-decorator={['attachIds', {initialValue: []}]}/>
           )
         }
-      ]
+      ],
+      activePieceRow: "",
+      url: {
+        save: "HfEnvEntrustBusiness/saveEntrust",
+        setSecretLevel: '/MinioBusiness/modifyAttachSecretLevelByIds',
+        edit: "/HfEnvEntrustBusiness/queryById"
+      },
     }
+  },
+  computed: {
+    pieceTableData() {
+      return this.tableData
+    },
   },
   methods: {
     show(record, type) {
@@ -447,8 +519,10 @@ export default {
           obj.entrustTime = obj.entrustTime && obj.entrustTime != 0 ? moment(parseFloat(obj.entrustTime)) : moment()
           this.entrustType = obj.entrustType
           this.entrustModel = obj
+          this.tableData = []
           this.tableData = obj.pieceInfo
           this.projectInfoData = obj.projectInfo
+          this.pieceSorting(this.tableData, 'productName', 'productAlias')
         }
       }).finally(() => {
         this.submitLoading = false
@@ -460,22 +534,20 @@ export default {
     },
     // 新增样品弹框返回数据
     productAddCallback(values) {
-      let tableData = []
       if (values.pieceNo.includes('-') && values.pieceNo.includes(',')) {
-        this.tableData = this.tableData.concat(this.splitByBoth(values))
+        this.tableData.push(...this.splitByBoth(values))
       } else if (values.pieceNo.includes(',')) {
-        this.tableData = this.tableData.concat(this.splitByComma(values, values.pieceNo.split(',')))
+        this.tableData.push(...this.splitByComma(values, values.pieceNo.split(',')))
       } else if (values.pieceNo.includes('-')) {
-        this.tableData = this.tableData.concat(this.splitByHorizontalLine(values, values.pieceNo.split('-')))
+        this.tableData.push(...this.splitByHorizontalLine(values, values.pieceNo.split('-')))
       } else {
-        tableData.push({
+        this.tableData.push({
           id: randomUUID(),
           productName: values.productName,
           pieceNum: 1,
           productAlias: values.productAlias,
           pieceNo: (values.piecePrefix || '') + values.pieceNo,
         })
-        this.tableData = this.tableData.concat(tableData)
       }
       this.setProjectPieceNos()
     },
@@ -530,19 +602,32 @@ export default {
       }
       return tableData
     },
-    pieceNoBlur({row}) {
-      this.setProjectPieceNos()
+    pieceDataFocus({row, column}) {
+      // 记录一下编辑前的数据
+      this.activePieceRow = row[column.property]
+    },
+    pieceDataBlur({row, rowIndex, column}) {
+      // 判断一下输入框失去焦点后数据是否已经改变，改变了再去做变更和提醒
+      setTimeout(() => {
+        if (row[column.property] !== this.activePieceRow) {
+          this.setProjectPieceNos()
+        }
+      }, 1)
     },
     // 样品删除
     handleDelete() {
       const $table = this.$refs.pieceTable
       $table.removeCheckboxRow()
-      const {removeRecords} = $table.getRecordset()
-      let tableData = this.tableData
-      if (tableData.length > 0) {
-        this.tableData = tableData.filter((items) => {
-          if (!removeRecords.includes(items)) return items
-        })
+      let getRemoveRecords = $table.getRemoveRecords()
+      let getTableData = this.tableData
+      for (let i = 0; i < getTableData.length; i++) {
+        for (let j = 0; j < getRemoveRecords.length; j++) {
+          if (getTableData[i].id === getRemoveRecords[j].id) {
+            this.tableData.splice(i, 1)
+            i--
+            break
+          }
+        }
       }
       this.selectedRowKeys = []
       this.setProjectPieceNos()
@@ -550,15 +635,20 @@ export default {
     // 动态设置项目中已选样品
     setProjectPieceNos() {
       if (this.projectInfoData.length) {
+        this.$message.warning('样品数据改变，也将同步项目信息中的已选样品数据改变')
         setTimeout(() => {
           let ProjectForm = this.$refs.ProjectForm
           let projectFormItem = ProjectForm.$refs.projectFormItem
           let tableData = this.$refs.pieceTable.getData()
-          let pieceIds = tableData.map(record => record.id).toString()
-          let pieceNos = tableData.map(record => record.pieceNo).toString()
+          let pieceSorting = this.pieceSorting(tableData, 'productName', 'productAlias')
+          let pieceIds = index => pieceSorting[index] ? pieceSorting[index].pieceIds.toString() : ''
+          let pieceNos = index => pieceSorting[index] ? pieceSorting[index].pieceNos.toString() : ''
           for (let i = 0; i < this.projectInfoData.length; i++) {
-            projectFormItem[i].$refs['projectInfoForm' + i].form.setFieldsValue({pieceIds, pieceNos})
-            projectFormItem[i].model.pieceNos = pieceNos
+            projectFormItem[i].$refs['projectInfoForm' + i].form.setFieldsValue({
+              pieceIds: pieceIds(i),
+              pieceNos: pieceNos(i)
+            })
+            projectFormItem[i].model.pieceNos = pieceNos(i)
           }
         }, 1)
       }
@@ -595,7 +685,8 @@ export default {
     },
     // 选择项目弹框返回数据
     projectModalCallback(recordId, record) {
-      let tableData = this.$refs.pieceTable.getData()
+      let pieceTableData = this.$refs.pieceTable.getData()
+      let pieceSorting = this.pieceSorting(pieceTableData, 'productName', 'productAlias')
       let extendRecord = cloneDeep(record)
       if (this.projectInfoData.length) {
         for (let i = 0; i < extendRecord.length; i++) {
@@ -608,14 +699,41 @@ export default {
           }
         }
       }
-      this.projectInfoData = this.projectInfoData.concat(extendRecord.map(item => {
+      this.projectInfoData = this.projectInfoData.concat(extendRecord.map((item, index) => {
         return {
           ...item,
           testCondition: item.remarks,
-          pieceIds: tableData.map(item => item.id).toString(),
-          pieceNos: tableData.map(item => item.pieceNo).toString()
+          pieceIds: pieceSorting[index] ? pieceSorting[index].pieceIds.toString() : '',
+          pieceNos: pieceSorting[index] ? pieceSorting[index].pieceNos.toString() : ''
         }
       }))
+    },
+    // 样品分类：根据样品名称和图号进行分类
+    pieceSorting(data, name, model) {
+      let result = [], hash = {}
+      for (let i = 0; i < data.length; i++) {
+        let field = hash[data[i][name] + data[i][model]]
+        if (!field) {
+          result.push({
+            ...data[i],
+            pieceNameModel: data[i][name] + data[i][model],
+            pieceIds: [data[i].id],
+            pieceNos: [data[i].pieceNo],
+          })
+          hash[data[i][name] + data[i][model]] = data[i]
+        } else {
+          for (let j = 0; j < result.length; j++) {
+            let item = result[j];
+            if (item.pieceNameModel === data[i][name] + data[i][model]) {
+              item.pieceIds.push(data[i].id);
+              item.pieceNos.push(data[i].pieceNo);
+              break;
+            }
+          }
+        }
+      }
+      this.pieceSortingResult = result
+      return result
     },
     //项目信息为空时
     emptyDatCallback() {
@@ -646,7 +764,6 @@ export default {
     },
     //暂存 不需要验证任何表单和表格
     handleTransientSubmit() {
-      this.submitLoading = true
       this.submitStatus = 1
       this.validateEntrustForm(false).then(res => {
         let entrustModelInfo = cloneDeep(res)
@@ -659,7 +776,6 @@ export default {
     },
     //提交
     handleSubmit() {
-      this.submitLoading = true
       this.submitStatus = 10
       this.validateEntrustForm(true).then(res => {
         let entrustModelInfo = cloneDeep(res)
@@ -678,18 +794,60 @@ export default {
     // 暂存-提交请求
     submitRequest(status) {
       let {entrustModelInfo, pieceModelInfo, projectModelInfo} = this
-      let params = {entrustModelInfo, pieceModelInfo, projectModelInfo, status,}
-      postAction(this.url.save, params).then(res => {
-        if (res.code === 200) {
-          this.$message.success(status === 1 ? '暂存成功' : "提交成功")
-          this.handleCancel()
-          this.$emit('change', true)
-        } else {
-          this.$message.warning(res.msg)
+      if (this.pieceSortingResult.length !== projectModelInfo.length && status === 10) {
+        let pieceSortingResult = cloneDeep(this.pieceSortingResult)
+        for (let i = 0; i < pieceSortingResult.length; i++) {
+          for (let j = 0; j < projectModelInfo.length; j++) {
+            if (pieceSortingResult[i].pieceIds.sort().toString().includes(projectModelInfo[j].pieceIds.split(',').sort().toString())) {
+              pieceSortingResult.splice(i, 1)
+              i--
+              break
+            }
+          }
         }
-      }).finally(() => {
-        this.submitLoading = false
-      })
+        let pieceNosDom = [], index = 0, pieceIds = []
+        for (let i = 0; i < pieceSortingResult.length; i++) {
+          for (let j = 0; j < pieceSortingResult[i].pieceNos.length; j++) {
+            index++
+            pieceIds.push(pieceSortingResult[i].pieceIds[j])
+            pieceNosDom.push(<div style={{color: 'red'}}>{` ${index}、${pieceSortingResult[i].pieceNos[j]} `}</div>)
+          }
+        }
+        this.$confirm({
+          title: '提示',
+          content: h => {
+            return h('div', {}, [
+              <p>还有如下编号的样品未添加分配试验项目</p>,
+              <p>{pieceNosDom}</p>,
+              <p>确定继续提交吗？</p>
+            ])
+          },
+          onOk: () => {
+            // 这里需要删除多余没有用到的样品
+            fn.call(this, pieceIds)
+          }
+        })
+      } else {
+        fn.call(this)
+      }
+
+
+      function fn(pieceIds) {
+        let params = {entrustModelInfo, pieceModelInfo, projectModelInfo, status,}
+        params.pieceModelInfo = pieceIds && pieceIds.length ? params.pieceModelInfo.filter(item => !pieceIds.toString().includes(item.id)) : params.pieceModelInfo
+        this.submitLoading = true
+        postAction(this.url.save, params).then(res => {
+          if (res.code === 200) {
+            this.$message.success(status === 1 ? '暂存成功' : "提交成功")
+            this.handleCancel()
+            this.$emit('change', true)
+          } else {
+            this.$message.warning(res.msg)
+          }
+        }).finally(() => {
+          this.submitLoading = false
+        })
+      }
     },
     // 构建委托表单数据
     buildEntrustData(entrustModelInfo) {

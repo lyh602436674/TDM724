@@ -21,7 +21,7 @@
     </div>
     <a-row :gutter="24" style="margin: 0;height: 100%">
       <a-col :xl="20" :lg="24" :md="24" :sm="24" :xs="24" style="height: 100%">
-        <test-base-detail ref="TestBaseDetail" :testId="testId" :top='top' :showExceptionAndEnd="showExceptionAndEnd"></test-base-detail>
+        <test-base-detail ref="TestBaseDetail" :viewDetailType="viewDetailType" :testId="testId" :top='top' :showExceptionAndEnd="showExceptionAndEnd"></test-base-detail>
       </a-col>
       <a-col :xl="4" :lg="24" :md="24" :sm="24" :xs="24">
         <test-base-time-line ref="TestBaseTimeLine" style="margin-top: 46px" :testId="testId"></test-base-time-line>
@@ -32,7 +32,6 @@
 
 <script>
 import moment from 'moment'
-import {postAction} from '@api/manage'
 import TestBaseDetail from './components/TestBaseDetail.vue'
 import TestBaseTimeLine from './components/TestBaseTimeLine.vue'
 
@@ -58,6 +57,7 @@ export default {
       title: '',
       visible: false,
       testId: '',
+      viewDetailType: '',
       testCode: '',
       top: '',
       url: {
@@ -67,8 +67,9 @@ export default {
   },
 
   methods: {
-    show(record, top) {
+    show(record, type, top) {
       this.visible = true
+      this.viewDetailType = type
       this.testId = record.id
       this.top = top
       this.testCode = record.testCode

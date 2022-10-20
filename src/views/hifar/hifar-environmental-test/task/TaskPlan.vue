@@ -104,9 +104,9 @@
                 <span>{{ record.productNames }}-{{ record.productAliass }}</span>
               </template>
               <span slot="entrustNo" slot-scope="text, record">
-                <a @click="$refs.taskDetail.show(record)" v-if="text">
-                  <h-icon :type="record.overFlag === '1' ? 'icon-jingbaobaojing2' : ''" style="font-size: 20px"/>
-                  <span :style="{ marginLeft: record.overFlag === '1' ? 0 : '20px' }">{{ text }}</span>
+                <a @click="$refs.taskDetail.show(record,'1')" v-if="text">
+                  <h-icon :type="record.alert ? 'icon-jingbaobaojing2' : ''" style="font-size: 20px"/>
+                  <span :style="{ marginLeft: record.alert ? 0 : '20px' }">{{ text }}</span>
                 </a>
                 <span v-else> -- </span>
               </span>
