@@ -17,20 +17,20 @@
           </div>
         </div>
         <div class="table-body">
-          <vue-seamless-scroll :data="dataSource" class="table-body-scroll" :class-option="classOption">
+          <h-auto-scroll :data="dataSource" class="table-body-scroll" :class-option="classOption">
             <div class="table-body-row" v-for="(item, index) in dataSource" :key="index + '-tr'">
-
               <div class="table-body-col" v-for="(v, i) in columns" :key="index + i + 'td'" :style="{ width: v.width }">
                 <template v-if="v.key !== 'status'">
-                  {{ v.key === 'index' ? 1 + index : item[v.key]}}
+                  {{ v.key === 'index' ? 1 + index : item[v.key] }}
                 </template>
                 <template v-else>
-                  <div class="table-body-col-status" :style="{backgroundColor:colorList[item.statusNum-1]}">{{item[v.key] ? item[v.key] : '--'}}</div>
+                  <div class="table-body-col-status" :style="{backgroundColor:colorList[item.statusNum-1]}">
+                    {{ item[v.key] ? item[v.key] : '--' }}
+                  </div>
                 </template>
               </div>
-
             </div>
-          </vue-seamless-scroll>
+          </h-auto-scroll>
         </div>
       </div>
     </div>
@@ -40,9 +40,11 @@
 <script>
 import {getAction} from '@/api/manage'
 import moment from 'moment'
+import HAutoScroll from "@comp/HAutoScroll/HAutoScroll";
 
 export default {
   name: 'EquipDetailList',
+  components: {HAutoScroll},
   description: '设备信息列表页面',
   data() {
     return {

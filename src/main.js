@@ -3,7 +3,7 @@
  * @Date: 2021-05-20 11:27:54
  * @LastEditTime: 2022-04-06 14:10:22
  * @LastEditors: 雷宇航
- * @Description: 
+ * @Description:
  * @FilePath: \tdm200-client\tdm200-client\src\main.js
  */
 /** init domain config */
@@ -45,7 +45,7 @@ import Print from 'vue-print-nb-jeecg'
 import preview from 'vue-photo-preview'
 import 'vue-photo-preview/dist/skin.css'
 import SSO from '@/cas/sso.js'
-import vueSeamlessScroll from 'vue-seamless-scroll'
+// import vueSeamlessScroll from 'vue-seamless-scroll'
 import {
   ACCESS_TOKEN,
   DEFAULT_COLOR,
@@ -68,7 +68,7 @@ import vueBus from '@/utils/vueBus';
 import VueIntro from 'vue-introjs'
 import 'intro.js/introjs.css'
 Vue.use(VueIntro)
-Vue.use(vueSeamlessScroll)
+// Vue.use(vueSeamlessScroll)
 
 // Vue.prototype.wps = WPS
 Vue.prototype.$wow = WOW

@@ -582,7 +582,7 @@ export default {
         {
           title: "样品编号",
           align: "left",
-          dataIndex: "productNos",
+          dataIndex: "pieceNos",
           minWidth: 100,
           customRender: (text, record) => {
             return text || "--";

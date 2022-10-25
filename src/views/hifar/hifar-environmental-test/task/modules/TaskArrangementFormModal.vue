@@ -165,6 +165,9 @@ export default {
           title: '设备速率',
           key: 'testRate',
           formType: 'input-number',
+          style: {
+            width: "100%"
+          }
         },
 
         {

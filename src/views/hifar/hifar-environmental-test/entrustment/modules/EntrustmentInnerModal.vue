@@ -164,10 +164,11 @@ import {cloneDeep, isArray} from 'lodash'
 import {postAction} from "@api/manage";
 import {randomUUID} from "@/utils/util";
 import ProductAddModal from "@views/hifar/hifar-environmental-test/entrustment/modules/ProductAddModal";
+import HAutoScroll from "@comp/HAutoScroll/HAutoScroll";
 
 export default {
   name: "NewEntrustmentModal",
-  components: {ProductAddModal, ProjectAddModal, NewTestProjectForm, PhemismCustomSelect},
+  components: {HAutoScroll, ProductAddModal, ProjectAddModal, NewTestProjectForm, PhemismCustomSelect},
   inject: {
     getContainer: {
       default: () => document.body

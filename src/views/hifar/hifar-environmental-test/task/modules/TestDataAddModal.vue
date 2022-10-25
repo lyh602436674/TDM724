@@ -52,7 +52,6 @@ export default {
       title: '',
       visible: false,
       model_cure: {},
-      model_img: {},
       model_atlas: {},
       model_attach: {},
       model_video: {},
@@ -151,9 +150,6 @@ export default {
       this.visible = true
       this.title = record.testNames + '(' + record.testCode + ') - 试验数据'
       this.testId = record.id
-      this.imageData[0].component.componentOptions.propsData.customParams.refId = record.id
-      this.curveData[0].component.componentOptions.propsData.customParams.refId = record.id
-      this.atlasData[0].component.componentOptions.propsData.customParams.refId = record.id
       this.attachData[0].component.componentOptions.propsData.customParams.refId = record.id
       this.videoData[0].component.componentOptions.propsData.customParams.refId = record.id
       this.loadData()
@@ -162,100 +158,8 @@ export default {
       this.visible = false
     },
     loadData() {
-      // this.loadImgData()
-      // this.loadCureData()
-      // this.loadAtlasData()
       this.loadAttachData()
       this.loadVideoData()
-    },
-    // 图片
-    loadImgData() {
-      postAction(this.url.attachList, { refType: 'test_picture', refId: this.testId }).then((res) => {
-        if (res.code == 200) {
-          const { data } = res
-          let fileArr = []
-          let obj = {}
-          if (data && data.length > 0) {
-            data.forEach((item) => {
-              fileArr.push({
-                fileId: item.id,
-                size: item.fileSize,
-                status: item.status == 9 ? 'success' : 'exception',
-                isInReport: item.isInReport,
-                url: item.filePath,
-                name: item.fileName,
-                uuid: item.id,
-                percent: 100,
-                uploadTime: item.createTime,
-                secretLevel: item.secretLevel,
-                type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
-                replaceStatus: item.replaceStatus
-              })
-            })
-          }
-          obj.attachIds = fileArr
-          this.model_img = obj
-        }
-      })
-    },
-    // 曲线
-    loadCureData() {
-      postAction(this.url.attachList, { refType: 'test_cure', refId: this.testId }).then((res) => {
-        if (res.code == 200) {
-          const { data } = res
-          let fileArr = []
-          let obj = {}
-          if (data && data.length > 0) {
-            data.forEach((item) => {
-              fileArr.push({
-                fileId: item.id,
-                size: item.fileSize,
-                status: item.status == 9 ? 'success' : 'exception',
-                url: item.filePath,
-                name: item.fileName,
-                uuid: item.id,
-                percent: 100,
-                uploadTime: item.createTime,
-                secretLevel: item.secretLevel,
-                type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
-                replaceStatus:item.replaceStatus
-              })
-            })
-          }
-          obj.attachIds = fileArr
-          this.model_cure = obj
-        }
-      })
-    },
-    // 图谱
-    loadAtlasData() {
-      postAction(this.url.attachList, { refType: 'test_atlas', refId: this.testId }).then((res) => {
-        if (res.code == 200) {
-          const { data } = res
-          let fileArr = []
-          let obj = {}
-          if (data && data.length > 0) {
-            data.forEach((item) => {
-              fileArr.push({
-                fileId: item.id,
-                size: item.fileSize,
-                status: item.status == 9 ? 'success' : 'exception',
-                url: item.filePath,
-                name: item.fileName,
-                uuid: item.id,
-                percent: 100,
-                uploadTime: item.createTime,
-                secretLevel: item.secretLevel,
-                type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
-                replaceStatus: item.replaceStatus,
-                remarks: item.remarks
-              })
-            })
-          }
-          obj.attachIds = fileArr
-          this.model_atlas = obj
-        }
-      })
     },
     // 附件
     loadAttachData() {
@@ -320,7 +224,9 @@ export default {
     },
     // 图片删除
     handleDelete(file, fileList) {
-      postAction(this.url.delete, { id: file.fileId }).then(() => {})
+      postAction(this.url.delete, { id: file.fileId }).then(() => {
+        this.$message.success('删除成功')
+      })
     },
   },
 }

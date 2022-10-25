@@ -249,10 +249,10 @@ export default {
         [
           {
             title: '备注',
-            dataIndex: 'descriptions',
+            dataIndex: 'remarks',
             width: 250,
             scopedSlots: {
-              customRender: 'descriptions'
+              customRender: 'remarks'
             }
           }
         ]
@@ -349,7 +349,11 @@ export default {
             },
             scopedSlots: {
               remarks: (text, record) => {
-                return (
+                return this.isWriteRemarks && this.isEdit? (
+                  <aInput readOnly={!this.isEdit} value={record.remarks} onBlur={(e) => {
+                    record.remarks = e.target.value
+                  }}/>
+                ) : (
                   <div>
                     <span>{text}</span>
                   </div>
@@ -360,13 +364,6 @@ export default {
                   <div>
                     <span>{text}</span>
                   </div>
-                )
-              },
-              descriptions: (text, record) => {
-                return (
-                  <aInput disabled={!this.isEdit} value={record.descriptions} onChange={(e) => {
-                    record.descriptions = e.target.value
-                  }}/>
                 )
               },
               name: (text, record) => {
@@ -411,7 +408,7 @@ export default {
                 }
                 if (record.url) {
                   btns.push(
-                    <a-icon type="download" class="primary-text"
+                    <a-icon type="download" class="primary-text" title={'下载'}
                             onclick={() => this.handleDownload(record.url, record.name, record.fileId)}/>
                   )
                 }

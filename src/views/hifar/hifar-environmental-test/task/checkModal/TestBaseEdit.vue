@@ -197,9 +197,9 @@
         </div>
       </h-card>
     </h-desc>
-    <h-desc style='margin-top: 20px' title='附件上传'>
-      <h-upload-file accept="image/png,image/gif,image/jpg,image/jpeg" style="width: 100%" v-model="imageData"
-                     isWriteRemarks></h-upload-file>
+    <h-desc style='margin-top: 20px' title='图片图谱'>
+      <h-upload-file accept="image/png,image/gif,image/jpg,image/jpeg" style="width: 100%" v-model="pictureData"
+                     isWriteRemarks :customParams="pictureCustomParams" @delete="handleDeleteImg"></h-upload-file>
     </h-desc>
     <handle-select-modal
       ref='productHandleSelectModal'
@@ -272,14 +272,13 @@ export default {
   data() {
     return {
       moment,
-      imageData: [],
+      pictureData: [],
       visible: false,
       submitLoading: false,
       entrustType: 2,
       title: '',
       testId: '',
       carryOutProcessModel: {},
-      model_img: {},
       url: {
         detail: '/HfEnvTaskTestBusiness/queryById',
         save: '/HfEnvTaskTestBusiness/modifyById',
@@ -885,11 +884,18 @@ export default {
       ],
     }
   },
+  computed: {
+    pictureCustomParams() {
+      return {
+        refId: this.testId,
+        refType: 'test_picture'
+      }
+    }
+  },
 
   methods: {
     show(record) {
       this.testId = record.id
-      // this.imageData[0].component.componentOptions.propsData.customParams.refId = record.id
       this.visible = true
       this.getTestDetail(record.id)
       this.$nextTick(() => {
@@ -899,7 +905,7 @@ export default {
     },
     loadImgData() {
       postAction(this.url.attachList, {refType: 'test_picture', refId: this.testId}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           const {data} = res
           let fileArr = []
           let obj = {}
@@ -916,13 +922,13 @@ export default {
                 percent: 100,
                 uploadTime: item.createTime,
                 secretLevel: item.secretLevel,
+                remarks: item.remarks,
                 type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
                 replaceStatus: item.replaceStatus
               })
             })
           }
-          obj.attachIds = fileArr
-          this.model_img = obj
+          this.pictureData = fileArr
         }
       })
     },
@@ -934,7 +940,9 @@ export default {
     },
     // 图片删除
     handleDeleteImg(file) {
-      postAction(this.url.deleteImg, {id: file.fileId})
+      postAction(this.url.deleteImg, {id: file.fileId}).then(() => {
+        this.$message.success('删除成功')
+      })
     },
     validateStartTime(rule, value, cb) {
       let endTime = this.$refs.carryOutProcessForm.form.getFieldsValue(['endTime'])
@@ -1043,7 +1051,7 @@ export default {
     },
     productHandleDelete(id) {
       for (let i = 0; i < this.productTable.length; i++) {
-        if (id == this.productTable[i].id) {
+        if (id === this.productTable[i].id) {
           this.productTable.splice(i, 1)
         }
       }
@@ -1075,8 +1083,7 @@ export default {
       })
     },
     personAdd() {
-      const {personArr} = this
-      this.$refs.PostionModal.show(personArr, '选择参试人员')
+      this.$refs.PostionModal.show(this.personArr, '选择参试人员')
     },
     sensorAdd() {
       this.$refs.sensorHandleSelectModal.show(this.sensorData, '选择传感器')
@@ -1092,7 +1099,7 @@ export default {
     },
     personHandleDelete(testUserId) {
       for (let i = 0; i < this.personArr.length; i++) {
-        if (testUserId == this.personArr[i].testUserId) {
+        if (testUserId === this.personArr[i].testUserId) {
           this.personArr.splice(i, 1)
         }
       }
@@ -1114,12 +1121,11 @@ export default {
       this.personArr = cloneDeep([].concat([], this.personArr, newPerson))
     },
     equipAdd() {
-      const {equipData} = this
-      this.$refs.equipHandleSelectModal.show(equipData)
+      this.$refs.equipHandleSelectModal.show(this.equipData)
     },
     equipHandleDelete(id) {
       for (let i = 0; i < this.equipData.length; i++) {
-        if (id == this.equipData[i].id) {
+        if (id === this.equipData[i].id) {
           this.equipData.splice(i, 1)
         }
       }
@@ -1137,6 +1143,7 @@ export default {
     },
     // 保存
     handleSave() {
+      console.log(this.pictureData, 'this.pictureData')
       this.submitLoading = true
       const {
         $refs: {carryOutProcessForm}
@@ -1163,6 +1170,7 @@ export default {
           pieceArr: this.productTable, //被试件(样品)集合
           testSensorArr: this.sensorData,
           testToolsProductArr: this.toolsProductData,
+          pictureData: this.pictureData, // 图片图谱
         }
         postAction(this.url.save, params).then((res) => {
           if (res.code === 200) {

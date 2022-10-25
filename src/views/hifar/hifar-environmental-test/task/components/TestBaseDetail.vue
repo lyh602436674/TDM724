@@ -30,8 +30,9 @@
         <detail-base-info :detailDataObj="entrustInfoItem"></detail-base-info>
       </div>
       <!--      样品信息-->
-      <piece-detail-template :entrustType="detailData.entrustInfo[0].entrustType"
-                             :dataSource="detailData.testPieceInfo"/>
+      <piece-detail-template
+        :entrustType="detailData.entrustInfo && detailData.entrustInfo.length && detailData.entrustInfo[0].entrustType"
+        :dataSource="detailData.testPieceInfo"/>
       <!-- 项目信息 -->
       <template v-for="(item,index) in projectInfo">
         <project-detail-template :key="index" :model="item"></project-detail-template>
@@ -63,6 +64,10 @@
         </h-desc-item>
         <h-desc-item :span="3" label="试验结果">{{ detailData.processDesc || '--' }}</h-desc-item>
       </h-desc>
+      <!-- 图片图谱 -->
+      <h-desc id="testData" ref="testData" title="图片图谱">
+        <h-upload-file style="width: 100%" v-model="pictureData" isWriteRemarks :isEdit="false"></h-upload-file>
+      </h-desc>
       <!-- 试前检查 -->
       <h-desc id="testBeforCheck" ref="testBeforCheck" :bordered='false' lableWidth="110px"
               style="margin-top: 20px; margin-bottom: 20px" title="试前检查">
@@ -75,8 +80,9 @@
           style="width: 100%; height: 200px"
         >
         <span slot="itemRes" slot-scope="text, record">
-          <h-icon v-if="record.itemRes == '1'" class="danger-text" type="icon-chacha"/>
-          <h-icon v-else-if="record.itemRes == '2'" class="success-text" type="icon-wancheng1"/>
+            <h-icon v-if="record.itemRes === '2'" class='success-text' type='icon-wancheng1'/>
+            <h-icon v-else-if="record.itemRes === '3'" class='danger-text' type='icon-chacha'/>
+            <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="record.itemRes"></span>
         </span>
         </h-vex-table>
       </h-desc>
@@ -91,10 +97,11 @@
           bordered
           style="width: 100%; height: 200px"
         >
-        <span slot="itemRes" slot-scope="text, record">
-          <h-icon v-if="record.itemRes == '1'" class="danger-text" type="icon-chacha"/>
-          <h-icon v-else-if="record.itemRes == '2'" class="success-text" type="icon-wancheng1"/>
-        </span>
+          <span slot="itemRes" slot-scope="text, record">
+            <h-icon v-if="record.itemRes === '2'" class='success-text' type='icon-wancheng1'/>
+            <h-icon v-else-if="record.itemRes === '3'" class='danger-text' type='icon-chacha'/>
+            <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="record.itemRes"></span>
+          </span>
         </h-vex-table>
       </h-desc>
       <!-- 试后检查 -->
@@ -109,15 +116,25 @@
           style="width: 100%; height: 200px"
         >
         <span slot="itemRes" slot-scope="text, record">
-          <h-icon v-if="record.itemRes == '1'" class="danger-text" type="icon-chacha"/>
-          <h-icon v-else-if="record.itemRes == '2'" class="success-text" type="icon-wancheng1"/>
+          <h-icon v-if="record.itemRes === '2'" class='success-text' type='icon-wancheng1'/>
+            <h-icon v-else-if="record.itemRes === '3'" class='danger-text' type='icon-chacha'/>
+            <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="record.itemRes"></span>
         </span>
         </h-vex-table>
       </h-desc>
       <!-- 试验数据 -->
       <h-desc id="testData" ref="testData" title="试验数据">
-        <h-upload-file style="width: 100%" v-model="imageData" isWriteRemarks :isEdit="false"></h-upload-file>
+        <div style="height: 100%; width: 100%; overflow: auto; padding: 20px">
+          <h-desc id="attachForm" :bordered="false">
+            <h-form ref="attachForm" v-model="model_attach" :column="1" :formData="attachData"
+                    style="width: 100%"/>
+          </h-desc>
+          <h-desc id="videoForm" :bordered="false">
+            <h-form ref="videoForm" v-model="model_video" :column="1" :formData="videoData" style="width: 100%"/>
+          </h-desc>
+        </div>
       </h-desc>
+
     </template>
     <test-entrust-review-pdf ref="testEntrustReviewPdf"/>
   </div>
@@ -181,6 +198,8 @@ export default {
       entrustInfo: [{flag: false}],
       entrustInfoItem: {},
       title: '',
+      model_attach: {},
+      model_video: {},
       visible: false,
       columns: [
         {
@@ -259,7 +278,39 @@ export default {
         })
       },
       // 图片
-      imageData: [],
+      pictureData: [],
+      // 附件
+      attachData: [
+        {
+          title: '附件',
+          key: 'attachIds',
+          span: 1,
+          component: (
+            <h-upload-file
+              isEdit={false}
+              v-decorator={['attachIds', {initialValue: []}]}
+              customParams={{refType: 'test_attach', refId: this.checkId}}
+              on-delete={this.handleDelete}
+            />
+          ),
+        },
+      ],
+      // 视频
+      videoData: [
+        {
+          title: '视频',
+          key: 'attachIds',
+          span: 1,
+          component: (
+            <h-upload-file
+              isEdit={false}
+              v-decorator={['attachIds', {initialValue: []}]}
+              customParams={{refType: 'test_video', refId: this.checkId}}
+              on-delete={this.handleDelete}
+            />
+          ),
+        },
+      ],
     }
   },
   watch: {
@@ -269,6 +320,8 @@ export default {
         if (val) {
           this.loadDetailData(val)
           this.loadImgData()
+          this.loadAttachData()
+          this.loadVideoData()
         }
       },
     },
@@ -323,7 +376,34 @@ export default {
     // 图片
     loadImgData() {
       postAction(this.url.attachList, {refType: 'test_picture', refId: this.checkId}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
+          const {data} = res
+          let fileArr = []
+          if (data && data.length > 0) {
+            data.forEach((item) => {
+              fileArr.push({
+                fileId: item.id,
+                size: item.fileSize,
+                status: item.status == 9 ? 'success' : 'exception',
+                url: item.filePath,
+                name: item.fileName,
+                uuid: item.id,
+                percent: 100,
+                uploadTime: item.createTime,
+                secretLevel: item.secretLevel,
+                remarks: item.remarks,
+                type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
+              })
+            })
+          }
+          this.pictureData = fileArr
+        }
+      })
+    },
+    // 附件
+    loadAttachData() {
+      postAction(this.url.attachList, {refType: 'test_attach', refId: this.checkId}).then((res) => {
+        if (res.code === 200) {
           const {data} = res
           let fileArr = []
           let obj = {}
@@ -344,7 +424,43 @@ export default {
             })
           }
           obj.attachIds = fileArr
-          this.model_img = obj
+          this.model_attach = obj
+        }
+      })
+    },
+    // 视频
+    loadVideoData() {
+      postAction(this.url.attachList, {refType: 'test_video', refId: this.checkId}).then((res) => {
+        if (res.code === 200) {
+          const {data} = res
+          let fileArr = []
+          let obj = {}
+          if (data && data.length > 0) {
+            data.forEach((item) => {
+              fileArr.push({
+                fileId: item.id,
+                size: item.fileSize,
+                status: item.status == 9 ? 'success' : 'exception',
+                url: item.filePath,
+                name: item.fileName,
+                uuid: item.id,
+                percent: 100,
+                uploadTime: item.createTime,
+                secretLevel: item.secretLevel,
+                type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
+              })
+            })
+          }
+          obj.attachIds = fileArr
+          this.model_video = obj
+        }
+      })
+    },
+    // 图片删除
+    handleDelete(file, fileList) {
+      postAction(this.url.delete, {id: file.fileId}).then(res => {
+        if (res.code === 200) {
+          this.$message.success('删除成功')
         }
       })
     },

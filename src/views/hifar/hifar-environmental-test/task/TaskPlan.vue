@@ -470,16 +470,16 @@ export default {
                 xAxisData = []
               waitDistributeTaskPieCount.map((item) => {
                 barData.push(item.taskNum)
-                if (item.unitName.length > 4) {
-                  xAxisData.push(item.unitName.slice(0, 4) + '...')
-                } else {
-                  xAxisData.push(item.unitName)
-                }
+                xAxisData.push(item.unitName)
               })
               this.options = Object.assign({}, this.localOption, {
                 toolbox: this.toolbox,
                 xAxis: {
                   type: 'category',
+                  axisLabel: {
+                    interval: 0,
+                    rotate: xAxisData.length > 5 ? 30 : 0,
+                  },
                   data: xAxisData,
                 },
                 tooltip: {
