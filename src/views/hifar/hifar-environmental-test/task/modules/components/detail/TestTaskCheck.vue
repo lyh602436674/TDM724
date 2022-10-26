@@ -33,9 +33,9 @@
                 {{ item.itemRequire }}
               </div>
               <div class="check-res check-list-item-center">
-                <div v-if="item.itemRes == '1'"></div>
-                <h-icon v-else-if="item.itemRes == '2'" class="success-text" type="icon-wancheng1"/>
-                <h-icon v-else class="danger-text" type="icon-chacha"/>
+                <h-icon v-if="item.itemRes == '2'" class='success-text' type='icon-wancheng1'/>
+                <h-icon v-else-if="item.itemRes == '3'" class='danger-text' type='icon-chacha'/>
+                <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="item.itemRes"></span>
               </div>
               <div class="check-res-person">
                 {{ item.fillUserName || '--' }}
@@ -70,9 +70,9 @@
                 {{ item.itemRequire }}
               </div>
               <div class="check-res check-list-item-center">
-                <div v-if="item.itemRes == '1'"></div>
-                <h-icon v-else-if="item.itemRes == '2'" class="success-text" type="icon-wancheng1"/>
-                <h-icon v-else class="danger-text" type="icon-chacha"/>
+                <h-icon v-if="item.itemRes == '2'" class='success-text' type='icon-wancheng1'/>
+                <h-icon v-else-if="item.itemRes == '3'" class='danger-text' type='icon-chacha'/>
+                <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="item.itemRes"></span>
               </div>
               <div class="check-res-person">
                 {{ item.fillUserName || '--' }}
@@ -107,9 +107,9 @@
                 {{ item.itemRequire }}
               </div>
               <div class="check-res check-list-item-center">
-                <div v-if="item.itemRes == '1'"></div>
-                <h-icon v-else-if="item.itemRes == '2'" class="success-text" type="icon-wancheng1"/>
-                <h-icon v-else class="danger-text" type="icon-chacha"/>
+                <h-icon v-if="item.itemRes == '2'" class='success-text' type='icon-wancheng1'/>
+                <h-icon v-else-if="item.itemRes == '3'" class='danger-text' type='icon-chacha'/>
+                <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="item.itemRes"></span>
               </div>
               <div class="check-res-person">
                 {{ item.fillUserName || '--' }}
@@ -216,21 +216,23 @@ export default {
   }
 
   .check-require {
-    flex: 1;
+    width: 25%;
   }
 
   .check-res {
-    width: 70px;
+    width: 24%;
+    cursor: pointer;
   }
 
   .check-res-person {
     .check-list-item-center;
-    width: 120px;
+    width: 8%;
   }
 
   .check-flag-person {
     .check-list-item-center;
-    width: 120px;
+    width: 8%;
+    cursor: pointer;
   }
 
   .check-box {

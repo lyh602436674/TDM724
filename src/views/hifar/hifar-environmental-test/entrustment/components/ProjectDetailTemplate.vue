@@ -67,5 +67,7 @@ export default {
 </script>
 
 <style scoped>
-
+.url-list {
+  margin-bottom: 10px
+}
 </style>

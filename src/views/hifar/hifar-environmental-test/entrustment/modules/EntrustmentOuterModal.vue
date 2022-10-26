@@ -525,6 +525,7 @@ export default {
           })
           obj.attachIds = fileList || []
           obj.entrustTime = obj.entrustTime && obj.entrustTime != 0 ? moment(parseFloat(obj.entrustTime)) : moment()
+          obj.requireCompletionTime = obj.requireCompletionTime && obj.requireCompletionTime != 0 ? moment(parseFloat(obj.requireCompletionTime)) : moment()
           this.entrustType = obj.entrustType
           this.entrustModel = obj
           this.tableData = []

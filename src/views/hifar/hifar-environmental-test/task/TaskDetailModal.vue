@@ -90,8 +90,6 @@ export default {
         { title: '试验设备', key: 'equipName', value: '' },
         {title: '实际开始时间', key: 'realStartTime', value: '', isTime: true},
         {title: '实际结束时间', key: 'realEndTime', value: '', isTime: true},
-        {title: '温度', key: 'temperature', value: ''},
-        {title: '湿度', key: 'humidity', value: ''},
         {title: '试验结果', key: 'processDesc', value: '', span: 3},
         {title: '备注', key: 'remarks', value: '', span: 3},
       ],

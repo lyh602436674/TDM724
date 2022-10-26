@@ -106,7 +106,7 @@
         <h-desc-item label='要求完成时间'>
           {{
             detailData.requireCompletionTime && detailData.requireCompletionTime != 0
-              ? moment(parseInt(detailData.requireCompletionTime)).format('YYYY-MM-DD HH:mm:ss')
+              ? moment(parseInt(detailData.requireCompletionTime)).format('YYYY-MM-DD')
               : '--'
           }}
         </h-desc-item>

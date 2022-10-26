@@ -29,15 +29,8 @@
     </h-card>
     <h-card title="样品信息" style="height: auto" :showCollapse="true">
       <div slot="content">
-        <a-table
-          size="small"
-          :columns="testProductColumns[testTaskData[0].entrustType]"
-          :dataSource="productTable"
-          :pagination="false"
-          bordered
-          rowKey="id"
-        >
-        </a-table>
+        <piece-detail-template title="" :dataSource="productTable"
+                               :entrustType="testTaskData[0].entrustType"></piece-detail-template>
       </div>
     </h-card>
     <h-card title="项目信息" v-for="(item, index) in projectData" :key="index" style="margin-bottom: 10px">
@@ -81,6 +74,7 @@
 <script>
 import moment from 'moment'
 import ProjectDetailTemplate from "@views/hifar/hifar-environmental-test/entrustment/components/ProjectDetailTemplate";
+import PieceDetailTemplate from "@views/hifar/hifar-environmental-test/entrustment/components/PieceDetailTemplate";
 
 export default {
   props: {
@@ -125,7 +119,7 @@ export default {
       },
     },
   },
-  components: {ProjectDetailTemplate},
+  components: {ProjectDetailTemplate, PieceDetailTemplate},
   data() {
     return {
       moment,

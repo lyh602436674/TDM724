@@ -27,10 +27,10 @@
         <a-badge v-else-if="text == 60" color="grey" text="已出报告" />
       </template>
       <span slot="testCode" slot-scope="text, record">
-        <a href="javascript:;" @click="handleGoDetail(record)">{{ record.testCode }}</a>
+        <a  @click="handleGoDetail(record)">{{ record.testCode }}</a>
       </span>
       <span slot="workName" slot-scope="text, record">
-        <a href="javascript:;" @click="handleWorkUser(record)">{{ record.workName || '--' }}</a>
+        <a  @click="handleWorkUser(record)">{{ record.workName || '--' }}</a>
       </span>
     </h-vex-table>
     <work-center-user-modal ref="WorkCenterUserModal"></work-center-user-modal>
