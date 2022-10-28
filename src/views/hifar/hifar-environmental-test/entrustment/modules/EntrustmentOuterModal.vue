@@ -55,8 +55,11 @@
               >
                 新增样品
               </a-button>
-              <a-button v-if='selectedRowKeys.length' icon='minus' size='small' type='danger' @click='handleDelete'> 删除
-              </a-button>
+              <a-popconfirm title="确定删除吗?" @confirm="handleDelete">
+                <a-button v-if='selectedRowKeys.length' icon='minus' size='small' type='danger'>
+                  删除
+                </a-button>
+              </a-popconfirm>
             </div>
             <div class="vxe-table-box" style="margin-bottom: 20px">
               <vxe-table

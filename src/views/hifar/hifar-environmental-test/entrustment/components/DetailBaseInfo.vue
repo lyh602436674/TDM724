@@ -19,7 +19,7 @@
       </h-desc-item>
       <h-desc-item label='委托状态'>
         <a-tag slot='content' :color='detailData.status | wtStatusColorFilter' class='status_tag'>
-          {{ detailData.status | wtStatusFilter }}
+          {{ detailData.status | wtStatusFilter(detailData.entrustType) }}
         </a-tag>
       </h-desc-item>
       <h-desc-item :label='detailData.entrustType == 1 ? "委托日期" : "申请日期"'>

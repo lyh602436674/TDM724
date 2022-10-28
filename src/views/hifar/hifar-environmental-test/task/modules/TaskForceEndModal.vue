@@ -101,7 +101,6 @@ export default {
   },
   methods: {
     show(type, record) {
-      console.log("record:", record)
       this.model = Object.assign({}, record)
       this.type = type
       this.title = '终止：' + record.testNames + '-' + record.testCode

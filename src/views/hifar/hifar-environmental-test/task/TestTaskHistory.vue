@@ -271,7 +271,7 @@ export default {
         },
         {
           title: '样品编号',
-          key: 'productCode',
+          key: 'productNo',
           formType: 'input',
         },
       ],

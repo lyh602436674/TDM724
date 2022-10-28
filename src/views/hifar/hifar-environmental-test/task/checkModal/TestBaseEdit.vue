@@ -1176,6 +1176,8 @@ export default {
           if (res.code === 200) {
             this.$message.success('保存成功')
             this.handleCancel()
+          } else {
+            this.$message.warning(res.msg)
           }
         }).finally(() => {
           this.submitLoading = false

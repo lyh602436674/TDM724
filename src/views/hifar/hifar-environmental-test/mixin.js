@@ -14,38 +14,38 @@ export default {
         }
     },
     filters: {
-        //委托单状态
-        wtStatusFilter(status) {
-            let s = Number(status)
-            switch (s) {
-                case 1:
-                    return '草稿';
-                case 10:
-                    return '已提交';
-                case 20:
-                    return '已通过';
-                case 30:
-                    return '已驳回';
-                case 40:
-                    return '待出报告';
-                case 50:
-                    return '已出报告';
-                case 80:
-                    return '已终止';
-                case 99:
-                    return '已删除';
-            }
-        },
+      //委托单状态
+      wtStatusFilter(status, type) {
+        let s = Number(status)
+        switch (s) {
+          case 1:
+            return '草稿';
+          case 10:
+            return '已提交';
+          case 20:
+            return '已通过';
+          case 30:
+            return '已驳回';
+          case 40:
+            return type === '1' ? '已完成' : '待出报告';
+          case 50:
+            return '已出报告';
+          case 80:
+            return '已终止';
+          case 99:
+            return '已删除';
+        }
+      },
       // 状态：1 未开始 10 已撤销 20 进行中 30 暂停 40 强制结束 50 已完成 99 已删除
       testStatusFilter(status) {
-            let s = Number(status)
-            switch (s) {
-                case 1:
-                    return '未开始';
-                case 10:
-                    return '已撤销';
-                case 20:
-                    return '进行中';
+        let s = Number(status)
+        switch (s) {
+          case 1:
+            return '未开始';
+          case 10:
+            return '已撤销';
+          case 20:
+            return '进行中';
                 case 30:
                     return '暂停';
                 case 40:

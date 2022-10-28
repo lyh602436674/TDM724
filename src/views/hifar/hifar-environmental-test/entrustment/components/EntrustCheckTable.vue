@@ -34,7 +34,7 @@
         <span v-else>--</span>
       </span>
       <span slot="status" slot-scope="text, record">
-        <a-badge :color='record.status | wtStatusColorFilter' :text='record.status | wtStatusFilter'/>
+        <a-badge :color='record.status | wtStatusColorFilter' :text='record.status | wtStatusFilter(record.entrustType)'/>
       </span>
     </h-vex-table>
     <entrust-detail-modal

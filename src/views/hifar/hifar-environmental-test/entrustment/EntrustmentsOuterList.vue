@@ -39,7 +39,7 @@
           <span v-else>--</span>
         </template>
         <span slot="status" slot-scope="text, record">
-          <a-badge :color="record.status | wtStatusColorFilter" :text="record.status | wtStatusFilter"/>
+          <a-badge :color="record.status | wtStatusColorFilter" :text="record.status | wtStatusFilter('2')"/>
         </span>
         <template slot="actions" slot-scope="text, record">
           <a-tooltip title="详情">
