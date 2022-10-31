@@ -177,13 +177,13 @@ export default {
       selectedRows: [],
       searchForm: [
         {
-          title: '委托单号',
-          key: 'entrustNo',
+          title: '运行单号',
+          key: 'entrustCode',
           formType: 'input',
         },
         {
-          title: '运行单号',
-          key: 'entrustCode',
+          title: '委托单号',
+          key: 'entrustNo',
           formType: 'input',
         },
         {
@@ -283,14 +283,14 @@ export default {
           scopedSlots: {customRender: 'testCode'},
         },
         {
-          title: '委托单号',
-          dataIndex: 'entrustNos',
-          minWidth: 120,
-        },
-        {
           title: '运行单号',
           dataIndex: 'entrustCodes',
           minWidth: 140,
+        },
+        {
+          title: '委托单号',
+          dataIndex: 'entrustNos',
+          minWidth: 120,
         },
         {
           title: '报告编号',

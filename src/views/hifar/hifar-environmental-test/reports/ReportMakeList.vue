@@ -157,13 +157,13 @@ export default {
       selectedRows: [],
       searchBar: [
         {
-          title: '委托单号',
-          key: 'c_entrustNo_7',
+          title: '运行单号',
+          key: 'c_entrustCode_7',
           formType: 'input',
         },
         {
-          title: '运行单号',
-          key: 'c_entrustCode_7',
+          title: '委托单号',
+          key: 'c_entrustNo_7',
           formType: 'input',
         },
         {
@@ -259,17 +259,17 @@ export default {
           },
         },
         {
-          title: '委托单号',
+          title: '运行单号',
           align: 'left',
-          dataIndex: 'entrustNo',
+          dataIndex: 'entrustCode',
           customRender: (text, record) => {
             return text || '--'
           },
         },
         {
-          title: '运行单号',
+          title: '委托单号',
           align: 'left',
-          dataIndex: 'entrustCode',
+          dataIndex: 'entrustNo',
           customRender: (text, record) => {
             return text || '--'
           },
@@ -351,13 +351,16 @@ export default {
     },
     refresh(bool = true) {
       this.$refs.reportMakeTable.refresh(bool)
+      this.loadReportNum()
       this.selectedRowKeys = []
     },
     onSelectChange(selectedRowKeys, selectedRows) {
+      console.log(selectedRows)
       this.selectedRowKeys = selectedRowKeys
       selectedRows.map((item) => {
         this.selectedRows = item
       })
+      console.log(this.selectedRows)
     },
     handleDownload(filePath, fileName, fileType) {
       downloadFile(filePath, fileName + fileType)

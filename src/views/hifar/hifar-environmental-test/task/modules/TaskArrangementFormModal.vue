@@ -153,7 +153,7 @@ export default {
               ref="PhemismUserSelect"
               type={'checkbox'}
               placeholder={'请选择试验员'}
-              v-decorator={['id']}
+              v-decorator={['chargeUserId']}
               selectedName={() => {
                 return this.model.idName
               }}
@@ -197,6 +197,9 @@ export default {
     },
     handleCancel() {
       this.visible = false
+      setTimeout(() => {
+        this.submitLoading = false
+      }, 300)
     },
     selectuserChange(val, record) {
       // this.model.idName = record[0].idName
@@ -208,6 +211,7 @@ export default {
       this.$refs.taskArrangementForm.validateForm()
     },
     submit(values, res) {
+      if (!this.submitLoading) return
       let params = {
         ...values,
       }
@@ -239,7 +243,7 @@ export default {
 
         }
       }).finally(() => {
-        this.submitLoading = false
+
       })
     },
   },

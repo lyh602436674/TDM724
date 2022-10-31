@@ -662,7 +662,8 @@ export default {
       if (this.projectInfoData.length) {
         for (let i = 0; i < extendRecord.length; i++) {
           for (let j = 0; j < this.projectInfoData.length; j++) {
-            if (extendRecord[i].id === this.projectInfoData[j].id) {
+            // 选择项目时项目id的字段是id，如果是从后端返回的就是unitId
+            if (extendRecord[i].id === this.projectInfoData[j].unitId) {
               extendRecord.splice(i, 1)
               i--
               break
@@ -673,11 +674,17 @@ export default {
       this.projectInfoData = this.projectInfoData.concat(extendRecord.map((item, index) => {
         return {
           ...item,
+          // 给选择之后的项目添加unitId字段
+          unitId: item.id,
           testCondition: item.remarks,
-          pieceIds: pieceSorting[index] ? pieceSorting[index].pieceIds.toString() : '',
-          pieceNos: pieceSorting[index] ? pieceSorting[index].pieceNos.toString() : ''
         }
-      }))
+      })).map((v, i) => {
+        return {
+          ...v,
+          pieceIds: pieceSorting[i] ? pieceSorting[i].pieceIds.toString() : '',
+          pieceNos: pieceSorting[i] ? pieceSorting[i].pieceNos.toString() : ''
+        }
+      })
     },
     // 样品分类：根据样品名称和型号/规格进行分类
     pieceSorting(data, name, model) {

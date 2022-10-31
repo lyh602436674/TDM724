@@ -38,18 +38,22 @@
             >
               <div slot="content" class="task-card-content">
                 <template v-for="(child, childIndex) in item.children">
-                  <div class="menu-list" v-if="child.menuType === 'menu'"
+                  <div :key="index + childIndex" class="menu-list"
+                       v-if="child.menuType === 'menu' && child.isHidden !== 1"
                        @click="jumpLink(child)">
                     <a-badge :count="child.count < 0 ? 0 : child.count">
                       <div class="menu-item" :style="{backgroundColor:child.color}">
-                        <h-icon class="menu-item-icon" v-if="child.menuIcon.includes('icon-')" :type="child.menuIcon"
+                        <span style="font-size: 14px" v-if="!child.menuIcon">{{ child.menuName.substring(0, 2) }}</span>
+                        <h-icon class="menu-item-icon" v-else-if="child.menuIcon.includes('icon-')"
+                                :type="child.menuIcon"
                                 style="font-size: 16px"/>
                         <a-icon class="menu-item-icon" v-else :type="child.menuIcon" style="font-size: 16px"/>
                       </div>
                       <h-ellipsis class="menu-item-menuName" :value="child.menuName" :length="4"/>
                     </a-badge>
                   </div>
-                  <div class="menu-list" v-else @click="jumpLink(item)">
+                  <div :key="index + childIndex" class="menu-list" v-else-if="child.isHidden !== 1"
+                       @click="jumpLink(item)">
                     <a-badge :count="item.count < 0 ? 0 : item.count">
                       <div class="menu-item" :style="{backgroundColor:item.color}">
                         <h-icon class="menu-item-icon" v-if="item.menuIcon.includes('icon-')" :type="item.menuIcon"
@@ -70,10 +74,9 @@
 </template>
 
 <script>
-import {mapState, mapGetters} from 'vuex'
-import {getFileAccessHttpUrl} from '@/api/manage'
+import {mapGetters, mapState} from 'vuex'
+import {getFileAccessHttpUrl,postAction} from '@/api/manage'
 import {timeFix, welcome} from '@/utils/util'
-import {postAction} from '../../../api/manage'
 
 export default {
   components: {},
@@ -112,7 +115,7 @@ export default {
     },
     loadStaticData() {
       postAction(this.url.statics, {}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.taskList = res.data
         }
       })
@@ -204,9 +207,10 @@ export default {
             }
 
             .menu-item:hover {
-              .menu-item-icon {
+
+              .menu-item-icon,span {
                 transition: all 0.3s;
-                transform: scale(2);
+                transform: scale(1.5);
               }
             }
 

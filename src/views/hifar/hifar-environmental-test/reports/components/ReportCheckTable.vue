@@ -179,17 +179,17 @@ export default {
           },
         },
         {
-          title: '委托单号',
+          title: '运行单号',
           align: 'left',
-          dataIndex: 'entrustNo',
+          dataIndex: 'entrustCode',
           customRender: (text, record) => {
             return text || '--'
           },
         },
         {
-          title: '运行单号',
+          title: '委托单号',
           align: 'left',
-          dataIndex: 'entrustCode',
+          dataIndex: 'entrustNo',
           customRender: (text, record) => {
             return text || '--'
           },

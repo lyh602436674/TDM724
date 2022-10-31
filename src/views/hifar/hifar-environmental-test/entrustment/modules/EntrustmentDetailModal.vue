@@ -19,50 +19,52 @@
     @cancel='handleCancel'
   >
     <div class='fullscreenIcon' @click='fullScreenHandle'>
-      <a-icon :type="!fullScreen ? 'fullscreen' : 'fullscreen-exit'" class='primary-text' style='font-size: 16px;' />
+      <a-icon :type="!fullScreen ? 'fullscreen' : 'fullscreen-exit'" class='primary-text' style='font-size: 16px;'/>
     </div>
     <div class='footer' slot='footer'>
       <a-button @click='handleCancel' type='ghost-danger' style='margin-right: 8px'> 关闭</a-button>
     </div>
-    <h-card :bordered='false'>
-      <a-steps :current='current' size='small'>
-        <a-step v-for='item in steps' :key='item.title' :title='item.title' />
-      </a-steps>
-      <h-tabs :activeKey='activeKey' :animated='true' @change='handleTabsChange'>
-        <a-tab-pane key='1' tab='委托信息'>
-          <entrust-detail ref='EntrustDetail' :detailData='detailData'></entrust-detail>
-        </a-tab-pane>
-        <a-tab-pane key='3' tab='试验信息'
-                    v-if="[20,40,50,80].includes(detailData.status)">
-          <test-task-info ref='TaskInfo' :entrustId='entrustId' class='autoHeight'></test-task-info>
-        </a-tab-pane>
-        <a-tab-pane key='4' tab='报告信息'
-                    v-if="viewDetailType !== '1' && (detailData.status === 40 || isSubpackage)">
-          <a-button
-            v-if="viewDetailType !== '1' && isSubpackage"
-            @click='addReport(detailData.id)'
-            type='primary' style="margin: 0 5px 10px">添加
-          </a-button>
-          <report-info ref='ReportInfo' :entrustCode='detailData.entrustCode'
-                       :isExternalManage="isSubpackage" class='autoHeight'></report-info>
-        </a-tab-pane>
-        <!--        委托单预览 功能只在非草稿状态和外部委托单下显示-->
-        <a-tab-pane key='5' tab='委托单预览' v-if='detailData.status !== 1 && detailData.entrustType === "2"'>
-          <div class='autoHeight'>
-            <iframe
-              v-if='detailData.reportPath'
-              ref='iframe'
-              scrolling='auto'
-              width='100%'
-              height='100%'
-              frameborder='0'
-              :src='detailData.reportPath'
-            />
-            <a-empty v-else style='margin-top: 160px' />
-          </div>
-        </a-tab-pane>
-      </h-tabs>
-    </h-card>
+    <a-spin :spinning='spinning'>
+      <h-card :bordered='false'>
+        <a-steps :current='current' size='small'>
+          <a-step v-for='item in steps' :key='item.title' :title='item.title'/>
+        </a-steps>
+        <h-tabs :activeKey='activeKey' :animated='true' @change='handleTabsChange'>
+          <a-tab-pane key='1' tab='委托信息'>
+            <entrust-detail ref='EntrustDetail' :detailData='detailData'></entrust-detail>
+          </a-tab-pane>
+          <a-tab-pane key='3' tab='试验信息'
+                      v-if="[20,40,50,80].includes(detailData.status)">
+            <test-task-info ref='TaskInfo' :entrustId='entrustId' class='autoHeight'></test-task-info>
+          </a-tab-pane>
+          <a-tab-pane key='4' tab='报告信息'
+                      v-if="viewDetailType !== '1' && (detailData.status === 40 || isSubpackage)">
+            <a-button
+              v-if="viewDetailType !== '1' && isSubpackage"
+              @click='addReport(detailData.id)'
+              type='primary' style="margin: 0 5px 10px">添加
+            </a-button>
+            <report-info ref='ReportInfo' :entrustCode='detailData.entrustCode'
+                         :isExternalManage="isSubpackage" class='autoHeight'></report-info>
+          </a-tab-pane>
+          <!--        委托单预览 功能只在非草稿状态和外部委托单下显示-->
+          <a-tab-pane key='5' tab='委托单预览' v-if='detailData.status !== 1 && detailData.entrustType === "2"'>
+            <div class='autoHeight'>
+              <iframe
+                v-if='detailData.reportPath'
+                ref='iframe'
+                scrolling='auto'
+                width='100%'
+                height='100%'
+                frameborder='0'
+                :src='detailData.reportPath'
+              />
+              <a-empty v-else style='margin-top: 160px'/>
+            </div>
+          </a-tab-pane>
+        </h-tabs>
+      </h-card>
+    </a-spin>
   </h-modal>
 </template>
 
@@ -102,6 +104,7 @@ export default {
       current: 0,
       visible: false,
       fullScreen: false,
+      spinning: false,
       detailData: {},
       bodyStyle: {
         padding: '15px'
@@ -164,6 +167,7 @@ export default {
       this.detailData = {}
     },
     loadDetail(id, type) {
+      this.spinning = true
       let url = this.url.detailById
       postAction(url, {id, type}).then((res) => {
         if (res.code == 200) {
@@ -174,7 +178,12 @@ export default {
           } else if (status == 20) {
             this.current = 2
           } else if (status == 40) {
-            this.current = 3
+            // 内部委托单不出报告，所以到了待出报告状态就代表已完成
+            if (record.entrustType === '1') {
+              this.current = 4
+            } else {
+              this.current = 3
+            }
           } else if (status == 50) {
             this.current = 4
           }
@@ -201,6 +210,8 @@ export default {
           this.detailData = record
           this.flowId = record.flowId
         }
+      }).finally(() => {
+        this.spinning = false
       })
     },
     handleTabsChange(v) {

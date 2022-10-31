@@ -18,32 +18,37 @@
   >
     <div slot="footer" class="footer">
       <template v-if="detailData.status == 10">
-        <a-button v-has="'entrustCheck:pass'" type="primary" @click="handleCheckPass(detailData.id,0)"> 审核通过</a-button>
+        <a-button :loading="submitLoading" v-has="'entrustCheck:pass'" type="primary"
+                  @click="handleCheckPass(detailData.id,0)"> 审核通过
+        </a-button>
         <a-button v-has="'entrustCheck:reject'" type="ghost-primary" @click="handleCheck(detailData)"> 审核驳回</a-button>
       </template>
       <a-button type="ghost-danger" @click="handleCancel"> 关闭</a-button>
     </div>
-    <h-card :bordered="false">
-      <h-tabs :activeKey="activeKey" :animated="true" @change="handleTabsChange">
-        <a-tab-pane key="1" tab="委托信息">
-          <entrust-detail ref='EntrustDetail' :detailData='detailData'></entrust-detail>
-        </a-tab-pane>
-        <a-tab-pane key="2" tab="委托单预览" v-if="detailData.entrustType === '2'">
-          <div class='autoHeight'>
-            <embed
-              v-if='detailData.reportPath'
-              ref='iframe'
-              :src='detailData.reportPath'
-              frameborder='0'
-              height='100%'
-              scrolling='auto'
-              width='100%'
-            />
-            <a-empty v-else style='margin-top: 160px'/>
-          </div>
-        </a-tab-pane>
-      </h-tabs>
-    </h-card>
+    <a-spin :spinning="spinning">
+      <h-card :bordered="false">
+        <h-tabs :activeKey="activeKey" :animated="true" @change="handleTabsChange">
+          <a-tab-pane key="1" tab="委托信息">
+            <entrust-detail ref='EntrustDetail' :detailData='detailData'></entrust-detail>
+          </a-tab-pane>
+          <a-tab-pane key="2" tab="委托单预览" v-if="detailData.entrustType === '2'">
+            <div class='autoHeight'>
+              <embed
+                v-if='detailData.reportPath'
+                ref='iframe'
+                :src='detailData.reportPath'
+                frameborder='0'
+                height='100%'
+                scrolling='auto'
+                width='100%'
+              />
+              <a-empty v-else style='margin-top: 160px'/>
+            </div>
+          </a-tab-pane>
+        </h-tabs>
+      </h-card>
+    </a-spin>
+
   </h-modal>
 </template>
 
@@ -66,6 +71,8 @@ export default {
   data() {
     return {
       visible: false,
+      spinning: false,
+      submitLoading: false,
       activeKey: '1',
       entrustId: '',
       detailData: {},
@@ -95,16 +102,20 @@ export default {
     },
     handleCancel() {
       this.visible = false
+      this.submitLoading = false
     },
     handleTabsChange(v) {
       this.activeKey = v
     },
     loadDetail(id, type) {
+      this.spinning = true
       let url = this.url.detail
       postAction(url, {id, type}).then((res) => {
         if (res.code === 200) {
           this.detailData = res.data
         }
+      }).finally(() => {
+        this.spinning = false
       })
     },
     handleCheck(record, title) {
@@ -125,6 +136,8 @@ export default {
       })
     },
     handleCheckPass(id, isForce) {
+      if (this.submitLoading) return
+      this.submitLoading = true
       postAction(this.url.check, {id, isForce}).then((res) => {
         if (res.code === 200) {
           this.$message.success('操作成功')

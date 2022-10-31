@@ -184,13 +184,13 @@ export default {
       },
       searchForm: [
         {
-          title: '委托单号',
-          key: 'c_entrustNo_7',
+          title: '运行单号',
+          key: 'c_entrustCode_7',
           formType: 'input',
         },
         {
-          title: '运行单号',
-          key: 'c_entrustCode_7',
+          title: '委托单号',
+          key: 'c_entrustNo_7',
           formType: 'input',
         },
         {
@@ -253,19 +253,19 @@ export default {
       ],
       columns: [
         {
-          title: '委托单号',
-          dataIndex: 'entrustNo',
-          minWidth: 160,
-          scopedSlots: {
-            customRender: 'entrustNo',
-          },
-        },
-        {
           title: '运行单号',
           dataIndex: 'entrustCode',
           minWidth: 140,
           scopedSlots: {
             customRender: 'entrustCode',
+          },
+        },
+        {
+          title: '委托单号',
+          dataIndex: 'entrustNo',
+          minWidth: 160,
+          scopedSlots: {
+            customRender: 'entrustNo',
           },
         },
         {

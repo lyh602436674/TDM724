@@ -82,13 +82,13 @@ export default {
       unitId: "",
       searchBar: [
         {
-          title: "委托单号",
-          key: "c_entrustNo_7",
+          title: "运行单号",
+          key: "c_entrustCode_7",
           formType: "input",
         },
         {
-          title: "运行单号",
-          key: "c_entrustCode_7",
+          title: "委托单号",
+          key: "c_entrustNo_7",
           formType: "input",
         },
         {
@@ -109,19 +109,19 @@ export default {
       ],
       columns: [
         {
-          title: '委托单号',
-          align: 'left',
-          width: 160,
-          dataIndex: 'entrustNo',
-          scopedSlots: {customRender: 'entrustNo'},
-          fixed: 'left'
-        },
-        {
           title: '运行单号',
           align: 'left',
           width: 140,
           dataIndex: 'entrustCode',
           scopedSlots: {customRender: 'entrustCode'},
+          fixed: 'left'
+        },
+        {
+          title: '委托单号',
+          align: 'left',
+          width: 160,
+          dataIndex: 'entrustNo',
+          scopedSlots: {customRender: 'entrustNo'},
           fixed: 'left'
         },
         {

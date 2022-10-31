@@ -124,13 +124,13 @@ export default {
       selectedRows: [],
       searchForm: [
         {
-          title: '委托单号',
-          key: 'c_entrustNo_7',
+          title: '运行单号',
+          key: 'c_entrustCode_7',
           formType: 'input'
         },
         {
-          title: '运行单号',
-          key: 'c_entrustCode_7',
+          title: '委托单号',
+          key: 'c_entrustNo_7',
           formType: 'input'
         },
         {
@@ -198,19 +198,19 @@ export default {
       ],
       columns: [
         {
-          title: '委托单号',
-          align: 'left',
-          width: 160,
-          dataIndex: 'entrustNo',
-          scopedSlots: { customRender: 'entrustNo' },
-          fixed: 'left'
-        },
-        {
           title: '运行单号',
           align: 'left',
           width: 140,
           dataIndex: 'entrustCode',
           scopedSlots: { customRender: 'entrustCode' },
+          fixed: 'left'
+        },
+        {
+          title: '委托单号',
+          align: 'left',
+          width: 160,
+          dataIndex: 'entrustNo',
+          scopedSlots: { customRender: 'entrustNo' },
           fixed: 'left'
         },
         {
@@ -242,7 +242,7 @@ export default {
           title: '型号/规格',
           align: 'left',
           dataIndex: 'productModel',
-          minWidth: 100,
+          minWidth: 120,
           customRender: (text, record) => {
             return text || '--';
           }
@@ -250,7 +250,7 @@ export default {
         {
           title: '委托单位',
           align: 'left',
-          minWidth: 100,
+          minWidth: 120,
           dataIndex: 'custName',
           customRender: (text, record) => {
             return text || '--';
@@ -270,7 +270,7 @@ export default {
           title: '联系人',
           align: 'center',
           dataIndex: 'linkName',
-          width: 120,
+          width: 100,
           customRender: (text, record) => {
             return text || '--';
           }
@@ -278,7 +278,7 @@ export default {
         {
           title: '联系方式',
           align: 'center',
-          width: 150,
+          width: 120,
           dataIndex: 'linkMobile',
           customRender: (text, record) => {
             return text || '--';
@@ -288,7 +288,7 @@ export default {
           title: '委托人',
           align: 'center',
           dataIndex: 'entrustPerson',
-          width: 120,
+          width: 100,
           customRender: (text, record) => {
             return text || '--';
           }
@@ -296,7 +296,7 @@ export default {
         {
           title: '委托人手机号',
           align: 'center',
-          width: 150,
+          width: 120,
           dataIndex: 'entrustPersonPhone',
           customRender: (text, record) => {
             return text || '--';

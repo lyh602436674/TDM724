@@ -24,7 +24,7 @@
         <test-base-detail ref="TestBaseDetail" :viewDetailType="viewDetailType" :testId="testId" :top='top' :showExceptionAndEnd="showExceptionAndEnd"></test-base-detail>
       </a-col>
       <a-col :xl="4" :lg="24" :md="24" :sm="24" :xs="24">
-        <test-base-time-line ref="TestBaseTimeLine" style="margin-top: 46px" :testId="testId"></test-base-time-line>
+        <test-base-time-line ref="TestBaseTimeLine" style="margin-top: 46px;position:fixed" :testId="testId"></test-base-time-line>
       </a-col>
     </a-row>
   </h-modal>

@@ -30,8 +30,8 @@
             enter-button="搜索"
             placeholder="请输入设备名称或委托单号"
             size="small"
-            @search="loadleftTree"
-            @keyup.enter.native="loadleftTree"
+            @search="loadLeftTree"
+            @keyup.enter.native="loadLeftTree"
           />
           <div slot="title" slot-scope="record">
           <span>
@@ -146,7 +146,7 @@
                       <a @click="$refs.testTaskBaseInfoModal.show(record,'1','20px')">{{ text }}</a>
                     </template>
                     <template #entrustCodes="text, record">
-                      <a @click="$refs.testTaskBaseInfoModal.show(record,'20px')">{{ text }}</a>
+                      <a @click="$refs.testTaskBaseInfoModal.show(record,null,'20px')">{{ text }}</a>
                     </template>
                     <template #exceptionNum="text, record">
                       <a @click="$refs.abnormalDetailModal.show(record)">{{ text }}</a>
@@ -309,13 +309,13 @@ export default {
       selectedRowKeys: [],
       searchForm: [
         {
-          title: '委托单号',
-          key: 'entrustNo',
+          title: '运行单号',
+          key: 'entrustCode',
           formType: 'input',
         },
         {
-          title: '运行单号',
-          key: 'entrustCode',
+          title: '委托单号',
+          key: 'entrustNo',
           formType: 'input',
         },
         {
@@ -474,67 +474,23 @@ export default {
             }
           },
         },
-        // 拍照
-        // {
-        //   title: '拍照',
-        //   key: '6',
-        //   size: 'small',
-        //   icon: 'icon-paizhao1',
-        //   type: 'default',
-        //   click: (item, index) => {
-        //     if (this.selectedRow.length == 0) {
-        //       this.openNotificationWithIcon('error', '选择提示', '请至少选择一项')
-        //     } else {
-        //       this.openNotificationWithIcon('error', '此功能正在开发中')
-        //     }
-        //   },
-        // },
-        // 录像
-        // {
-        //   title: '录像',
-        //   key: '7',
-        //   size: 'small',
-        //   icon: 'icon-shipin1',
-        //   type: 'default',
-        //   click: (item, index) => {
-        //     if (this.selectedRow.length == 0) {
-        //       this.openNotificationWithIcon('error', '选择提示', '请至少选择一项')
-        //     } else {
-        //       this.openNotificationWithIcon('error', '此功能正在开发中')
-        //     }
-        //   },
-        // },
-        // 曲线
-        // {
-        //   title: '曲线',
-        //   key: '8',
-        //   size: 'small',
-        //   icon: 'icon-quxianshangsheng',
-        //   type: 'default',
-        //   click: (item, index) => {
-        //     if (this.selectedRow.length == 0) {
-        //       this.openNotificationWithIcon('error', '选择提示', '请至少选择一项')
-        //     } else {
-        //       this.openNotificationWithIcon('error', '此功能正在开发中')
-        //     }
-        //   },
-        // },
       ],
       loadEquip: [],
+      extendEquipData: [],
       equipDetail: {},
       taskColumns: [
+        {
+          title: '运行单号',
+          dataIndex: 'entrustCodes',
+          minWidth: 150,
+          scopedSlots: {customRender: 'entrustCodes'},
+        },
         {
           title: '委托单号',
           dataIndex: 'entrustNos',
           // hidden: isHiddenColumns('ArrangeMent:suspend'),
           minWidth: 120,
           scopedSlots: {customRender: 'entrustNos'},
-        },
-        {
-          title: '运行单号',
-          dataIndex: 'entrustCodes',
-          minWidth: 150,
-          scopedSlots: {customRender: 'entrustCodes'},
         },
         {
           title: '试验编号',
@@ -668,7 +624,7 @@ export default {
     }
   },
   mounted() {
-    this.loadleftTree()
+    this.loadLeftTree()
   },
   methods: {
     handleEnlargement(record, extendRecord) {
@@ -683,7 +639,14 @@ export default {
       // this.selectedKeys = [selectedRow[0].equipId]
       // this.getEquipDetail()
     },
-    async loadleftTree() {
+    loadLeftTreeBySearch(e) {
+      let value = isObject(e) ? e.target.value : e
+      if (!value) {
+        return this.loadLeftTree()
+      }
+      this.loadEquip = this.extendEquipData.filter(item => item.title.includes(value))
+    },
+    async loadLeftTree() {
       this.treeSpinning = true
       let params = {
         ...this.equipQuery,
@@ -743,7 +706,7 @@ export default {
     refreshEquipTaskList(bool = true) {
       if (this.$refs.equipTaskList) {
         this.$refs.equipTaskList.refresh(bool)
-        this.loadleftTree();
+        this.loadLeftTree();
       }
       this.selectedRow = []
     },

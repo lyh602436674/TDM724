@@ -19,45 +19,48 @@
       <div class="fullscreenIcon" @click="fullScreenHandle">
         <a-icon :type="!fullScreen ? 'fullscreen' : 'fullscreen-exit'" class="primary-text" style="font-size: 16px"/>
       </div>
-      <div class="task-detail-wrapper">
-        <div class="task-info">
-          <detail-base-info :detailDataObj="model.entrustData"></detail-base-info>
+      <a-spin :spinning="spinning">
+        <div class="task-detail-wrapper">
+          <div class="task-info">
+            <detail-base-info :detailDataObj="model.entrustData"></detail-base-info>
+          </div>
+          <div class="piece-info">
+            <piece-detail-template :dataSource="pieceInfo"
+                                   :entrust-type="model.entrustData && model.entrustData.entrustType || 1 "/>
+          </div>
+          <div class="piece-info">
+            <h-desc :bordered="false" size="small" title="项目信息">
+              <h-card v-for="(item, index) in projectInfo" :key="index" style="margin-bottom: 10px">
+                <div slot="title">{{ item.unitName }}</div>
+                <template slot="content">
+                  <project-detail-template :model="item" title=""></project-detail-template>
+                </template>
+              </h-card>
+            </h-desc>
+          </div>
+          <div class="equip-info">
+            <h-desc title="试验信息">
+              <a-table
+                :columns="equipColumns"
+                :dataSource="equipTestInfo"
+                :pagination="false"
+                bordered
+                rowKey="id"
+                size="small"
+                style="width: 100%; height: 100%"
+              >
+                <a-icon
+                  slot="record"
+                  slot-scope="text, record"
+                  class="primary-text"
+                  type="carry-out"
+                  @click="showRecord(record)"
+                />
+              </a-table>
+            </h-desc>
+          </div>
         </div>
-        <div class="piece-info">
-          <piece-detail-template :dataSource="pieceInfo" :entrust-type="model.entrustData && model.entrustData.entrustType || 1 "/>
-        </div>
-        <div class="piece-info">
-          <h-desc :bordered="false" size="small" title="项目信息">
-            <h-card v-for="(item, index) in projectInfo" :key="index" style="margin-bottom: 10px">
-              <div slot="title">{{ item.unitName }}</div>
-              <template slot="content">
-                <project-detail-template :model="item" title=""></project-detail-template>
-              </template>
-            </h-card>
-          </h-desc>
-        </div>
-        <div class="equip-info">
-          <h-desc title="试验信息">
-            <a-table
-              :columns="equipColumns"
-              :dataSource="equipTestInfo"
-              :pagination="false"
-              bordered
-              rowKey="id"
-              size="small"
-              style="width: 100%; height: 100%"
-            >
-              <a-icon
-                slot="record"
-                slot-scope="text, record"
-                class="primary-text"
-                type="carry-out"
-                @click="showRecord(record)"
-              />
-            </a-table>
-          </h-desc>
-        </div>
-      </div>
+      </a-spin>
       <div slot="footer">
         <a-button type="ghost-danger" @click="handleCancel">关闭</a-button>
       </div>
@@ -102,6 +105,7 @@ export default {
       title: '--',
       visible: false,
       fullScreen: false,
+      spinning: false,
       model: {},
       pieceInfo: [],
       equipTestInfo: [],
@@ -163,6 +167,7 @@ export default {
       })
     },
     getTaskDetail(type) {
+      this.spinning = true
       let params = {
         id: this.model.id,
         type,
@@ -174,6 +179,8 @@ export default {
           this.equipTestInfo = res.data.equipTestInfo || []
           this.projectInfo = res.data.projectInfo || []
         }
+      }).finally(() => {
+        this.spinning = false
       })
     },
     showRecord(record) {

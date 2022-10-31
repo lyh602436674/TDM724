@@ -146,9 +146,9 @@ export default {
           }
         },
         {
-          title: '委托单号',
+          title: '运行单号',
           align: 'left',
-          key: 'entrustNo',
+          key: 'entrustCode',
           cellRender: {
             name: 'cell',
             renderCell: (h, renderOpts, {row, column}) => {
@@ -157,9 +157,9 @@ export default {
           }
         },
         {
-          title: '运行单号',
+          title: '委托单号',
           align: 'left',
-          key: 'entrustCode',
+          key: 'entrustNo',
           cellRender: {
             name: 'cell',
             renderCell: (h, renderOpts, {row, column}) => {
