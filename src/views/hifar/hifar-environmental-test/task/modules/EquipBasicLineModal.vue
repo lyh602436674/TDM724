@@ -16,9 +16,10 @@
 </template>
 
 <script>
-  import { getAction ,postAction} from '@api/manage'
-  import {createMinioClient,tryUpload,dataURLtoFile} from '@/utils/minioUtil.js'
-  import moment from "moment";
+import {postAction} from '@api/manage'
+import {createMinioClient} from '@/utils/minioUtil.js'
+import moment from "moment";
+
 export default {
   name: "EquipBasicLineModal",
   props: {
@@ -55,16 +56,15 @@ export default {
     },
     saveCurve(charts) {
       let base64Data = charts.api.getDataURL('png')
-      // let file = dataURLtoFile(base64Data, '曲线图.png')
       let data={
         file:base64Data,
         testIds:this.selectRowId.map(item=>item.id).join(",")
       }
       console.log("data",data)
       postAction(this.url.saveCurve,data).then(res=>{
-        if(res.code==200){
+        if (res.code === 200) {
           this.$message.success("保存成功")
-        }else{
+        } else {
           this.$message.error("保存失败")
         }
       })
@@ -132,6 +132,7 @@ export default {
         mySeries = []
       }
       let option = {
+        backgroundColor: "#fff",
         dataset: [
           {
             id: 'dataset_raw',

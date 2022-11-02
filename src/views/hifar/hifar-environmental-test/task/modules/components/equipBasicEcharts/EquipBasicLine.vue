@@ -22,22 +22,6 @@
           <span slot="addonBefore">时间选择</span>
         </h-range-picker>
       </div>
-      <div style="margin-right: 10px;flex: 1;display: flex">
-        <a-input style="margin-right: 10px;" v-model="queryParams.initialTemperature" placeholder="请输入初始温度" size="small"
-                 type="number">
-          <span slot="addonBefore">初始温度</span>
-        </a-input>
-        <a-input v-model="queryParams.initialHumidity" placeholder="请输入初始湿度"
-                 size="small" type="number">
-          <span slot="addonBefore">初始湿度</span>
-        </a-input>
-      </div>
-      <div style="margin-right: 10px;flex: 1">
-        <h-date v-model="queryParams.initialTime" :show-time="true" format="YYYY-MM-DD HH:mm:ss" placeholder="请输入初始时间"
-                size="small">
-          <span slot="addonBefore">初始时间</span>
-        </h-date>
-      </div>
       <div style="flex: 1">
         <a-button icon="search" size="small" type="primary" @click="handleSearch">查询</a-button>
         <a-button icon="reload" size="small" style="margin: 0 0 0 5px" type="default" @click="handleReset">
@@ -57,7 +41,7 @@
 </template>
 
 <script>
-import {getAction} from '@api/manage'
+import {getAction, postAction} from '@api/manage'
 import moment from 'moment'
 
 export default {
@@ -85,7 +69,7 @@ export default {
       immediate: true,
       deep: true,
       handler(row) {
-        if (row.length > 0 && this.queryParams.initialTime && this.queryParams.initialTemperature) {
+        if (row.length && this.queryParams.initialTimeRange) {
           this.entrustIds = row[0].entrustIds.split(',')
           this.loadData()
         }
@@ -109,9 +93,6 @@ export default {
       inialData: {},
       planData: {},
     }
-  },
-  mounted() {
-    // this.init();
   },
   methods: {
     enlargement() {
@@ -166,7 +147,22 @@ export default {
         }
       })
     },
+    saveCurve(charts) {
+      let base64Data = charts.api.getDataURL('png')
+      let data = {
+        file: base64Data,
+        testIds: this.selectedRow.map(item => item.id).join(",")
+      }
+      postAction(this.url.saveCurve, data).then(res => {
+        if (res.code === 200) {
+          this.$message.success("保存成功")
+        } else {
+          this.$message.error("保存失败")
+        }
+      })
+    },
     drawChart(record) {
+      let that = this
       let myChart = this.$echarts.init(document.getElementById('eCharts'))
       let myDataset = []
       let mySeries = []
@@ -208,6 +204,7 @@ export default {
         mySeries = []
       }
       let option = {
+        backgroundColor: "#fff",
         dataset: [
           {
             id: 'dataset_raw',
@@ -232,11 +229,14 @@ export default {
               title: '保存到曲线',
               icon: 'path://M814.805 128a51.179 51.179 0 0 1 51.179 51.179V844.01a51.179 51.179 0 0 1-51.179 51.157H201.173a51.179 51.179 0 0 1-51.178-51.157V179.179A51.179 51.179 0 0 1 201.173 128h613.654zM329.024 434.837a51.093 51.093 0 0 1-51.179-51.093V179.157h-76.672v664.854h613.76V179.179H738.22v204.48a51.179 51.179 0 0 1-51.179 51.178H329.024z m0-51.093h357.995V179.157H329.024v204.587z m357.91 204.501a25.557 25.557 0 1 1 0.085 51.072H329.024a25.536 25.536 0 1 1 0-51.072h357.91z',
               onclick() {
-                let testCodes = this.selectedRow.map(item => item.testCode).join(',')
-                this.$confirm({
+                if (!that.selectedRow.length) return that.$message.warning('请在下方列表选择一条试验')
+                let testCodes = that.selectedRow.map(item => item.testCode).join(',')
+                let _this = this;
+                that.$confirm({
                   title: '确认保存',
                   content: `是否保存到试验编号为${testCodes}的任务吗`,
                   onOk: () => {
+                    that.saveCurve(_this)
                   }
                 })
               }

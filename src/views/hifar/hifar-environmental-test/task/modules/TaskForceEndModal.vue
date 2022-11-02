@@ -103,7 +103,7 @@ export default {
     show(type, record) {
       this.model = Object.assign({}, record)
       this.type = type
-      this.title = '终止：' + (record.testNames || record.unitNames || record.testName || record.unitName) + '-' + record.testCode
+      this.title = '终止：' + (record.testNames || record.unitNames || record.testName || record.unitName) + ( record.testCode ? '-' + record.testCode : '')
       this.model.optTime = moment()
       this.$nextTick(() => {
         this.visible = true
