@@ -152,10 +152,8 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     //页面离开后关闭定时器
-    if (to.path !== '/LargeScreenPage') {
-      clearInterval(this.setIntervalTime)
-      clearInterval(this.currentTimeInterval)
-    }
+    clearInterval(this.setIntervalTime)
+    clearInterval(this.currentTimeInterval)
     next()
   },
   // deactivated() {

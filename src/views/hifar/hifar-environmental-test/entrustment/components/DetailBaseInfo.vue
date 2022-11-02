@@ -175,7 +175,7 @@
         </div>
       </h-desc-item>
       <h-desc-item :span='3' label='备注'>
-        {{ detailData.remarks || '--' }}
+        <span slot='content' v-html="detailData.remarks && detailData.remarks.replace(/\n/g,'<br/>')"></span>
       </h-desc-item>
     </h-desc>
     <test-entrust-review-pdf ref="testEntrustReviewPdf"/>

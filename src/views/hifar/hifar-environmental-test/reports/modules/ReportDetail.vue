@@ -33,7 +33,7 @@
             </div>
           </h-desc-item>
           <h-desc-item label='备注' :span='4'>
-            {{ detailData.remarks ? detailData.remarks : '--' }}
+            <span slot='content' v-html="detailData.remarks && detailData.remarks.replace(/\n/g,'<br/>')"></span>
           </h-desc-item>
         </h-desc>
       </div>

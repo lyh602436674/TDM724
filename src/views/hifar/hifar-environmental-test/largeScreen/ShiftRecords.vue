@@ -11,7 +11,7 @@
     <div class="title">当日排班人员</div>
     <div class="content">
         <ul class="content-wrapper-item">
-          <li v-for="(item, index) in shiftData" :key="index">
+          <li ref="personItem" v-for="(item, index) in shiftData" :key="index">
             <div>
               <img style="width: 100%;height: 100%;display: block" :src="item.headUrl ? item.headUrl : noHead" alt="图像">
             </div>
@@ -42,6 +42,9 @@ export default {
       },
     }
   },
+  mounted() {
+
+  },
   methods: {
     moment,
     loadData() {
@@ -55,6 +58,14 @@ export default {
         } else {
           this.shiftData = defaultData
         }
+      }).finally(() => {
+        setTimeout(() => {
+          window.onresize = () => {
+            this.$refs.personItem.forEach(item => {
+              item.children[0].style.width = item.children[0].offsetHeight + 'px'
+            })
+          }
+        })
       })
     },
   },
