@@ -102,11 +102,11 @@ export default {
   methods: {
     show(record = {}) {
       this.localTaskId = record.id || ''
-      this.title = `${record.testName} (试品数量:${record.productNums})`
+      this.title = `${record.testName || record.unitName} (试品数量:${record.productNums})`
       this.model = Object.assign({}, record, {
         predictUseTime: record.predictDuration || 1,
         sampleNum: record.productNums || 1,
-        predictStartTime: moment(),
+        predictStartTime: moment().add(5, 'm'), //预计开始时间默认+5分钟
         expectTime: moment(parseFloat(record.expectStartTime)).format('YYYY-MM-DD HH:mm:ss'),
         checkValid:
           record.checkValid == '0' && record.checkValid != undefined ? '--' : moment(parseFloat(record.checkValid)),

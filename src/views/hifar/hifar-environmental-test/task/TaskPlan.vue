@@ -591,8 +591,10 @@ export default {
       this.$refs.taskPlanListTable.refresh(bool)
     },
     loadData(params) {
+      this.selectedRowKeys = []
+      this.selectedRows = []
       let data = {
-        c_status_2:"30", // 过滤掉已完成的
+        c_status_2: "30", // 过滤掉已完成的
         ...params,
         ...this.queryParams,
       }

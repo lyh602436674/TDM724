@@ -118,6 +118,7 @@ export default {
           } else {
             let projectFormValue = projectForm.form.getFieldsValue()
             projectFormValue.unitName = that.model.unitName
+            projectFormValue.attachIds = projectFormValue.attachIds.map(item => item.fileId).toString()
             projectFormValue.taskExpectStartTime = projectFormValue.taskExpectStartTime && moment(projectFormValue.taskExpectStartTime).format('x');
             projectResult.push(projectFormValue)
           }

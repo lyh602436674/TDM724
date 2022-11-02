@@ -61,9 +61,9 @@
 </template>
 
 <script>
-import { postAction } from '@/api/manage'
-import { isString, isArray } from 'lodash'
-import moment from 'moment'
+import {postAction} from '@/api/manage'
+import {isArray, isString} from 'lodash'
+
 export default {
   inject: ['getContainer', 'testId'],
   props: {
@@ -127,35 +127,56 @@ export default {
           formType: 'input',
         },
         {
-          title: '试品名称',
+          title: '样品名称',
           key: 'c_productName_7',
           formType: 'input',
         },
         {
-          title: '试品型号',
+          title: '型号/规格',
           key: 'c_productModel_7',
+          formType: 'input',
+        },
+        {
+          title: '图号',
+          key: 'c_productAlias_7',
+          formType: 'input',
+        },
+        {
+          title: '样品编号',
+          dataIndex: 'c_pieceNo_7',
           formType: 'input',
         },
       ],
       columns: [
         {
+          title: '样品名称',
+          dataIndex: 'productName',
+          align: "center"
+        },
+        {
+          title: '型号/规格',
+          dataIndex: 'productModel',
+          align: "center",
+          customRender: (text) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '图号',
+          dataIndex: 'productAlias',
+          align: "center",
+          customRender: (text) => {
+            return text || '--'
+          }
+        },
+        {
           title: '样品编号',
+          align: "center",
           dataIndex: 'pieceNo',
         },
         {
-          title: '试品名称',
-          dataIndex: 'productName',
-        },
-        {
-          title: '试品型号',
-          dataIndex: 'productModel',
-        },
-        {
-          title: '试品代号',
-          dataIndex: 'productAlias',
-        },
-        {
           title: '试验名称',
+          align: "center",
           dataIndex: 'testName',
         },
       ],
@@ -189,7 +210,7 @@ export default {
       this.selectedRows = selectedRows
     },
     handleCancel() {
-      this.selectedRowKeys
+      this.selectedRowKeys = []
       this.visible = false
     },
     showSelectModal() {
@@ -209,7 +230,7 @@ export default {
       }
       data.pageSize = 2000
       return postAction(this.url, data).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           return res.data
         }
       })
