@@ -429,13 +429,8 @@ export default {
         }
         postAction(detailUrl, { id: id }).then((res) => {
           if (res.code == 200 && res.data.status == 9) {
-            let link = document.createElement('a')
-            link.style.display = 'none'
-            link.href = res.data.downloadPath || filePath
-            link.setAttribute('download', fileName)
-            document.body.appendChild(link)
-            link.click()
-            document.body.removeChild(link) //下载完成移除元素
+            let downloadPath = res.data.downloadPath || filePath;
+            downloadFile(downloadPath, fileName)
           } else {
             this.$message.warning(`文件[${fileName}]正在合并中，请稍后再点击下载`)
           }
