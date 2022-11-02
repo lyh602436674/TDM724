@@ -6,10 +6,10 @@
  * @Description: 上传组件公用方法和属性
  * @FilePath: \hifar-platform-client\src\components\HUpload\UploadMinxin.js
  */
-import {randomUUID} from "@/utils/util"
-import {findIndex} from 'lodash'
-import SparkMD5 from "spark-md5"
-import {downloadFile, getFileAccessHttpUrl, postAction} from '@/api/manage'
+import { randomUUID } from '@/utils/util'
+import { findIndex } from 'lodash'
+import SparkMD5 from 'spark-md5'
+import { downloadFile, getFileAccessHttpUrl, postAction } from '@/api/manage'
 
 export default {
   props: {
@@ -32,9 +32,9 @@ export default {
       url: {
         auth: '/MinioBusiness/authUpload',
         finished: '/MinioBusiness/finishUpload',
-        detail: '/MinioBusiness/queryById',
+        detail: '/MinioBusiness/queryById'
       },
-      extendRecords:{}
+      extendRecords: {}
     }
   },
   methods: {
@@ -95,7 +95,7 @@ export default {
             status: 'normal',
             uuid: UUID,
             file: files[i],
-            replaceStatus:2
+            replaceStatus: 2
           }
         } else {
           fileList[i] = {
@@ -147,7 +147,7 @@ export default {
           })
           this.fileList.splice(oldIndex, 1)
           this.handleDelete(this.extendRecords)
-          this.fileList.sort((o1,o2)=>o1.rowSort-o2.rowSort)
+          this.fileList.sort((o1, o2) => o1.rowSort - o2.rowSort)
         }
         this.triggerChange()
       }).catch(err => {
@@ -166,7 +166,7 @@ export default {
         let md5 = null
         md5 = await this.getFileMd5(file)
         let uploadParams = {
-          bucketName: this.isPublic ? 'public' : "private",
+          bucketName: this.isPublic ? 'public' : 'private',
           partSize: this.chunkSize,
           chunkCount: Math.ceil(file.size / this.chunkSize),
           fileMd5: md5,
@@ -185,11 +185,11 @@ export default {
           switch (authResult.data.uploadStatus) {
             case 8:
               // 文件分片都已上传，直接合并
-              console.log("文件分片都已上传，直接合并")
+              console.log('文件分片都已上传，直接合并')
               finishedResult = await this.finishUpload(uploadParams, authResult.data.fileId)
               if (finishedResult.code === 200) {
                 this.$set(this.fileList, fileIndex, Object.assign({}, this.fileList[fileIndex], {
-                  status: "success",
+                  status: 'success',
                   percent: 100,
                   url: finishedResult.data.filePath,
                   uploadTime: finishedResult.data.createTime,
@@ -205,7 +205,7 @@ export default {
             case 9:
               console.log('服务器上已经存在相同的文件', authResult)
               this.$set(this.fileList, fileIndex, Object.assign({}, this.fileList[fileIndex], {
-                status: "success",
+                status: 'success',
                 percent: 100,
                 url: authResult.data.filePath,
                 uploadTime: authResult.data.createTime,
@@ -229,7 +229,7 @@ export default {
               finishedResult = await this.finishUpload(uploadParams, authResult.data.fileId)
               if (finishedResult.code == 200) {
                 this.$set(this.fileList, fileIndex, Object.assign({}, this.fileList[fileIndex], {
-                  status: "success",
+                  status: 'success',
                   percent: 100,
                   url: finishedResult.data.filePath,
                   uploadTime: finishedResult.data.createTime,
@@ -240,13 +240,11 @@ export default {
               } else {
                 resolve(false)
               }
-
           }
         } else {
-          this.$set(this.fileList[fileIndex], "status", 'exception')
+          this.$set(this.fileList[fileIndex], 'status', 'exception')
         }
       })
-
     },
     /**
      * @Date: 2021-08-19 16:58:44
@@ -263,14 +261,14 @@ export default {
       let _this = this
 
       return new Promise((resolve, reject) => {
-        //分片开始位置
+        // 分片开始位置
         let start = (item.partNumber - 1) * this.chunkSize
-        //分片结束位置
+        // 分片结束位置
         let end = Math.min(file.size, start + this.chunkSize)
 
-        //取文件指定范围内的byte，从而得到分片数据
+        // 取文件指定范围内的byte，从而得到分片数据
         let chunkFile = file.file.slice(start, end)
-        console.log("开始上传第" + item.partNumber + "个分片", chunkFile)
+        console.log('开始上传第' + item.partNumber + '个分片', chunkFile)
         // let formData = new FormData()
         // formData.append('file', chunkFile)
         var xhr = new XMLHttpRequest()
@@ -299,7 +297,6 @@ export default {
             console.log('percent2:', calcPercent + '%')
           }
 
-
           if (calcPercent >= 100) {
             calcPercent = 100
           }
@@ -322,7 +319,7 @@ export default {
     finishUpload(uploadParams, fileId) {
       let params = {
         ...uploadParams,
-        fileId: fileId,
+        fileId: fileId
       }
       return postAction(this.url.finished, params)
     },
@@ -341,16 +338,16 @@ export default {
       this.$set(this.fileList[index], 'pretreatment', 0)
       this.$set(this.fileList[index], 'percent', 0)
       return new Promise((resolve) => {
-        var blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
-          chunkSize = 5 * 1024 * 1024,  // 这里是用来计算文件md5时做的分片
-          file = __file__.file,
+        var blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice;
+          var chunkSize = 5 * 1024 * 1024; // 这里是用来计算文件md5时做的分片
+          var file = __file__.file;
           // 计算分片数量
-          chunks = Math.ceil(file.size / chunkSize),
+          var chunks = Math.ceil(file.size / chunkSize);
           // 当前分片
-          currentChunk = 0,
+          var currentChunk = 0;
           // 计算预处理时进度步进值
-          chunkPersentStep = 100 / chunks,
-          spark = new SparkMD5.ArrayBuffer(),
+          var chunkPersentStep = 100 / chunks;
+          var spark = new SparkMD5.ArrayBuffer();
           //   1：FileReader : 读取文件内容
           // readAsText() 读取文本文件，(可以使用Txt打开的文件)
           // readAsBinaryString(): 读取任意类型的文件，返回二进制字符串
@@ -364,11 +361,11 @@ export default {
           // onloadend:文件读取完毕之后，不管成功还是失败触发
           // onloadstart: 开始读取文件时触发
           // onprogress:读取文件过程中触发
-          fileReader = new FileReader();
+          var fileReader = new FileReader();
         // 监听文件读取速度
         fileReader.onload = (e) => {
           // console.log('read chunk nr', currentChunk + 1, 'of', chunks);
-          spark.append(e.target.result);                   // Append array buffer
+          spark.append(e.target.result); // Append array buffer
           currentChunk++;
           if (currentChunk < chunks) {
             let pretreatment = currentChunk * chunkPersentStep
@@ -376,10 +373,10 @@ export default {
             if (pretreatment >= 100) {
               pretreatment = 100
             }
-            this.$set(this.fileList[index], "pretreatment", pretreatment.toFixed(2))
+            this.$set(this.fileList[index], 'pretreatment', pretreatment.toFixed(2))
             loadNext();
           } else {
-            this.$set(this.fileList[index], "pretreatment", 100)
+            this.$set(this.fileList[index], 'pretreatment', 100)
             resolve(spark.end())
           }
         };
@@ -387,8 +384,8 @@ export default {
           console.warn('oops, something went wrong.');
         };
         function loadNext() {
-          var start = currentChunk * chunkSize,
-            end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
+          var start = currentChunk * chunkSize;
+            var end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
           fileReader.readAsArrayBuffer(blobSlice.call(file, start, end));
         }
         loadNext();
