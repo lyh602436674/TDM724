@@ -29,9 +29,6 @@
       <span slot="testCode" slot-scope="text, record">
         <a  @click="handleGoDetail(record)">{{ record.testCode }}</a>
       </span>
-      <span slot="workName" slot-scope="text, record">
-        <a  @click="handleWorkUser(record)">{{ record.workName || '--' }}</a>
-      </span>
     </h-vex-table>
     <work-center-user-modal ref="WorkCenterUserModal"></work-center-user-modal>
     <task-detail-modal ref="TaskDetailModal" />
@@ -99,22 +96,6 @@ export default {
             return text || '--'
           },
         },
-        // {
-        //   title: '工作中心',
-        //   align: 'left',
-        //   dataIndex: 'workName',
-        //   minWidth: 100,
-        //   scopedSlots: { customRender: 'workName' },
-        // },
-        // {
-        //   title: '检测期限',
-        //   align: 'left',
-        //   dataIndex: 'taskExpectEndTime',
-        //   customRender: (text, record) => {
-        //     return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD') : '--'
-        //   },
-        //   minWidth: 100,
-        // },
         {
           title: '期望开始时间',
           dataIndex: 'predictStartTime',

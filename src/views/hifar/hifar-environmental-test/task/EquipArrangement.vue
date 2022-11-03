@@ -708,22 +708,14 @@ export default {
         this.$refs.equipTaskList.refresh(bool)
         this.loadLeftTree();
       }
-      this.selectedRow = []
     },
     onSelect(selectedKeys, event) {
-      // if (isEmpty(selectedKeys)) return
       //关闭弹窗
-      this.$refs.taskStartModal.visible = false
-      this.$refs.taskSuspendModal.visible = false
-      this.$refs.taskForceEnd.visible = false
-      this.$refs.taskFinishedModal.visible = false
-      this.$refs.taskAbnormalModal.visible = false
-      // 选择设备列表,关闭打开的弹窗
-      this.$refs.testDataAddModal.visible = false
-      this.$refs.testCheckModal.visible = false
-      this.$refs.TestBaseEdit.visible = false
-      this.$refs.abnormalDetailModal.visible = false
-      this.$refs.testTaskBaseInfoModal.visible = false
+      for (let ref in this.$refs) {
+        if (this.$refs[ref].visible === true) {
+          this.$refs[ref].visible = false
+        }
+      }
       // 切换设备列表,按钮恢复默认
       this.selectedRow = []
       this.buttons.map((item) => {

@@ -87,7 +87,7 @@ export default {
       model: {},
       testData: [
         { title: '试验设备', key: 'equipName', value: '' },
-        { title: '费用', key: 'testCost', value: '' },
+        { title: '设备速率', key: 'testRate', value: '' },
         { title: '预计开始时间', key: 'predictStartTime', value: '', isTime: true },
         { title: '预计结束时间', key: 'predictEndTime', value: '', isTime: true },
         { title: '实际开始时间', key: 'realStartTime', value: '', isTime: true },
@@ -123,7 +123,7 @@ export default {
     },
     loadDetail(id) {
       postAction(this.url.detail, { id: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           const { data } = res
           this.title = (data.testNames ? data.testNames : '') + '-终止记录详情'
           this.detailData = data

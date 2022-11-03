@@ -171,6 +171,8 @@ export default {
           return type === '1' ? '已完成' : '待出报告';
         case 50:
           return '已出报告'
+        case 80:
+          return '已终止'
         case 99:
           return '已删除'
       }
@@ -191,6 +193,8 @@ export default {
           return '#2db7f5'
         case 50:
           return 'cyan'
+        case 80:
+          return '#F50'
         case 99:
           return 'red'
       }

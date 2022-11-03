@@ -226,12 +226,15 @@ export default {
               onOk: () => {
                 params.confirm = 1
                 postAction(this.url.distribute, params).then((res) => {
-                  if (res.code == 200) {
+                  if (res.code === 200) {
                     this.$message.success('分配成功')
                     this.$emit('change', res.data)
                     this.handleCancel()
                   }
                 })
+              },
+              onCancel: () => {
+                this.submitLoading = false
               }
             })
           } else {

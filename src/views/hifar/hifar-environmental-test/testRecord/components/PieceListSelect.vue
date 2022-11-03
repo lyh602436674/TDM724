@@ -202,8 +202,8 @@ export default {
       this.$emit('change', this.selectedRowKeys, this.selectedRows)
     },
     handleSubmit() {
-      this.handleCancel()
       this.triggerChange()
+      this.handleCancel()
     },
     onSelect(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys

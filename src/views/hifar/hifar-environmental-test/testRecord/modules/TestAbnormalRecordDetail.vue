@@ -77,9 +77,8 @@
       <h-desc slot="content" size="small" labelWidth="120px">
         <h-desc-item label="处理状态">
           <template slot="content">
-            <a-badge v-if="detailData.dealStatus == 1" color="geekblue" text="未处理" />
-            <a-badge v-if="detailData.dealStatus == 2" color="green" text="处理中" />
-            <a-badge v-if="detailData.dealStatus == 3" color="grey" text="已处理" />
+            <a-badge v-if="detailData.dealStatus == 1" color="red" text="未处理" />
+            <a-badge v-if="detailData.dealStatus == 3" color="green" text="已处理" />
           </template>
         </h-desc-item>
         <h-desc-item label="处理人"> {{ detailData.dealUserName || '--' }}</h-desc-item>

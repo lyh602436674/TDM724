@@ -220,9 +220,9 @@ export default {
         },
         {
           title: '计量有效期',
-          dataIndex: 'checkTime',
+          dataIndex: 'checkValid',
           customRender: (t, record) => {
-            return +record.checkTime && moment(+record.checkTime).format('YYYY-MM-DD') || '--'
+            return +record.checkValid && moment(+record.checkValid).format('YYYY-MM-DD') || '--'
           }
         },
         {

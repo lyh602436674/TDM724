@@ -151,7 +151,7 @@ export default {
                 this.initRaphael()
               })
             }
-            this.equipList = res.data
+            this.equipList = res.data.sort((a,b)=> a.rowSort - b.rowSort)
           }
         })
         .finally(() => {

@@ -38,9 +38,8 @@
           <span v-if="record.exceptionType == 3">动力异常</span>
         </div>
         <template slot="dealStatus" slot-scope="text, record">
-          <a-badge v-if="record.dealStatus == 1" color="geekblue" text="未处理" />
-          <a-badge v-if="record.dealStatus == 2" color="green" text="处理中" />
-          <a-badge v-if="record.dealStatus == 3" color="grey" text="已处理" />
+          <a-badge v-if="record.dealStatus == 1" color="red" text="未处理" />
+          <a-badge v-if="record.dealStatus == 3" color="green" text="已处理" />
         </template>
         <template slot="action" slot-scope="text, record">
           <span v-if="record.dealStatus != 3">

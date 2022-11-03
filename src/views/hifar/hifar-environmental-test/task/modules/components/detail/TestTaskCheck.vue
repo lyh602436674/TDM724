@@ -221,7 +221,6 @@ export default {
 
   .check-res {
     width: 24%;
-    cursor: pointer;
   }
 
   .check-res-person {
@@ -232,7 +231,6 @@ export default {
   .check-flag-person {
     .check-list-item-center;
     width: 8%;
-    cursor: pointer;
   }
 
   .check-box {

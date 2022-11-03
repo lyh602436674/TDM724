@@ -40,7 +40,7 @@
       <!-- 试验信息 -->
       <h-desc id="testInfo" ref="testInfo" lableWidth="110px" style="margin-top: 20px; margin-bottom: 20px"
               title="试验信息">
-        <h-desc-item label="试验设备">{{ projectInfo.unitName || '--' }}</h-desc-item>
+        <h-desc-item label="试验设备">{{ detailData.equipName + '-' + detailData.equipModel || '--' }}</h-desc-item>
         <h-desc-item label="设备速率">{{ detailData.testRate || '--' }}</h-desc-item>
         <h-desc-item label="负责人">{{ detailData.chargeUserName || '--' }}</h-desc-item>
         <h-desc-item label="开始时间">{{
@@ -347,7 +347,8 @@ export default {
           let testEquipInfo = []
           let testPersonInfo = []
           this.detailData = data
-          this.projectInfo = data.testTaskInfo
+          // this.projectInfo = data.testTaskInfo
+          this.projectInfo = data.projectInfo
           if (testEquipInfoArr.length) {
             testEquipInfoArr.forEach((item) => {
               testEquipInfo.push(item.equipName + (item.innerName ? '(' + item.innerName + ')' : ''))
@@ -355,7 +356,8 @@ export default {
           }
           if (testPersonInfoArr.length) {
             testPersonInfoArr.forEach((item) => {
-              testPersonInfo.push(item.testUserName + '(' + item.testPostName + ')')
+              let res = item.testUserName ? (item.testUserName + (item.testPostName ? +'(' + item.testPostName + ')' : '')) : '--'
+              testPersonInfo.push(res)
             })
           }
           this.testEquipInfo = testEquipInfo
