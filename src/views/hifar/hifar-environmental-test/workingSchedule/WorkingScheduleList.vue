@@ -110,6 +110,10 @@ export default {
 </script>
 
 <style scoped lang="less">
+.workingSchedule {
+  height: 100%;
+}
+
 /deep/ .ant-select-selection-selected-value {
   width: 100%;
 }
