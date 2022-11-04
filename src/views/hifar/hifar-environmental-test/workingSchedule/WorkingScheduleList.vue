@@ -47,15 +47,21 @@ export default {
       saveLoading: false,
     }
   },
-  activated() {
+  created() {
     this.loadData()
     this.getUserList()
   },
+  // 如果页面开启缓存了就把下面的放开，把created删掉
+  // activated() {
+  //   this.loadData()
+  //   this.getUserList()
+  // },
   methods: {
     loadData() {
       postAction(this.url.list).then((res) => {
         if (res.code === 200) {
           let {monthly, history, nextMonth} = res.data
+
           function setRandomUUID(arr) {
             return arr.map(item => {
               return {...item, id: randomUUID()}
