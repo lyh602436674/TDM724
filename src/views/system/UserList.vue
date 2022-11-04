@@ -12,6 +12,7 @@
     <div slot="table-operator">
       <a-button v-has="'userlist:add'" type="ghost-primary" size="small" @click="handleAdd" icon="plus">添加用户</a-button>
       <a-button v-has="'userlist:derive'" size="small" type="ghost-success" icon="download" @click="handleExportXls('用户管理')">导出</a-button>
+      <a-button type="ghost-success" size="small" icon="import" @click="handleImportExcel">导入</a-button>
       <!-- <a-button type="success" size="small" @click="handleSyncUser">
         <h-icon type="icon-tongbu"></h-icon>
         同步流程
@@ -123,6 +124,7 @@
 
       <!-- 用户回收站 -->
       <user-recycle-bin-modal :visible.sync="recycleBinVisible" @ok="refresh" />
+      <h-file-import ref="HFileImport" @change="refresh(true)" @downloadExcel="downloadChange"/>
     </template>
   </h-card>
 </template>
@@ -130,10 +132,10 @@
 <script>
 import UserModal from './modules/UserModal'
 import PasswordModal from './modules/PasswordModal'
-import { downloadFile, putAction, getFileAccessHttpUrl } from '@/api/manage'
-import { frozenBatch, getUserList } from '@/api/api'
+import {downloadFile, getFileAccessHttpUrl, putAction} from '@/api/manage'
+import {frozenBatch, getUserList} from '@/api/api'
 import UserRecycleBinModal from './modules/UserRecycleBinModal'
-import { postAction } from '../../api/manage'
+import {postAction} from '../../api/manage'
 import moment from 'moment'
 
 export default {
@@ -290,7 +292,7 @@ export default {
         delete: '/OrgUserBusiness/logicRemoveById',
         deleteBatch: '/OrgUserBusiness/logicRemoveById',
         export: '/OrgUserExport/exportExcel',
-        // importExcelUrl: 'sys/user/importExcel',
+        importExcelUrl: '/BaseOrgUserImport/importExcel',
       },
       disableMixinCreated: true,
       selectedRowKeys: [],
@@ -428,7 +430,7 @@ export default {
       this.handleDelete(this.selectedRowKeys.join(','))
     },
     handleDelete(id) {
-      postAction(this.url.delete, { id: id }).then((res) => {
+      postAction(this.url.delete, {id: id}).then((res) => {
         if (res.code === 200) {
           this.$message.success('删除成功')
           this.refresh(true)
@@ -436,6 +438,12 @@ export default {
           this.$message.warning(res.msg)
         }
       })
+    },
+    handleImportExcel() {
+      this.$refs.HFileImport.show('用户管理', this.url.importExcelUrl, {})
+    },
+    downloadChange() {
+      this.handleExportXls('用户管理', {type: 'template'})
     },
     // 导出
     async handleExportXls(name) {

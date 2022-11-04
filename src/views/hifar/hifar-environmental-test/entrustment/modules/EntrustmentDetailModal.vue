@@ -30,12 +30,13 @@
           <a-step v-for='item in steps' :key='item.title' :title='item.title'/>
         </a-steps>
         <h-tabs :activeKey='activeKey' :animated='true' @change='handleTabsChange'>
-          <a-tab-pane key='1' tab='委托信息'>
+          <a-tab-pane key='1' :tab='viewDetailType === "1" ? "委托信息" : "运行单信息"'>
             <entrust-detail ref='EntrustDetail' :detailData='detailData'></entrust-detail>
           </a-tab-pane>
           <a-tab-pane key='3' tab='试验信息'
                       v-if="[20,40,50,80].includes(detailData.status)">
-            <test-task-info ref='TaskInfo' :entrustId='entrustId' class='autoHeight'></test-task-info>
+            <test-task-info ref='TaskInfo' :entrustType="detailData.entrustType" :entrustId='entrustId'
+                            class='autoHeight'></test-task-info>
           </a-tab-pane>
           <a-tab-pane key='4' tab='报告信息'
                       v-if="viewDetailType !== '1' && (detailData.status === 40 || isSubpackage)">

@@ -13,6 +13,7 @@
       slot='content'
       :columns='columns'
       :data='loadData'
+      :loading="tableLoading"
       :editConfig="editConfig"
       :scroll='{ x: true }'
     ></h-edit-table>
@@ -55,6 +56,7 @@ export default {
         logicRemoveById: '/HfEnvReportBusiness/logicRemoveById',
         modifyReportNo: "/HfEnvReportBusiness/modifyReportNo"
       },
+      tableLoading:false,
       editConfig: {
         trigger: 'click',
         mode: 'cell',
@@ -390,6 +392,7 @@ export default {
       }
     },
     fileChange1({file}) {
+      this.tableLoading = true
       if (file.response && file.response.code === 200) {
         this.refresh()
       }

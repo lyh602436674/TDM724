@@ -28,7 +28,7 @@
     <a-spin :spinning="spinning">
       <h-card :bordered="false">
         <h-tabs :activeKey="activeKey" :animated="true" @change="handleTabsChange">
-          <a-tab-pane key="1" tab="委托信息">
+          <a-tab-pane key="1" :tab='viewDetailType === "1" ? "委托信息" : "运行单信息"'>
             <entrust-detail ref='EntrustDetail' :detailData='detailData'></entrust-detail>
           </a-tab-pane>
           <a-tab-pane key="2" tab="委托单预览" v-if="detailData.entrustType === '2'">
@@ -89,12 +89,14 @@ export default {
       currentPage: 0,
       pageCount: 0,
       outsourcingUnit: "",
+      viewDetailType: "",
       testCondition: 2,
       testProgress: 2,
     }
   },
   methods: {
     show(record, type) {
+      this.viewDetailType = type
       this.visible = true
       this.entrustId = record.id
       this.model = record
@@ -155,6 +157,7 @@ export default {
                     this.$emit('change', true)
                   } else {
                     this.$message.warning(res.msg)
+                    this.submitLoading = false
                   }
                 })
               },

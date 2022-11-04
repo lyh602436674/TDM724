@@ -162,8 +162,8 @@
       </h-desc-item>
       <h-desc-item :span='3' label='委托单附件'>
         <div slot='content'>
-          <template v-if='detailData.attachInfo && detailData.attachInfo.length'>
-            <div v-for='(item, index) in detailData.attachInfo' :key='index' class='url-list'>
+          <template v-if='attachInfo && attachInfo.length'>
+            <div v-for='(item, index) in attachInfo' :key='index' class='url-list'>
               <span>{{ index + 1 }}、{{ item.fileName }}</span>
               <a-button icon='download' size='small' type='primary'
                         @click='handleDownload(item.filePath, item.fileName)'>
@@ -196,6 +196,10 @@ export default {
       type: Object,
       default: () => {
       }
+    },
+    attachInfo: {
+      type: Array,
+      default: () => []
     },
     showPreviewBtn: {
       type: Boolean,

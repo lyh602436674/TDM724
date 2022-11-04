@@ -24,7 +24,7 @@
     <h-desc-item label="联系人">
       {{ detailData.custLinkName ? detailData.custLinkName : '--' }}
     </h-desc-item>
-    <h-desc-item label="联系电话" :span='4'>
+    <h-desc-item label="联系电话" >
       {{ detailData.custLinkMobile ? detailData.custLinkMobile : '--' }}
     </h-desc-item>
     <!-- <h-desc-item label="要求附件" :span="4">

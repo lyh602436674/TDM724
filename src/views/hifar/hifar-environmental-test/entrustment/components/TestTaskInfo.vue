@@ -31,7 +31,7 @@
       </span>
     </h-vex-table>
     <work-center-user-modal ref="WorkCenterUserModal"></work-center-user-modal>
-    <task-detail-modal ref="TaskDetailModal" />
+    <task-detail-modal ref="TaskDetailModal" :entrustType="entrustType"/>
   </h-card>
 </template>
 
@@ -49,6 +49,10 @@ export default {
     entrustId: {
       type: String,
       default: '',
+    },
+    entrustType: {
+      type: String,
+      default: '1',
     },
   },
   watch: {

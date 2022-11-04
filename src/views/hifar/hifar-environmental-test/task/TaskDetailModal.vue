@@ -34,6 +34,7 @@
             v-if="activeTab === 1"
             ref="TestBaseInfo"
             :basicData="basicData"
+            :entrustType="entrustType"
             :testTaskData="testTaskData"
             :projectData="projectData"
             :productTable="productTable"
@@ -64,6 +65,12 @@ import TestTaskCheck from './modules/components/detail/TestTaskCheck'
 import VibrationTable from './modules/components/detail/VibrationTable'
 
 export default {
+  props:{
+    entrustType: {
+      type: String,
+      default: '1',
+    },
+  },
   inject: {
     getContainer: {
       default: () => document.body,
