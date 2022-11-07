@@ -207,7 +207,6 @@ export default {
       projectModelInfo: [],
       secretLevelArr: [],
       staticTableData: [],
-      pieceSortingResult: [], // 根据样品名称和规格型号分类后的样品数据
       entrustFormData: [
         {
           key: 'id',
@@ -710,7 +709,6 @@ export default {
           }
         }
       }
-      this.pieceSortingResult = result
       return result
     },
     //项目信息为空时
@@ -772,39 +770,46 @@ export default {
     // 暂存-提交请求
     submitRequest(status) {
       let {entrustModelInfo, pieceModelInfo, projectModelInfo} = this
-      if (this.pieceSortingResult.length !== projectModelInfo.length && status === 10) {
-        let pieceSortingResult = cloneDeep(this.pieceSortingResult)
-        for (let i = 0; i < pieceSortingResult.length; i++) {
-          for (let j = 0; j < projectModelInfo.length; j++) {
-            if (pieceSortingResult[i].pieceIds.sort().toString().includes(projectModelInfo[j].pieceIds.split(',').sort().toString())) {
-              pieceSortingResult.splice(i, 1)
-              i--
-              break
-            }
-          }
-        }
+      // 项目中实际用到的样品
+      let projectOfPiece = projectModelInfo.reduce((pre, next) => {
+        return pre.concat(...next.pieceIds.split(','))
+      }, [])
+      // 判断样品列表中的数量和项目实际用到的样品数量
+      if (pieceModelInfo.length !== projectOfPiece.length && status === 10) {
         let pieceNosDom = [], index = 0, pieceIds = []
-        for (let i = 0; i < pieceSortingResult.length; i++) {
-          for (let j = 0; j < pieceSortingResult[i].pieceNos.length; j++) {
-            index++
-            pieceIds.push(pieceSortingResult[i].pieceIds[j])
-            pieceNosDom.push(<div style={{color: 'red'}}>{` ${index}、${pieceSortingResult[i].pieceNos[j]} `}</div>)
+        let usedPieceIds = projectModelInfo.reduce((pre, next) => {
+          return pre.concat(next.pieceIds.split(','))
+        }, [])
+        let allPieceIds = cloneDeep(pieceModelInfo).map(item => item.id)
+        for (let i = 0; i < usedPieceIds.length; i++) {
+          if (allPieceIds.includes(usedPieceIds[i])) {
+            allPieceIds = allPieceIds.filter(item => item !== usedPieceIds[i])
           }
         }
-        this.$confirm({
-          title: '提示',
-          content: h => {
-            return h('div', {}, [
-              <p>还有如下编号的样品未添加分配试验项目</p>,
-              <p>{pieceNosDom}</p>,
-              <p>确定继续提交吗？</p>
-            ])
-          },
-          onOk: () => {
-            // 这里需要删除多余没有用到的样品
-            fn.call(this, pieceIds)
-          }
-        })
+        for (let i = 0; i < allPieceIds.length; i++) {
+          index++
+          pieceIds.push(allPieceIds[i])
+          pieceNosDom.push(<div
+            style={{color: 'red'}}>{` ${index}、${pieceModelInfo.filter(item => item.id === allPieceIds[i])[0].pieceNo} `}</div>)
+        }
+        if (pieceIds.length) {
+          this.$confirm({
+            title: '提示',
+            content: h => {
+              return h('div', {}, [
+                <p>还有如下编号的样品未添加分配试验项目</p>,
+                <p>{pieceNosDom}</p>,
+                <p>确定继续提交吗？</p>
+              ])
+            },
+            onOk: () => {
+              // 这里需要删除多余没有用到的样品
+              fn.call(this, pieceIds)
+            }
+          })
+        } else {
+          fn.call(this)
+        }
       } else {
         fn.call(this)
       }
