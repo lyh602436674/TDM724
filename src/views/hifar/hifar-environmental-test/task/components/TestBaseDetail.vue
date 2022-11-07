@@ -35,7 +35,8 @@
         :dataSource="detailData.testPieceInfo"/>
       <!-- 项目信息 -->
       <template v-for="(item,index) in projectInfo">
-        <project-detail-template :key="index" :model="item"></project-detail-template>
+        <project-detail-template :key="index" :model="item"
+                                 :title="'项目信息' + '(' + detailData.entrustInfo[index].entrustCode  + ')'"></project-detail-template>
       </template>
       <!-- 试验信息 -->
       <h-desc id="testInfo" ref="testInfo" lableWidth="110px" style="margin-top: 20px; margin-bottom: 20px"
