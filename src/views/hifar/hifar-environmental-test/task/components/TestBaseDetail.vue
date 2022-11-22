@@ -11,7 +11,7 @@
     <!-- 基本信息 -->
     <a-tabs v-model="activeTab" size="small" type="card" @change="handleTabsChange">
       <a-tab-pane v-for="(item, index) in entrustInfo" :key="index"
-                  :tab="item.flag ?item.title : item.entrustCode "></a-tab-pane>
+                  :tab="item.flag ? item.title : (viewDetailType ? item.entrustNo : item.entrustCode) "></a-tab-pane>
     </a-tabs>
     <template v-if="entrustInfo[activeTab]['flag']">
       <abnormal-record-table v-if="entrustInfo[activeTab]['type'] === 'exception'"
@@ -36,7 +36,7 @@
       <!-- 项目信息 -->
       <template v-for="(item,index) in projectInfo">
         <project-detail-template :key="index" :model="item"
-                                 :title="'项目信息' + '(' + detailData.entrustInfo[index].entrustCode  + ')'"></project-detail-template>
+                                 :title="'项目信息' + (!viewDetailType ? ('(' + detailData.entrustInfo[index].entrustCode  + ')') : '')"></project-detail-template>
       </template>
       <!-- 试验信息 -->
       <h-desc id="testInfo" ref="testInfo" lableWidth="110px" style="margin-top: 20px; margin-bottom: 20px"
@@ -124,7 +124,7 @@
         </h-vex-table>
       </h-desc>
       <!-- 试验数据 -->
-      <h-desc id="testData" ref="testData" title="试验数据">
+      <h-desc ref="testData" title="试验数据">
         <div style="height: 100%; width: 100%; overflow: auto; padding: 20px">
           <h-desc id="attachForm" :bordered="false">
             <h-form ref="attachForm" v-model="model_attach" :column="1" :formData="attachData"
