@@ -35,12 +35,6 @@
       <h-desc-item label='委托单位'>
         {{ detailData.custName || '--' }}
       </h-desc-item>
-      <h-desc-item :label='detailData.entrustType == 1 ? "联系人" : "申请人"'>
-        {{ detailData.linkName || '--' }}
-      </h-desc-item>
-      <h-desc-item label='联系方式'>
-        {{ detailData.linkMobile || '--' }}
-      </h-desc-item>
       <template v-if="detailData.entrustType == 1">
         <h-desc-item label='委托人'>
           {{ detailData.entrustPerson || '--' }}
@@ -51,9 +45,6 @@
       </template>
       <h-desc-item label='单位地址' v-if="detailData.entrustType == 1">
         {{ detailData.custAddress || '--' }}
-      </h-desc-item>
-      <h-desc-item label='密级'>
-        {{ detailData.secretLevelCode_dictText || '--' }}
       </h-desc-item>
       <template v-if="detailData.entrustType == 1">
         <h-desc-item label='样品制造单位'>

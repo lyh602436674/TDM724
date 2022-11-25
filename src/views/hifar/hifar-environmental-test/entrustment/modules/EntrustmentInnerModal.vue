@@ -83,7 +83,7 @@
                 <vxe-table-column type='checkbox' width='60'></vxe-table-column>
                 <vxe-table-column type='seq' width='60'></vxe-table-column>
                 <vxe-table-column
-                    :edit-render="{
+                  :edit-render="{
                       name: 'input',
                       attrs: { type: 'text', placeholder: '请输入样品名称' },
                       events:{
@@ -91,11 +91,11 @@
                         focus: this.pieceDataFocus,
                       }
                     }"
-                    field='productName'
-                    title="样品名称"
+                  field='productName'
+                  title="样品名称"
                 />
                 <vxe-table-column
-                    :edit-render="{
+                  :edit-render="{
                        name:'input',
                        attrs: { type: 'text', placeholder: '请输入型号/规格' },
                        events:{
@@ -103,8 +103,8 @@
                           focus: this.pieceDataFocus,
                        }
                     }"
-                    field='productModel'
-                    title="型号/规格"
+                  field='productModel'
+                  title="型号/规格"
                 />
                 <vxe-table-column
                   :edit-render="{
@@ -120,8 +120,8 @@
                   title="样品编号"
                 />
                 <vxe-table-column
-                    field='pieceNum'
-                    title="数量"
+                  field='pieceNum'
+                  title="数量"
                 />
               </vxe-table>
             </div>
@@ -239,36 +239,11 @@ export default {
           },
         },
         {
-          title: '密级',
-          key: 'secretLevelCode',
-          formType: 'dict',
-          dictCode: 'hf_entrustlist_secondary',
-          validate: {
-            rules: [{required: false, message: '请选择密级'}]
-          },
-        },
-        {
           title: '委托单位',
           key: 'custName',
           formType: 'input',
           validate: {
             rules: [{required: true, message: '请输入委托单位'}]
-          }
-        },
-        {
-          title: '联系人',
-          key: 'linkName',
-          formType: 'input',
-          validate: {
-            rules: [{required: false, message: '请输入联系人'}]
-          }
-        },
-        {
-          title: '联系方式',
-          key: 'linkMobile',
-          formType: 'input',
-          validate: {
-            rules: [{required: false, message: '请输入联系方式'}]
           }
         },
         {
@@ -466,16 +441,24 @@ export default {
     handleAdd() {
       let userInfo = store.getters.userInfo
       this.entrustModel = {
-        linkName: userInfo.idName,
         entrustPerson: userInfo.idName,
-        linkMobile: userInfo.mobile,
         entrustPersonPhone: userInfo.mobile,
         entrustTime: moment(),
         attachIds: [],
         entrustType: '1',
-        secretLevelCode: 1,
         custName: userInfo.deptName,
-        custId: userInfo.deptId
+        sampleMakeUnit: userInfo.deptName,
+        custId: userInfo.deptId,
+        sampleProvisionMethod: "1",
+        sampleStatus: "1",
+        sampleDisposeMethod: "1",
+        progressRequire: "1",
+        performanceTest: "1",
+        testPicture: "1",
+        reportForm: "1",
+        reportSecretLevel: "1",
+        reportCollectionMethod: "1",
+        reportNum: 1,
       }
       this.tableData = []
       this.projectInfoData = []
@@ -585,11 +568,11 @@ export default {
       }
       return tableData
     },
-    pieceDataFocus({row,column}) {
+    pieceDataFocus({row, column}) {
       // 记录一下编辑前的数据
       this.activePieceRow = row[column.property]
     },
-    pieceDataBlur({row, rowIndex,column}) {
+    pieceDataBlur({row, rowIndex, column}) {
       // 判断一下输入框失去焦点后数据是否已经改变，改变了再去做变更和提醒
       setTimeout(() => {
         if (row[column.property] !== this.activePieceRow) {

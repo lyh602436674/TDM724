@@ -242,15 +242,6 @@ export default {
           disabled: true,
         },
         {
-          title: '密级',
-          key: 'secretLevelCode',
-          formType: 'dict',
-          dictCode: 'hf_entrustlist_secondary',
-          validate: {
-            rules: [{required: false, message: '请选择密级'}]
-          },
-        },
-        {
           title: '工作令号',
           key: 'workOrderNo',
           formType: 'input',
@@ -284,22 +275,6 @@ export default {
               onchange={this.selectCustomerChange}
             />
           )
-        },
-        {
-          title: '申请人',
-          key: 'linkName',
-          formType: 'input',
-          validate: {
-            rules: [{required: false, message: '请输入联系人'}]
-          }
-        },
-        {
-          title: '联系方式',
-          key: 'linkMobile',
-          formType: 'input',
-          validate: {
-            rules: [{required: false, message: '请输入联系方式'}]
-          }
         },
         {
           title: '试验目的',
@@ -499,7 +474,16 @@ export default {
         entrustTime: moment(),
         attachIds: [],
         entrustType: '2',
-        secretLevelCode: 1
+        sampleProvisionMethod: "1",
+        sampleDisposeMethod: "1",
+        progressRequire: "1",
+        performanceTest: "1",
+        sampleStatus: "1",
+        testPicture: "1",
+        reportForm: "1",
+        reportSecretLevel: "1",
+        reportCollectionMethod: "1",
+        reportNum: 1,
       }
       this.tableData = []
       this.projectInfoData = []
@@ -669,8 +653,7 @@ export default {
           custName: customer.custName,
           custId: customer.id,
           custAddress: customer.custAddress,
-          linkMobile: customer.linkMobile,
-          linkName: customer.linkName,
+          sampleMakeUnit: customer.deptName,
         }
       )
     },

@@ -7,15 +7,15 @@
                   @click="handleSave">保存
         </a-button>
         <a-tab-pane key="1" tab="当月排班">
-          <working-schedule-table ref="monthlyTable" :table-data="monthlyTableData" :userList="userList"
+          <working-schedule-table :tableLoading="tableLoading" ref="monthlyTable" :table-data="monthlyTableData" :userList="userList"
                                   tableEdit table-data-name="monthlyTableData"></working-schedule-table>
         </a-tab-pane>
         <a-tab-pane key="2" tab="历史排班" :forceRender="true">
-          <working-schedule-table :table-data="historyTableData" table-data-name="historyTableData"
+          <working-schedule-table :table-data="historyTableData" table-data-name="historyTableData" :tableLoading="tableLoading"
                                   :userList="userList"></working-schedule-table>
         </a-tab-pane>
         <a-tab-pane key="3" tab="下月排班" :forceRender="true">
-          <working-schedule-table ref="nextMonthTableData" :table-data="nextMonthTableData" tableEdit
+          <working-schedule-table ref="nextMonthTableData" :table-data="nextMonthTableData" tableEdit :tableLoading="tableLoading"
                                   table-data-name="nextMonthTableData" :userList="userList"></working-schedule-table>
         </a-tab-pane>
       </h-tabs>
@@ -45,6 +45,7 @@ export default {
       },
       userList: [],
       saveLoading: false,
+      tableLoading: false,
     }
   },
   created() {
@@ -58,6 +59,7 @@ export default {
   // },
   methods: {
     loadData() {
+      this.tableLoading = true
       postAction(this.url.list).then((res) => {
         if (res.code === 200) {
           let {monthly, history, nextMonth} = res.data
@@ -72,6 +74,8 @@ export default {
           this.historyTableData = setRandomUUID(history)
           this.nextMonthTableData = setRandomUUID(nextMonth)
         }
+      }).finally(()=>{
+        this.tableLoading = false
       })
     },
     handleSave() {

@@ -1,7 +1,7 @@
 <template>
   <global-layout @dynamicRouterShow="dynamicRouterShow">
     <!-- update-begin- author:sunjianlei --- date:20191009 --- for: 提升右键菜单的层级 -->
-    <contextmenu :itemList="menuItemList" :visible.sync="menuVisible" style="z-index: 9999" @select="onMenuSelect" />
+    <contextmenu :itemList="menuItemList" :visible.sync="menuVisible" style="z-index: 9999" @select="onMenuSelect"/>
     <!-- update-end- author:sunjianlei --- date:20191009 --- for: 提升右键菜单的层级 -->
     <!-- 导航栏↓ -->
     <div
@@ -18,15 +18,16 @@
       <div class="tab-layout-tabs-multipage tags-nav">
         <div class="btn-con left-btn">
           <a-tag style="cursor: pointer" @click="handleScroll(40)">
-            <a-icon type="vertical-right" />
+            <a-icon type="vertical-right"/>
           </a-tag>
         </div>
         <div class="btn-con right-btn">
           <a-tag style="cursor: pointer" @click="handleScroll(-20)">
-            <a-icon type="vertical-left" />
+            <a-icon type="vertical-left"/>
           </a-tag>
-          <!-- 非首页，可全屏 -->
-          <a-tag v-if="activePage != '/home'" style="cursor: pointer" @click="handleFullScreen">
+          <!-- 数组中配置的路由地址去除全屏效果 -->
+          <a-tag v-if="!['/LargeScreenPage','/home'].includes(activePage)" style="cursor: pointer"
+                 @click="handleFullScreen">
             <a-icon type="fullscreen"></a-icon>
           </a-tag>
         </div>
@@ -48,7 +49,7 @@
               @click="() => changePage(page.fullPath)"
               @close="(e) => remove(page.fullPath, e)"
             >
-              <a-badge :pagekey="page.fullPath" :color="page.name == $route.name ? '#2db7f5' : '#d9d9d9'" />
+              <a-badge :pagekey="page.fullPath" :color="page.name == $route.name ? '#2db7f5' : '#d9d9d9'"/>
               {{ page.meta.title }}
             </a-tag>
           </div>
@@ -60,10 +61,10 @@
     <div id="page-content" class="page-content">
       <!-- update-begin-author:taoyan date:20201221 for:此处删掉transition标签 不知道为什么加上后 页面路由切换的时候即1及菜单切到2及菜单的时候 两个菜单页面会同时出现300-500秒左右 -->
       <keep-alive v-if="multipage">
-        <router-view v-if="reloadFlag" class="page-content-router-view" />
+        <router-view v-if="reloadFlag" class="page-content-router-view"/>
       </keep-alive>
       <template v-else>
-        <router-view v-if="reloadFlag" class="page-content-router-view" />
+        <router-view v-if="reloadFlag" class="page-content-router-view"/>
       </template>
       <!-- update-end-author:taoyan date:20201221 for:此处删掉transition标签 不知道为什么加上后 页面路由切换的时候即1及菜单切到2及菜单的时候 两个菜单页面会同时出现300-500秒左右 -->
     </div>
@@ -74,10 +75,11 @@
 <script>
 import GlobalLayout from '@/components/page/GlobalLayout'
 import Contextmenu from '@/components/menu/Contextmenu'
-import { mixin, mixinDevice } from '@/utils/mixin.js'
+import {mixin, mixinDevice} from '@/utils/mixin.js'
+
 const indexKey = '/home'
 import Vue from 'vue'
-import { CACHE_INCLUDED_ROUTES } from '@/store/mutation-types'
+import {CACHE_INCLUDED_ROUTES} from '@/store/mutation-types'
 
 export default {
   name: 'TabLayout',
@@ -94,10 +96,10 @@ export default {
       menuVisible: false,
       fullScreen: false,
       menuItemList: [
-        { key: '4', icon: 'reload', text: '刷 新' },
-        { key: '1', icon: 'arrow-left', text: '关闭左侧' },
-        { key: '2', icon: 'arrow-right', text: '关闭右侧' },
-        { key: '3', icon: 'close', text: '关闭其它' },
+        {key: '4', icon: 'reload', text: '刷 新'},
+        {key: '1', icon: 'arrow-left', text: '关闭左侧'},
+        {key: '2', icon: 'arrow-right', text: '关闭右侧'},
+        {key: '3', icon: 'close', text: '关闭其它'},
       ],
       reloadFlag: true,
       tagBodyLeft: 0,
@@ -172,7 +174,7 @@ export default {
       } else if (this.linkList.indexOf(newRoute.fullPath) >= 0) {
         let oldIndex = this.linkList.indexOf(newRoute.fullPath)
         let oldPositionRoute = this.pageList[oldIndex]
-        this.pageList.splice(oldIndex, 1, Object.assign({}, newRoute, { meta: oldPositionRoute.meta }))
+        this.pageList.splice(oldIndex, 1, Object.assign({}, newRoute, {meta: oldPositionRoute.meta}))
       }
       this.getTagElementByRoute(newRoute)
     },
@@ -419,8 +421,8 @@ export default {
       let keyIndex = this.linkList.indexOf(key)
       if (keyIndex >= 0) {
         let currRouter = this.pageList[keyIndex]
-        let meta = Object.assign({}, currRouter.meta, { title: title })
-        this.pageList.splice(keyIndex, 1, Object.assign({}, currRouter, { meta: meta }))
+        let meta = Object.assign({}, currRouter.meta, {title: title})
+        this.pageList.splice(keyIndex, 1, Object.assign({}, currRouter, {meta: meta}))
         if (key === this.activePage) {
           this.changeTitle(title)
         }
@@ -444,10 +446,10 @@ export default {
       callback()
     },
     // 全屏方法
-    handleFullScreen(){
+    handleFullScreen() {
       const formPath = this.$route.meta.componentPath
       const query = this.$route.query
-      this.$refs.HPageViewModal.show(formPath,query)
+      this.$refs.HPageViewModal.show(formPath, query)
     }
   },
 }
