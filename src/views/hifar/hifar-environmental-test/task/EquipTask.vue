@@ -402,11 +402,12 @@ export default {
       let top = 10,
         bottom = index * this.raphael.stepHeight - 3
       let paper = this.raphael.equip[index].paper
+      let equipInnerName = equip.equipCode + '[' + equip.equipModel + ']'
       // 绘制设备名称
       let text = paper.text(
-        top + 28,
+        top + 20,
         25 + bottom + this.raphael.offsetX,
-        (equip.equipName + "[" + equip.equipModel + "]").length <= 18 ? equip.equipName + "[" + equip.equipModel + "]" : (equip.equipName + "[" + equip.equipModel + "]").substring(0, 18) + '...' || '--'
+        equipInnerName.length < 35 ? equipInnerName : equipInnerName.substring(0, 25) + '...' || '--'
       )
       text
         .attr({
@@ -415,7 +416,7 @@ export default {
           'font-weight': '100',
           'stroke-width': 0.5,
           stroke: this.lineColor,
-          title: equip.equipName + "[" + equip.equipModel + "]",
+          title: equipInnerName,
           cursor: 'pointer',
           fill: this.lineColor,
         })
