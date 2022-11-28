@@ -7,15 +7,19 @@
                   @click="handleSave">保存
         </a-button>
         <a-tab-pane key="1" tab="当月排班">
-          <working-schedule-table :tableLoading="tableLoading" ref="monthlyTable" :table-data="monthlyTableData" :userList="userList"
-                                  tableEdit table-data-name="monthlyTableData"></working-schedule-table>
+          <working-schedule-table :tableLoading="tableLoading" ref="monthlyTable" :table-data="monthlyTableData"
+                                  :userList="userList"
+                                  tableEdit table-data-name="monthlyTableData"
+                                  @change="tableChange"></working-schedule-table>
         </a-tab-pane>
         <a-tab-pane key="2" tab="历史排班" :forceRender="true">
-          <working-schedule-table :table-data="historyTableData" table-data-name="historyTableData" :tableLoading="tableLoading"
+          <working-schedule-table :table-data="historyTableData" table-data-name="historyTableData"
+                                  :tableLoading="tableLoading"
                                   :userList="userList"></working-schedule-table>
         </a-tab-pane>
         <a-tab-pane key="3" tab="下月排班" :forceRender="true">
-          <working-schedule-table ref="nextMonthTableData" :table-data="nextMonthTableData" tableEdit :tableLoading="tableLoading"
+          <working-schedule-table ref="nextMonthTableData" :table-data="nextMonthTableData" tableEdit
+                                  :tableLoading="tableLoading" @change="tableChange"
                                   table-data-name="nextMonthTableData" :userList="userList"></working-schedule-table>
         </a-tab-pane>
       </h-tabs>
@@ -74,9 +78,12 @@ export default {
           this.historyTableData = setRandomUUID(history)
           this.nextMonthTableData = setRandomUUID(nextMonth)
         }
-      }).finally(()=>{
+      }).finally(() => {
         this.tableLoading = false
       })
+    },
+    tableChange(tableDataName, tableData) {
+      this[tableDataName] = tableData
     },
     handleSave() {
       this.saveLoading = true

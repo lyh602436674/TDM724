@@ -50,7 +50,6 @@
             </a-calendar>
             <a-popover class="instruction">
               <template slot="content">
-
                 <div>
                   <a-badge color="#2f54eb" text="未分配"/>
                 </div>
@@ -433,86 +432,86 @@ export default {
           break
       }
       postAction(this.url.taskStatistics, params).then((res) => {
-          if (res.code === 200) {
-            let {waitDistributeTaskPieCount, taskTimeCount} = res.data
-            if (this.chartType === 'pie') {
-              let pieData = waitDistributeTaskPieCount.map((item) => {
-                return {
-                  value: parseInt(item.taskNum),
-                  name: item.unitName,
-                  unitId: item.unitId,
-                }
-              })
-              this.options = Object.assign({}, this.localOption, {
-                toolbox: this.toolbox,
-                series: [
-                  {
-                    type: 'pie',
-                    radius: '50%',
-                    data: pieData,
-                    label: {
-                      show: true,
-                      position: 'outside',
-                      formatter: '{b},数量{c}：{d}%',
-                      textStyle: {
-                        align: 'top',
-                        baseline: 'middle',
-                        fontFamily: '微软雅黑',
-                        fontSize: 12,
-                        fontWeight: 'bolder',
-                      },
+        if (res.code === 200) {
+          let {waitDistributeTaskPieCount, taskTimeCount} = res.data
+          if (this.chartType === 'pie') {
+            let pieData = waitDistributeTaskPieCount.map((item) => {
+              return {
+                value: parseInt(item.taskNum),
+                name: item.unitName,
+                unitId: item.unitId,
+              }
+            })
+            this.options = Object.assign({}, this.localOption, {
+              toolbox: this.toolbox,
+              series: [
+                {
+                  type: 'pie',
+                  radius: '50%',
+                  data: pieData,
+                  label: {
+                    show: true,
+                    position: 'outside',
+                    formatter: '{b},数量{c}：{d}%',
+                    textStyle: {
+                      align: 'top',
+                      baseline: 'middle',
+                      fontFamily: '微软雅黑',
+                      fontSize: 12,
+                      fontWeight: 'bolder',
                     },
                   },
-                ],
-              })
-            } else if (this.chartType === 'bar') {
-              let barData = [],
-                xAxisData = []
-              waitDistributeTaskPieCount.map((item) => {
-                barData.push(item.taskNum)
-                xAxisData.push(item.unitName)
-              })
-              this.options = Object.assign({}, this.localOption, {
-                toolbox: this.toolbox,
-                xAxis: {
-                  type: 'category',
-                  axisLabel: {
-                    interval: 0,
-                    rotate: xAxisData.length > 5 ? 30 : 0,
-                  },
-                  data: xAxisData,
                 },
-                tooltip: {
-                  trigger: 'axis',
-                  axisPointer: {
-                    type: 'shadow',
-                  },
+              ],
+            })
+          } else if (this.chartType === 'bar') {
+            let barData = [],
+              xAxisData = []
+            waitDistributeTaskPieCount.map((item) => {
+              barData.push(item.taskNum)
+              xAxisData.push(item.unitName)
+            })
+            this.options = Object.assign({}, this.localOption, {
+              toolbox: this.toolbox,
+              xAxis: {
+                type: 'category',
+                axisLabel: {
+                  interval: 0,
+                  rotate: xAxisData.length > 5 ? 30 : 0,
                 },
-                yAxis: {},
-                series: [
-                  {
-                    type: 'bar',
-                    data: barData,
-                    label: {
-                      show: true,
-                      distance:10,
-                      position: 'outside',
-                      formatter: '数量{c}',
-                      textStyle: {
-                        align: 'center',
-                        baseline: 'middle',
-                        fontFamily: '微软雅黑',
-                        fontSize: 12,
-                        fontWeight: 'bolder',
-                      },
+                data: xAxisData,
+              },
+              tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                  type: 'shadow',
+                },
+              },
+              yAxis: {},
+              series: [
+                {
+                  type: 'bar',
+                  data: barData,
+                  label: {
+                    show: true,
+                    distance: 10,
+                    position: 'outside',
+                    formatter: '数量{c}',
+                    textStyle: {
+                      align: 'center',
+                      baseline: 'middle',
+                      fontFamily: '微软雅黑',
+                      fontSize: 12,
+                      fontWeight: 'bolder',
                     },
                   },
-                ],
-              })
-            }
-            this.taskTimeCount = taskTimeCount
+                },
+              ],
+            })
           }
-        })
+          this.taskTimeCount = taskTimeCount
+        }
+      })
         .finally(() => {
           this.loading = false
         })
@@ -589,10 +588,10 @@ export default {
     },
     refresh(bool = true) {
       this.$refs.taskPlanListTable.refresh(bool)
-    },
-    loadData(params) {
       this.selectedRowKeys = []
       this.selectedRows = []
+    },
+    loadData(params) {
       let data = {
         c_status_2: "30", // 过滤掉已完成的
         ...params,

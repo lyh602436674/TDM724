@@ -52,7 +52,7 @@ export default {
         singleHeight: 30,
       },
       columns: [
-        {title: '序号', width: '8%', key: 'index'},
+        {title: '序号', width: '8%', key: 'rowSort'},
         {title: '设备名称', width: '15%', key: 'equipName'},
         {title: '设备型号', width: '15%', key: 'equipModel'},
         {title: '已分配任务总数', width: '15%', key: 'count'},

@@ -3,13 +3,12 @@
     <vxe-table ref='workTable'
                :data='tableData'
                @cell-click="handleCellClick"
-               @cell-menu="handleCellMenu"
                @menu-click="handleMenuClick"
                :mouse-config="{selected: true}"
                height="100%"
                :loading="tableLoading"
                size="medium"
-               :menu-config="menuConfig"
+               :menu-config="tableEdit ? menuConfig : {}"
                autoResize round border stripe
                :edit-config="{
                   trigger: 'click',
@@ -189,7 +188,6 @@ export default {
       ],
       menuConfig: {
         visibleMethod: ({type, options, column, row}) => {
-          console.log(type, options, column, 'type, options, column')
           if (type !== 'body') return false
           options.forEach(list => {
             list.forEach(item => {
@@ -200,7 +198,7 @@ export default {
                 item.disabled = false
                 item.visible = true
               }
-              if (['paste'].includes(item.code)) {
+              if (['pasteCell', 'pasteRow'].includes(item.code)) {
                 item.disabled = !Object.keys(this.copyRecord).length
               }
               if (['copyCell', 'clearCell'].includes(item.code)) {
@@ -213,8 +211,8 @@ export default {
         body: {
           options: [
             [
-              {code: 'copyCell', name: "复制此单元格", prefixIcon: 'fa fa-copy',},
-              {code: 'copyRow', name: "复制整行", prefixIcon: 'fa fa-copy',},
+              {code: 'copyCell', name: "复制此单元格",},
+              {code: 'copyRow', name: "复制整行"},
             ],
             [
               {code: 'clearCell', name: "清除此单元格"},
@@ -242,12 +240,7 @@ export default {
     handleCellClick({row, rowIndex, column}) {
 
     },
-    handleCellMenu({row, rowIndex, column, $event}) {
-      $event.stopPropagation()
-      console.log(row, rowIndex, column)
-    },
     handleMenuClick({menu, row, column, rowIndex}) {
-      console.log(menu, row, column)
       switch (menu.code) {
         case "copyCell":
           this.copyRecord = {}
@@ -284,21 +277,21 @@ export default {
             let tableData = cloneDeep(this.tableData)
             tableData[rowIndex] = {...tableData[rowIndex], ...this.copyRecord}
             this.$refs.workTable.loadData(tableData)
-          } else {
-
+            this.$emit('change', this.tableDataName, tableData)
           }
+          break;
         case 'pasteRow':
-          this.dataConfig.flat().forEach(item => {
-            this.tableData[rowIndex][item] = this.copyRecord[item]
-          })
+          let tableData = cloneDeep(this.tableData)
+          tableData[rowIndex] = {...tableData[rowIndex], ...this.copyRecord}
+          this.$refs.workTable.loadData(tableData)
+          this.$emit('change', this.tableDataName, tableData)
       }
     },
     filterOption(input, option) {
       return (
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       );
-    }
-    ,
+    },
   }
 }
 </script>
