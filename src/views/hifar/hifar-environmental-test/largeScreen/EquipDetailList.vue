@@ -55,14 +55,14 @@ export default {
         {title: '序号', width: '8%', key: 'rowSort'},
         {title: '设备名称', width: '15%', key: 'equipName'},
         {title: '设备型号', width: '15%', key: 'equipModel'},
-        {title: '已分配任务总数', width: '15%', key: 'count'},
-        {title: '已开始任务', width: '15%', key: 'startCount'},
+        {title: '项目名称', width: '15%', key: 'unitName'},
+        {title: '委托单位', width: '15%', key: 'custName'},
         {title: '预计结束时间', width: '20%', key: 'predictEndTime'},
         {title: '状态', width: '12%', key: 'status'},
       ],
       dataSource: [],
       // colorList: ['#26ad53', '#ff0000', '#7627cb', '#ff7800', '#fffc00', '#46afdb', '#ff0000'],
-      colorList: ['#26ad53',  '#ff7800','#ff0000',],
+      colorList: ['#26ad53', '#ff7800', '#ff0000',],
       url: {
         list: '/LargeScreenDisplay/taskMonitor',
       },
@@ -89,18 +89,18 @@ export default {
           return '运行'
         case 2:
           return '待机'
-/*        case 1:
-          return '在用'
-        case 2:
-          return '停用'
-        case 3:
-          return '封存'
-        case 4:
-          return '报废'
-        case 5:
-          return '故障'
-        case 6:
-          return '计量'*/
+        /*        case 1:
+                  return '在用'
+                case 2:
+                  return '停用'
+                case 3:
+                  return '封存'
+                case 4:
+                  return '报废'
+                case 5:
+                  return '故障'
+                case 6:
+                  return '计量'*/
         default:
           return '--'
       }
@@ -184,7 +184,7 @@ export default {
           text-overflow: ellipsis;
           border-right: 0.005rem solid rgb(13, 72, 224);
 
-          &-status{
+          &-status {
             display: inline-block;
             width: 80%;
             height: .12rem /* 46/384 */;
