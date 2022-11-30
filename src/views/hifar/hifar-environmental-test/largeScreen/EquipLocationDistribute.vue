@@ -58,7 +58,7 @@
               @mouseout="(e) => equipItemOut(e)"
             >
               <span
-                style="display: inline-block;width: 100%; height: 100%;text-align: center;line-height: 0.156rem;font-size: 0.083rem;user-select: none">{{
+                style="display: inline-block;width: 100%; height: 100%;text-align: center;line-height: 0.234rem;font-size: 0.12rem;user-select: none">{{
                   item.rowSort
                 }}</span>
             </div>
@@ -325,8 +325,8 @@ export default {
 
       .equipStatus-item {
         position: absolute;
-        width: 0.156rem /* 60/384 */;
-        height: 0.156rem /* 60/384 */;
+        width: 0.234rem /* 60/384 */;
+        height: 0.234rem /* 60/384 */;
         border-radius: 50%;
         background-size: 100% 100%;
         cursor: pointer;
