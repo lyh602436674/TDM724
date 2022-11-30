@@ -56,7 +56,12 @@
               @mousedown="(e) => equipItemDrag(e, item, index)"
               @mouseenter="(e) => equipItemEnter(e, item, index)"
               @mouseout="(e) => equipItemOut(e)"
-            ></div>
+            >
+              <span
+                style="display: inline-block;width: 100%; height: 100%;text-align: center;line-height: 0.156rem;font-size: 0.083rem;user-select: none">{{
+                  item.rowSort
+                }}</span>
+            </div>
           </template>
         </transition-group>
       </div>
@@ -65,7 +70,8 @@
 </template>
 
 <script>
-import { getAction, postAction } from '@api/manage'
+import {getAction, postAction} from '@api/manage'
+
 export default {
   name: 'EquipLocationDistribute',
   description: '设备位置分布页面',
