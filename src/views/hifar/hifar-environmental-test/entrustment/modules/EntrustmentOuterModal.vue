@@ -277,6 +277,21 @@ export default {
           )
         },
         {
+          title: '委托人',
+          key: 'entrustPerson',
+          formType: 'input',
+          validate: {
+            rules: [{required: true, message: '请输入委托人'}]
+          }
+        }, {
+          title: '委托人手机号',
+          key: 'entrustPersonPhone',
+          formType: 'input',
+          validate: {
+            rules: [{required: true, message: '请输入委托人手机号'}]
+          }
+        },
+        {
           title: '试验目的',
           key: 'testPurpose',
           formType: 'dict',
