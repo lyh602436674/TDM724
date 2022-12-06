@@ -352,6 +352,17 @@ export default {
           }
         },
         {
+          title: '进度要求',
+          key: 'progressRequire',
+          formType: 'dict',
+          dictCode: 'en_progress_require',
+          validate: {
+            rules: [{required: true, message: '请选择进度要求'}]
+          },
+          change: (val, option) => {
+          }
+        },
+        {
           title: '性能测试',
           key: 'performanceTest',
           formType: 'dict',
@@ -384,17 +395,17 @@ export default {
           change: (val, option) => {
           }
         },
-        {
-          title: '检测报告',
-          key: 'testReport',
-          formType: 'dict',
-          dictCode: 'en_test_report',
-          validate: {
-            rules: [{required: true, message: '请选择检测报告'}]
-          },
-          change: (val, option) => {
-          }
-        },
+        // {
+        //   title: '检测报告',
+        //   key: 'testReport',
+        //   formType: 'dict',
+        //   dictCode: 'en_test_report',
+        //   validate: {
+        //     rules: [{required: true, message: '请选择检测报告'}]
+        //   },
+        //   change: (val, option) => {
+        //   }
+        // },
         {
           title: '报告形式',
           key: 'reportForm',
@@ -412,6 +423,17 @@ export default {
           formType: 'input-number',
           style: {
             width: '100%'
+          }
+        },
+        {
+          title: '报告密级',
+          key: 'reportSecretLevel',
+          formType: 'dict',
+          dictCode: 'en_report_secretLevel',
+          validate: {
+            rules: [{required: true, message: '请选择报告密级'}]
+          },
+          change: (val, option) => {
           }
         },
         {
@@ -433,14 +455,14 @@ export default {
             rules: [{required: false, message: '请输入试验依据'}]
           }
         },
-        {
-          title: '试验要求',
-          key: 'testRequire',
-          formType: 'input',
-          validate: {
-            rules: [{required: true, message: `请输入试验要求`}]
-          }
-        },
+        // {
+        //   title: '试验要求',
+        //   key: 'testRequire',
+        //   formType: 'input',
+        //   validate: {
+        //     rules: [{required: true, message: `请输入试验要求`}]
+        //   }
+        // },
         {
           title: '技术文件',
           key: 'technicalFile',
