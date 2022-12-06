@@ -427,6 +427,14 @@ export default {
           }
         },
         {
+          title: '技术文件',
+          key: 'technicalFile',
+          formType: 'input',
+          validate: {
+            rules: [{required: true, message: '请输入技术文件'}]
+          }
+        },
+        {
           title: '备注',
           key: 'remarks',
           formType: 'textarea',
