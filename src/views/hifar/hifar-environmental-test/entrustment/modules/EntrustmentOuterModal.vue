@@ -56,7 +56,7 @@
                 新增样品
               </a-button>
               <a-popconfirm title="确定删除吗?" @confirm="handleDelete">
-                <a-button v-if='selectedRowKeys.length' icon='minus' size='small' type='danger'>
+                <a-button v-if='selectedPieceRows.length' icon='minus' size='small' type='danger'>
                   删除
                 </a-button>
               </a-popconfirm>
@@ -196,7 +196,7 @@ export default {
       entrustModel: {},
       entrustType: '2',
       tableData: [],
-      selectedRowKeys: [],
+      selectedPieceRows: [],
       projectInfoData: [],
       validRules: {
         pieceNo: [{required: true, message: '样品编号不能为空'}, {validator: nameValid}]
@@ -505,6 +505,7 @@ export default {
         performanceTest: "1",
         sampleStatus: "1",
         testPicture: "1",
+        testPurpose: "1",
         reportForm: "1",
         reportSecretLevel: "1",
         reportCollectionMethod: "1",
@@ -647,10 +648,10 @@ export default {
           }
         }
       }
-      this.selectedRowKeys = []
+      this.selectedPieceRows = []
     },
     // 动态设置项目中已选样品
-    setProjectPieceNos() {
+    setProjectPieceNos(row) {
       let ProjectForm = this.$refs.ProjectForm
       let projectFormItem = ProjectForm.$refs.projectFormItem
       let getPieceNos = (tableData) => tableData.map(record => record.pieceNo).toString()
@@ -681,11 +682,11 @@ export default {
     },
     //  多选
     onSelectChange(records) {
-      this.selectedRowKeys = records.records
+      this.selectedPieceRows = records.records
     },
     // 全选
     selectAllEvent(records) {
-      this.selectedRowKeys = records.records
+      this.selectedPieceRows = records.records
     },
     // 选择项目
     async handleAddProject() {
