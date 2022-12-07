@@ -209,13 +209,13 @@ export default {
       this.$emit('change', this.selectedRowKeys, this.selectedRows, this.pieceNoArr)
     },
     handleSubmit() {
-      let {selectedRowKeys, selectedRows} = this
-      let modelOrAlias = [{title: '型号/规格', key: 'productModel'}, {title: "图号", key: 'productAlias'}]
-      let nameModelAlias = selectedRows.map((item) => item.productName + item[modelOrAlias[[+this.entrustType - 1]].key])
-      if (Array.from(new Set(nameModelAlias)).length > 1) {
-        return this.$message.warning('只能选择相同的样品名称和' + modelOrAlias[[+this.entrustType - 1]].title)
-      }
-      if (selectedRowKeys.length > 0) {
+      // let {selectedRowKeys, selectedRows} = this
+      // let modelOrAlias = [{title: '型号/规格', key: 'productModel'}, {title: "图号", key: 'productAlias'}]
+      // let nameModelAlias = selectedRows.map((item) => item.productName + item[modelOrAlias[[+this.entrustType - 1]].key])
+      // if (Array.from(new Set(nameModelAlias)).length > 1) {
+      //   return this.$message.warning('只能选择相同的样品名称和' + modelOrAlias[[+this.entrustType - 1]].title)
+      // }
+      if (this.selectedRowKeys.length) {
         this.handleCancel()
         this.triggerChange()
       } else {

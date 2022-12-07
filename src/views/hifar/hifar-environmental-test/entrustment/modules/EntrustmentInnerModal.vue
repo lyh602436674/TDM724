@@ -56,7 +56,7 @@
                 新增样品
               </a-button>
               <a-popconfirm title="确定删除吗?" @confirm="handleDelete">
-                <a-button v-if='selectedRowKeys.length' icon='minus' size='small' type='danger'>
+                <a-button v-if='selectedPieceRows.length' icon='minus' size='small' type='danger'>
                   删除
                 </a-button>
               </a-popconfirm>
@@ -197,7 +197,7 @@ export default {
       entrustModel: {},
       entrustType: '1',
       tableData: [],
-      selectedRowKeys: [],
+      selectedPieceRows: [],
       projectInfoData: [],
       validRules: {
         pieceNo: [{required: true, message: '样品编号不能为空'}, {validator: nameValid}]
@@ -236,6 +236,14 @@ export default {
           disabled: true,
           validate: {
             rules: [{required: true, message: '请选择委托单类型', trigger: 'blur'}]
+          },
+        },
+        {
+          title: '工作令号',
+          key: 'workOrderNo',
+          formType: 'input',
+          validate: {
+            rules: [{required: true, message: '请输入工作令号', trigger: 'blur'}]
           },
         },
         {
@@ -450,6 +458,7 @@ export default {
         sampleMakeUnit: userInfo.deptName,
         custId: userInfo.deptId,
         sampleProvisionMethod: "1",
+        testPurpose: "1",
         sampleStatus: "1",
         sampleDisposeMethod: "1",
         progressRequire: "1",
@@ -491,7 +500,7 @@ export default {
           this.tableData = []
           this.tableData = obj.pieceInfo
           this.projectInfoData = obj.projectInfo
-          this.pieceSorting(this.tableData, 'productName', 'productModel')
+          // this.pieceSorting(this.tableData, 'productName', 'productModel')
         }
       }).finally(() => {
         this.submitLoading = false
@@ -518,11 +527,11 @@ export default {
           pieceNo: (values.piecePrefix || '') + values.pieceNo,
         })
       }
-      this.setProjectPieceNos()
     },
     splitByHorizontalLine(values, arr) {
       //根据横杠分隔
       let tableData = []
+      let getZero = arr[0][0] === '0' && arr[0].substring(0, arr[0].lastIndexOf('0') + 1) || ''
       let num = +arr[1] + 1 - +arr[0] > +values.pieceNum ? +arr[0] + +values.pieceNum - 1 : +arr[1]
       for (let i = +arr[0]; i <= num; i++) {
         tableData.push({
@@ -530,7 +539,7 @@ export default {
           productName: values.productName,
           pieceNum: 1,
           productModel: values.productModel,
-          pieceNo: (values.piecePrefix || '') + i,
+          pieceNo: (values.piecePrefix || '') + getZero + i,
         })
       }
       return tableData
@@ -576,7 +585,7 @@ export default {
       // 判断一下输入框失去焦点后数据是否已经改变，改变了再去做变更和提醒
       setTimeout(() => {
         if (row[column.property] !== this.activePieceRow) {
-          this.setProjectPieceNos()
+          // this.setProjectPieceNos()
         }
       }, 1)
     },
@@ -595,37 +604,55 @@ export default {
           }
         }
       }
-      this.selectedRowKeys = []
-      this.setProjectPieceNos()
+      this.selectedPieceRows = []
+      // this.setProjectPieceNos()
     },
     // 动态设置项目中已选样品
-    setProjectPieceNos() {
+    setProjectPieceNos(index) {
+      // if (this.projectInfoData.length) {
+      //   this.$message.warning('样品数据改变，也将同步项目信息中的已选样品数据改变')
+      //   setTimeout(() => {
+      //     let ProjectForm = this.$refs.ProjectForm
+      //     let projectFormItem = ProjectForm.$refs.projectFormItem
+      //     let tableData = this.$refs.pieceTable.getData()
+      //     let pieceSorting = this.pieceSorting(tableData, 'productName', 'productModel')
+      //     let pieceIds = index => pieceSorting[index] ? pieceSorting[index].pieceIds.toString() : ''
+      //     let pieceNos = index => pieceSorting[index] ? pieceSorting[index].pieceNos.toString() : ''
+      //     for (let i = 0; i < this.projectInfoData.length; i++) {
+      //       projectFormItem[i].$refs['projectInfoForm' + i].form.setFieldsValue({
+      //         pieceIds: pieceIds(i),
+      //         pieceNos: pieceNos(i)
+      //       })
+      //       projectFormItem[i].model.pieceNos = pieceNos(i)
+      //     }
+      //   }, 1)
+      // }
       if (this.projectInfoData.length) {
-        this.$message.warning('样品数据改变，也将同步项目信息中的已选样品数据改变')
         setTimeout(() => {
           let ProjectForm = this.$refs.ProjectForm
           let projectFormItem = ProjectForm.$refs.projectFormItem
           let tableData = this.$refs.pieceTable.getData()
-          let pieceSorting = this.pieceSorting(tableData, 'productName', 'productModel')
-          let pieceIds = index => pieceSorting[index] ? pieceSorting[index].pieceIds.toString() : ''
-          let pieceNos = index => pieceSorting[index] ? pieceSorting[index].pieceNos.toString() : ''
-          for (let i = 0; i < this.projectInfoData.length; i++) {
-            projectFormItem[i].$refs['projectInfoForm' + i].form.setFieldsValue({
-              pieceIds: pieceIds(i),
-              pieceNos: pieceNos(i)
-            })
-            projectFormItem[i].model.pieceNos = pieceNos(i)
+          let pieceIds = tableData.map(record => record.id).toString()
+          let pieceNos = tableData.map(record => record.pieceNo).toString()
+          let project = this.projectInfoData
+          for (let i = 0; i < project.length; i++) {
+            for (let j = 0; j < tableData.length; j++) {
+              if (project[i].pieceIds.includes(tableData[j].id)) {
+                projectFormItem[i].$refs['projectInfoForm' + i].form.setFieldsValue({pieceIds, pieceNos})
+                projectFormItem[i].model.pieceNos = pieceNos
+              }
+            }
           }
         }, 1)
       }
     },
     //  多选
     onSelectChange(records) {
-      this.selectedRowKeys = records.records
+      this.selectedPieceRows = records.records
     },
     // 全选
     selectAllEvent(records) {
-      this.selectedRowKeys = records.records
+      this.selectedPieceRows = records.records
     },
     // 选择项目
     async handleAddProject() {
@@ -638,8 +665,8 @@ export default {
     },
     // 选择项目弹框返回数据
     projectModalCallback(recordId, record) {
-      let pieceTableData = this.$refs.pieceTable.getData()
-      let pieceSorting = this.pieceSorting(pieceTableData, 'productName', 'productModel')
+      // let pieceTableData = this.$refs.pieceTable.getData()
+      // let pieceSorting = this.pieceSorting(pieceTableData, 'productName', 'productModel')
       let extendRecord = cloneDeep(record)
       if (this.projectInfoData.length) {
         for (let i = 0; i < extendRecord.length; i++) {
@@ -653,6 +680,7 @@ export default {
           }
         }
       }
+      let selectedPiece = this.selectedPieceRows
       this.projectInfoData = this.projectInfoData.concat(extendRecord.map((item, index) => {
         return {
           ...item,
@@ -663,8 +691,8 @@ export default {
       })).map((v, i) => {
         return {
           ...v,
-          pieceIds: pieceSorting[i] ? pieceSorting[i].pieceIds.toString() : '',
-          pieceNos: pieceSorting[i] ? pieceSorting[i].pieceNos.toString() : ''
+          pieceIds: selectedPiece.length ? selectedPiece.map(_item => _item.id).toString() : '',
+          pieceNos: selectedPiece.length ? selectedPiece.map(_item => _item.pieceNo).toString() : ''
         }
       })
     },
@@ -787,7 +815,7 @@ export default {
             },
             onOk: () => {
               // 这里需要删除多余没有用到的样品
-              fn.call(this, pieceIds)
+              fn.call(this)
             }
           })
         } else {
@@ -797,9 +825,8 @@ export default {
         fn.call(this)
       }
 
-      function fn(pieceIds) {
+      function fn() {
         let params = {entrustModelInfo, pieceModelInfo, projectModelInfo, status,}
-        params.pieceModelInfo = pieceIds && pieceIds.length ? params.pieceModelInfo.filter(item => !pieceIds.toString().includes(item.id)) : params.pieceModelInfo
         this.submitLoading = true
         postAction(this.url.save, params).then(res => {
           if (res.code === 200) {

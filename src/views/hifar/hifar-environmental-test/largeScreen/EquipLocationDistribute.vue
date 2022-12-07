@@ -16,7 +16,7 @@
             class="status"
             @mouseenter="equipStatusItemEnter(item)"
             @mouseout="equipStatusItemOut(item)"
-            :style="{ backgroundImage: 'url(' + equipStatusImage[item.status - 1] + ')' }"
+            :style="{ backgroundImage: 'url(' + climateEquipStatusImage[item.status - 1] + ')' }"
           ></div>
           <div class="text">{{ item.title }}</div>
         </div>
@@ -49,7 +49,8 @@
               :style="{
                 left: item.coordinateX + '%',
                 top: item.coordinateY + '%',
-                backgroundImage: 'url(' + equipStatusImage[item.status - 1] + ')',
+                backgroundImage: 'url(' + (item.equipTypeCode === 'climate' ? climateEquipStatusImage[item.status - 1] :
+                                   item.equipTypeCode === 'dynamics' ? dynamicsEquipStatusImage[item.status - 1] : '' )  + ')',
               }"
               @click="equipItemClick(item)"
               ref="equipItem"
@@ -87,11 +88,12 @@ export default {
   },
   data() {
     return {
-      equipStatusImage: [require('./image/running.png'),require('./image/warning.png'),  require('./image/error.png')],
+      climateEquipStatusImage: [require('./image/running.png'), require('./image/warning.png'), require('./image/error.png')],
+      dynamicsEquipStatusImage: [require('./image/running_rect.png'), require('./image/warning_rect.png'), require('./image/error_rect.png')],
       equipRunningStatus: [
-        { title: '运行', status: '1' },
-        { title: '检修', status: '3' },
-        { title: '待机', status: '2' },
+        {title: '运行', status: '1'},
+        {title: '检修', status: '3'},
+        {title: '待机', status: '2'},
       ],
       url: {
         getEquipStatus: '/HfBulletinBoardBusiness/getEquipStatus',
@@ -327,7 +329,6 @@ export default {
         position: absolute;
         width: 0.234rem /* 60/384 */;
         height: 0.234rem /* 60/384 */;
-        border-radius: 50%;
         background-size: 100% 100%;
         cursor: pointer;
       }

@@ -120,12 +120,8 @@
                   title="样品编号"
                 />
                 <vxe-table-column
-                  :edit-render="{
-                   name:'input',
-                   attrs: { type: 'number', placeholder: '请输入样品数量' },
-                }"
                   field='pieceNum'
-                  title="样品数量"
+                  title="数量"
                 />
               </vxe-table>
             </div>
@@ -240,14 +236,6 @@ export default {
             rules: [{required: true, message: '请选择委托单类型', trigger: 'blur'}]
           },
           disabled: true,
-        },
-        {
-          title: '工作令号',
-          key: 'workOrderNo',
-          formType: 'input',
-          validate: {
-            rules: [{required: true, message: '请输入工作令号', trigger: 'blur'}]
-          },
         },
         {
           title: '产品名称',
@@ -455,14 +443,6 @@ export default {
             rules: [{required: false, message: '请输入试验依据'}]
           }
         },
-        // {
-        //   title: '试验要求',
-        //   key: 'testRequire',
-        //   formType: 'input',
-        //   validate: {
-        //     rules: [{required: true, message: `请输入试验要求`}]
-        //   }
-        // },
         {
           title: '技术文件',
           key: 'technicalFile',
@@ -562,7 +542,7 @@ export default {
           this.tableData = []
           this.tableData = obj.pieceInfo
           this.projectInfoData = obj.projectInfo
-          this.pieceSorting(this.tableData, 'productName', 'productAlias')
+          // this.pieceSorting(this.tableData, 'productName', 'productAlias')
         }
       }).finally(() => {
         this.submitLoading = false
@@ -589,11 +569,11 @@ export default {
           pieceNo: (values.piecePrefix || '') + values.pieceNo,
         })
       }
-      this.setProjectPieceNos()
     },
     splitByHorizontalLine(values, arr) {
       //根据横杠分隔
       let tableData = []
+      let getZero = arr[0][0] === '0' && arr[0].substring(0, arr[0].lastIndexOf('0') + 1) || ''
       let num = +arr[1] + 1 - +arr[0] > +values.pieceNum ? +arr[0] + +values.pieceNum - 1 : +arr[1]
       for (let i = +arr[0]; i <= num; i++) {
         tableData.push({
@@ -601,7 +581,7 @@ export default {
           productName: values.productName,
           pieceNum: 1,
           productAlias: values.productAlias,
-          pieceNo: (values.piecePrefix || '') + i,
+          pieceNo: (values.piecePrefix || '') + getZero + i,
         })
       }
       return tableData
@@ -692,13 +672,14 @@ export default {
     },
     selectCustomerChange(val, record) {
       let [customer] = record
-      this.entrustModel.custName = customer.custName ? customer.custName : ''
+      this.entrustModel.custName = customer.custName
       this.$refs.entrustFrom.form.setFieldsValue(
         {
           custName: customer.custName,
           custId: customer.id,
           custAddress: customer.custAddress,
-          sampleMakeUnit: customer.deptName,
+          entrustPerson: customer.linkName,
+          entrustPersonPhone: customer.linkMobile,
         }
       )
     },
@@ -721,8 +702,8 @@ export default {
     },
     // 选择项目弹框返回数据
     projectModalCallback(recordId, record) {
-      let pieceTableData = this.$refs.pieceTable.getData()
-      let pieceSorting = this.pieceSorting(pieceTableData, 'productName', 'productAlias')
+      // let pieceTableData = this.$refs.pieceTable.getData()
+      // let pieceSorting = this.pieceSorting(pieceTableData, 'productName', 'productAlias')
       let extendRecord = cloneDeep(record)
       if (this.projectInfoData.length) {
         for (let i = 0; i < extendRecord.length; i++) {
@@ -736,6 +717,7 @@ export default {
           }
         }
       }
+      let selectedPiece = this.selectedPieceRows
       this.projectInfoData = this.projectInfoData.concat(extendRecord.map((item, index) => {
         return {
           ...item,
@@ -746,8 +728,8 @@ export default {
       })).map((v, i) => {
         return {
           ...v,
-          pieceIds: pieceSorting[i] ? pieceSorting[i].pieceIds.toString() : '',
-          pieceNos: pieceSorting[i] ? pieceSorting[i].pieceNos.toString() : ''
+          pieceIds: selectedPiece.length ? selectedPiece.map(_item => _item.id).toString() : '',
+          pieceNos: selectedPiece.length ? selectedPiece.map(_item => _item.pieceNo).toString() : ''
         }
       })
     },
@@ -869,8 +851,7 @@ export default {
               ])
             },
             onOk: () => {
-              // 这里需要删除多余没有用到的样品
-              fn.call(this, pieceIds)
+              fn.call(this)
             }
           })
         } else {
@@ -880,9 +861,8 @@ export default {
         fn.call(this)
       }
 
-      function fn(pieceIds) {
+      function fn() {
         let params = {entrustModelInfo, pieceModelInfo, projectModelInfo, status,}
-        params.pieceModelInfo = pieceIds && pieceIds.length ? params.pieceModelInfo.filter(item => !pieceIds.toString().includes(item.id)) : params.pieceModelInfo
         this.submitLoading = true
         postAction(this.url.save, params).then(res => {
           if (res.code === 200) {

@@ -390,8 +390,7 @@ export default {
     },
     // 编辑
     handleEdit(record) {
-      let type = 'edit'
-      this.$refs.EntrustmentModal.show(record, type)
+      this.$refs.EntrustmentModal.show(record, 'edit')
     },
     // 删除
     handleDelete(id) {
