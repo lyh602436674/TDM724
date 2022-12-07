@@ -36,9 +36,8 @@
       :getContainer="getContainer"
       :title="title"
       :visible="visible"
-      :width="600"
+      :width="1000"
       destroyOnClose
-      fullScreen
       inner
       @cancel="handleCancel"
       @submit="handleSubmit"

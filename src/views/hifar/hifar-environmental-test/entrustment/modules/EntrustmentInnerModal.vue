@@ -585,7 +585,7 @@ export default {
       // 判断一下输入框失去焦点后数据是否已经改变，改变了再去做变更和提醒
       setTimeout(() => {
         if (row[column.property] !== this.activePieceRow) {
-          // this.setProjectPieceNos()
+          this.setProjectPieceNos(row)
         }
       }, 1)
     },
@@ -594,56 +594,34 @@ export default {
       const $table = this.$refs.pieceTable
       $table.removeCheckboxRow()
       let getRemoveRecords = $table.getRemoveRecords()
-      let getTableData = this.tableData
-      for (let i = 0; i < getTableData.length; i++) {
+      let tableData = this.tableData
+      for (let i = 0; i < tableData.length; i++) {
         for (let j = 0; j < getRemoveRecords.length; j++) {
-          if (getTableData[i].id === getRemoveRecords[j].id) {
+          if (tableData[i].id === getRemoveRecords[j].id) {
             this.tableData.splice(i, 1)
+            this.setProjectPieceNos(tableData[i])
             i--
             break
           }
         }
       }
       this.selectedPieceRows = []
-      // this.setProjectPieceNos()
     },
     // 动态设置项目中已选样品
-    setProjectPieceNos(index) {
-      // if (this.projectInfoData.length) {
-      //   this.$message.warning('样品数据改变，也将同步项目信息中的已选样品数据改变')
-      //   setTimeout(() => {
-      //     let ProjectForm = this.$refs.ProjectForm
-      //     let projectFormItem = ProjectForm.$refs.projectFormItem
-      //     let tableData = this.$refs.pieceTable.getData()
-      //     let pieceSorting = this.pieceSorting(tableData, 'productName', 'productModel')
-      //     let pieceIds = index => pieceSorting[index] ? pieceSorting[index].pieceIds.toString() : ''
-      //     let pieceNos = index => pieceSorting[index] ? pieceSorting[index].pieceNos.toString() : ''
-      //     for (let i = 0; i < this.projectInfoData.length; i++) {
-      //       projectFormItem[i].$refs['projectInfoForm' + i].form.setFieldsValue({
-      //         pieceIds: pieceIds(i),
-      //         pieceNos: pieceNos(i)
-      //       })
-      //       projectFormItem[i].model.pieceNos = pieceNos(i)
-      //     }
-      //   }, 1)
-      // }
-      if (this.projectInfoData.length) {
-        setTimeout(() => {
-          let ProjectForm = this.$refs.ProjectForm
-          let projectFormItem = ProjectForm.$refs.projectFormItem
-          let tableData = this.$refs.pieceTable.getData()
-          let pieceIds = tableData.map(record => record.id).toString()
-          let pieceNos = tableData.map(record => record.pieceNo).toString()
-          let project = this.projectInfoData
-          for (let i = 0; i < project.length; i++) {
-            for (let j = 0; j < tableData.length; j++) {
-              if (project[i].pieceIds.includes(tableData[j].id)) {
-                projectFormItem[i].$refs['projectInfoForm' + i].form.setFieldsValue({pieceIds, pieceNos})
-                projectFormItem[i].model.pieceNos = pieceNos
-              }
-            }
-          }
-        }, 1)
+    setProjectPieceNos(row) {
+      let ProjectForm = this.$refs.ProjectForm
+      let projectFormItem = ProjectForm.$refs.projectFormItem
+      let getPieceNos = (tableData) => tableData.map(record => record.pieceNo).toString()
+      let getPieceIds = (tableData) => tableData.map(record => record.id).toString()
+      let project = this.projectInfoData
+      for (let i = 0; i < project.length; i++) {
+        if (project[i].pieceIds.includes(row.id)) {
+          let resData = this.tableData.filter(_item => project[i].pieceIds.includes(_item.id))
+          let pieceNos = getPieceNos(resData)
+          let pieceIds = getPieceIds(resData)
+          projectFormItem[i].$refs['projectInfoForm' + i].form.setFieldsValue({pieceIds, pieceNos})
+          projectFormItem[i].model.pieceNos = pieceNos
+        }
       }
     },
     //  多选
@@ -667,6 +645,7 @@ export default {
     projectModalCallback(recordId, record) {
       // let pieceTableData = this.$refs.pieceTable.getData()
       // let pieceSorting = this.pieceSorting(pieceTableData, 'productName', 'productModel')
+      // console.log(pieceSorting, 'pieceSorting')
       let extendRecord = cloneDeep(record)
       if (this.projectInfoData.length) {
         for (let i = 0; i < extendRecord.length; i++) {
