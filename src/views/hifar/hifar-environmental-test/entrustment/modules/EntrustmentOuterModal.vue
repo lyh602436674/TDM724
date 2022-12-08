@@ -265,6 +265,21 @@ export default {
           )
         },
         {
+          title: '联系人',
+          key: 'linkName',
+          formType: 'input',
+          validate: {
+            rules: [{required: true, message: '请输入委托人'}]
+          }
+        }, {
+          title: '联系方式',
+          key: 'linkMobile',
+          formType: 'input',
+          validate: {
+            rules: [{required: true, message: '请输入委托人手机号'}]
+          }
+        },
+        {
           title: '委托人',
           key: 'entrustPerson',
           formType: 'input',
@@ -676,7 +691,9 @@ export default {
           custId: customer.id,
           custAddress: customer.custAddress,
           entrustPerson: customer.linkName,
+          linkName: customer.linkName,
           entrustPersonPhone: customer.linkMobile,
+          linkMobile: customer.linkMobile,
         }
       )
     },

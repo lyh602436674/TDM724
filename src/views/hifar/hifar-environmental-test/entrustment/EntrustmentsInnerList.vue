@@ -267,24 +267,6 @@ export default {
           }
         },
         {
-          title: '联系人',
-          align: 'center',
-          dataIndex: 'linkName',
-          width: 100,
-          customRender: (text, record) => {
-            return text || '--';
-          }
-        },
-        {
-          title: '联系方式',
-          align: 'center',
-          width: 120,
-          dataIndex: 'linkMobile',
-          customRender: (text, record) => {
-            return text || '--';
-          }
-        },
-        {
           title: '委托人',
           align: 'center',
           dataIndex: 'entrustPerson',
