@@ -56,7 +56,7 @@
                 新增样品
               </a-button>
               <a-popconfirm title="确定删除吗?" @confirm="handleDelete">
-                <a-button v-if='selectedRowKeys.length' icon='minus' size='small' type='danger'>
+                <a-button v-if='selectedPieceRows.length' icon='minus' size='small' type='danger'>
                   删除
                 </a-button>
               </a-popconfirm>
@@ -196,7 +196,7 @@ export default {
       entrustModel: {},
       entrustType: '2',
       tableData: [],
-      selectedRowKeys: [],
+      selectedPieceRows: [],
       projectInfoData: [],
       validRules: {
         pieceNo: [{required: true, message: '样品编号不能为空'}, {validator: nameValid}]
@@ -505,6 +505,7 @@ export default {
         performanceTest: "1",
         sampleStatus: "1",
         testPicture: "1",
+        testPurpose: "1",
         reportForm: "1",
         reportSecretLevel: "1",
         reportCollectionMethod: "1",
@@ -627,7 +628,7 @@ export default {
       // 判断一下输入框失去焦点后数据是否已经改变，改变了再去做变更和提醒
       setTimeout(() => {
         if (row[column.property] !== this.activePieceRow) {
-          this.setProjectPieceNos()
+          this.setProjectPieceNos(row)
         }
       }, 1)
     },
@@ -636,38 +637,34 @@ export default {
       const $table = this.$refs.pieceTable
       $table.removeCheckboxRow()
       let getRemoveRecords = $table.getRemoveRecords()
-      let getTableData = this.tableData
-      for (let i = 0; i < getTableData.length; i++) {
+      let tableData = this.tableData
+      for (let i = 0; i < tableData.length; i++) {
         for (let j = 0; j < getRemoveRecords.length; j++) {
-          if (getTableData[i].id === getRemoveRecords[j].id) {
+          if (tableData[i].id === getRemoveRecords[j].id) {
             this.tableData.splice(i, 1)
+            this.setProjectPieceNos(tableData[i])
             i--
             break
           }
         }
       }
-      this.selectedRowKeys = []
-      this.setProjectPieceNos()
+      this.selectedPieceRows = []
     },
     // 动态设置项目中已选样品
-    setProjectPieceNos() {
-      if (this.projectInfoData.length) {
-        this.$message.warning('样品数据改变，也将同步项目信息中的已选样品数据改变')
-        setTimeout(() => {
-          let ProjectForm = this.$refs.ProjectForm
-          let projectFormItem = ProjectForm.$refs.projectFormItem
-          let tableData = this.$refs.pieceTable.getData()
-          let pieceSorting = this.pieceSorting(tableData, 'productName', 'productAlias')
-          let pieceIds = index => pieceSorting[index] ? pieceSorting[index].pieceIds.toString() : ''
-          let pieceNos = index => pieceSorting[index] ? pieceSorting[index].pieceNos.toString() : ''
-          for (let i = 0; i < this.projectInfoData.length; i++) {
-            projectFormItem[i].$refs['projectInfoForm' + i].form.setFieldsValue({
-              pieceIds: pieceIds(i),
-              pieceNos: pieceNos(i)
-            })
-            projectFormItem[i].model.pieceNos = pieceNos(i)
-          }
-        }, 1)
+    setProjectPieceNos(row) {
+      let ProjectForm = this.$refs.ProjectForm
+      let projectFormItem = ProjectForm.$refs.projectFormItem
+      let getPieceNos = (tableData) => tableData.map(record => record.pieceNo).toString()
+      let getPieceIds = (tableData) => tableData.map(record => record.id).toString()
+      let project = this.projectInfoData
+      for (let i = 0; i < project.length; i++) {
+        if (project[i].pieceIds.includes(row.id)) {
+          let resData = this.tableData.filter(_item => project[i].pieceIds.includes(_item.id))
+          let pieceNos = getPieceNos(resData)
+          let pieceIds = getPieceIds(resData)
+          projectFormItem[i].$refs['projectInfoForm' + i].form.setFieldsValue({pieceIds, pieceNos})
+          projectFormItem[i].model.pieceNos = pieceNos
+        }
       }
     },
     selectCustomerChange(val, record) {
@@ -685,11 +682,11 @@ export default {
     },
     //  多选
     onSelectChange(records) {
-      this.selectedRowKeys = records.records
+      this.selectedPieceRows = records.records
     },
     // 全选
     selectAllEvent(records) {
-      this.selectedRowKeys = records.records
+      this.selectedPieceRows = records.records
     },
     // 选择项目
     async handleAddProject() {
