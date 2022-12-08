@@ -89,6 +89,12 @@
         <h-desc-item label='产品名称'>
           {{ detailData.productName || '--' }}
         </h-desc-item>
+        <h-desc-item label='联系人'>
+          {{ detailData.linkName || '--' }}
+        </h-desc-item>
+        <h-desc-item label='联系方式'>
+          {{ detailData.linkMobile || '--' }}
+        </h-desc-item>
         <h-desc-item label='委托人'>
           {{ detailData.entrustPerson || '--' }}
         </h-desc-item>
