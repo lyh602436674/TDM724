@@ -54,7 +54,8 @@ export default {
       columns: [
         {title: '序号', width: '8%', key: 'rowSort'},
         {title: '设备名称', width: '15%', key: 'equipName'},
-        {title: '设备型号', width: '15%', key: 'equipModel'},
+        {title: '温度', width: '7.5%', key: 'temperatureSV'},
+        {title: '湿度', width: '8.5%', key: 'humiditySV'},
         {title: '项目名称', width: '15%', key: 'unitName'},
         {title: '委托单位', width: '15%', key: 'custName'},
         {title: '预计结束时间', width: '20%', key: 'predictEndTime'},
