@@ -7,7 +7,8 @@
  * @FilePath: \hifar-platform-client\src\views\hifar\project\components\PcClassifySelect.js
  */
 import S from 'ant-design-vue/es/select'
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
+
 export default {
   name: 'PcClassifySelect',
   props: Object.assign({}, S.props, {
@@ -56,9 +57,8 @@ export default {
         this.selectOptions = options
       }
     },
-    handleSelectChange(v) {
-      console.log('select', v)
-      this.$emit('change', v)
+    handleSelectChange(v, opt) {
+      this.$emit('change', v, opt)
     },
     renderSelect(h) {
       let props = {

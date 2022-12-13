@@ -144,9 +144,6 @@
         <h-desc-item label='报告领取方式'>
           {{ detailData.reportCollectionMethod_dictText || '--' }}
         </h-desc-item>
-        <h-desc-item label='试验依据'>
-          {{ detailData.testEvidence || '--' }}
-        </h-desc-item>
         <h-desc-item label='技术文件'>
           {{ detailData.technicalFile || '--' }}
         </h-desc-item>
@@ -230,7 +227,7 @@ export default {
       downloadFile(fileAccessUrl, fileName)
     },
     entrustReview() {
-      this.$refs.testEntrustReviewPdf.show(this.model.entrustData.reportPath)
+      this.$refs.testEntrustReviewPdf.show(this.detailData.reportPath)
     },
   }
 }

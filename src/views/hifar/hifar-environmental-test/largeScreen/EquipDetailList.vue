@@ -20,8 +20,13 @@
           <h-auto-scroll :data="dataSource" class="table-body-scroll" :class-option="classOption">
             <div class="table-body-row" v-for="(item, index) in dataSource" :key="index + '-tr'">
               <div class="table-body-col" v-for="(v, i) in columns" :key="index + i + 'td'" :style="{ width: v.width }">
-                <template v-if="v.key !== 'status'">
-                  {{ v.key === 'index' ? 1 + index : item[v.key] }}
+                <template v-if="v.key === 'index'">
+                  {{ 1 + index }}
+                </template>
+                <template v-else-if="v.key !== 'status'">
+                  <a-tooltip :title="item[v.key]">
+                    <span>{{ item[v.key] }}</span>
+                  </a-tooltip>
                 </template>
                 <template v-else>
                   <div class="table-body-col-status" :style="{backgroundColor:colorList[item.statusNum-1]}">
@@ -52,17 +57,16 @@ export default {
         singleHeight: 30,
       },
       columns: [
-        {title: '序号', width: '8%', key: 'rowSort'},
+        {title: '序号', width: '7%', key: 'rowSort'},
         {title: '设备名称', width: '15%', key: 'equipName'},
-        {title: '温度', width: '7.5%', key: 'temperatureSV'},
-        {title: '湿度', width: '8.5%', key: 'humiditySV'},
+        {title: '温度', width: '7%', key: 'temperatureSV'},
+        {title: '湿度', width: '8%', key: 'humiditySV'},
         {title: '项目名称', width: '15%', key: 'unitName'},
-        {title: '委托单位', width: '15%', key: 'custName'},
+        {title: '委托单位', width: '18%', key: 'custName'},
         {title: '预计结束时间', width: '20%', key: 'predictEndTime'},
-        {title: '状态', width: '12%', key: 'status'},
+        {title: '状态', width: '10%', key: 'status'},
       ],
       dataSource: [],
-      // colorList: ['#26ad53', '#ff0000', '#7627cb', '#ff7800', '#fffc00', '#46afdb', '#ff0000'],
       colorList: ['#26ad53', '#ff7800', '#ff0000',],
       url: {
         list: '/LargeScreenDisplay/taskMonitor',
@@ -74,7 +78,7 @@ export default {
     loadData() {
       getAction(this.url.list).then((res) => {
         if (res.code === 200) {
-          this.dataSource = res.data
+          this.dataSource = res.data.filter(item => item.status == '1')
           this.dataSource.map((item) => {
             item.statusNum = JSON.parse(JSON.stringify(item.status))
             item.status = this.deviceStatusFilter(item.status)
@@ -87,7 +91,7 @@ export default {
       let s = parseInt(status)
       switch (s) {
         case 1:
-          return '运行'
+          return '占用'
         case 2:
           return '待机'
         /*        case 1:
@@ -111,6 +115,8 @@ export default {
 </script>
 
 <style scoped lang="less">
+
+
 .equipDetailList {
   .title {
     width: 100%;

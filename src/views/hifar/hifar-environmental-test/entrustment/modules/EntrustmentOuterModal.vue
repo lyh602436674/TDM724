@@ -451,20 +451,9 @@ export default {
           }
         },
         {
-          title: '试验依据',
-          key: 'testEvidence',
-          formType: 'input',
-          validate: {
-            rules: [{required: false, message: '请输入试验依据'}]
-          }
-        },
-        {
           title: '技术文件',
           key: 'technicalFile',
           formType: 'input',
-          validate: {
-            rules: [{required: true, message: '请输入技术文件'}]
-          }
         },
         {
           title: '备注',

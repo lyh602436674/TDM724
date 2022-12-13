@@ -57,6 +57,7 @@
           }}
         </h-desc-item>
         <h-desc-item label="试验部门">{{ projectInfo.workName || '--' }}</h-desc-item>
+        <h-desc-item label="试验费用">{{ projectInfo.testCost || '--' }}</h-desc-item>
         <h-desc-item :span="3" label="参试人员">
           {{ testPersonInfo.length > 0 ? testPersonInfo.join(',') : '--' }}
         </h-desc-item>
@@ -350,17 +351,13 @@ export default {
           this.detailData = data
           // this.projectInfo = data.testTaskInfo
           this.projectInfo = data.projectInfo
-          if (testEquipInfoArr.length) {
-            testEquipInfoArr.forEach((item) => {
-              testEquipInfo.push(item.equipName + (item.innerName ? '(' + item.innerName + ')' : ''))
-            })
-          }
-          if (testPersonInfoArr.length) {
-            testPersonInfoArr.forEach((item) => {
-              let res = item.testUserName ? (item.testUserName + (item.testPostName ? +'(' + item.testPostName + ')' : '')) : '--'
-              testPersonInfo.push(res)
-            })
-          }
+          testEquipInfoArr.length && testEquipInfoArr.forEach((item) => {
+            testEquipInfo.push(item.equipName + (item.innerName ? '(' + item.innerName + ')' : ''))
+          })
+          testPersonInfoArr.length && testPersonInfoArr.forEach((item) => {
+            let res = item.testUserName ? (item.testUserName + (item.testPostName ? '(' + item.testPostName + ')' : '')) : '--'
+            testPersonInfo.push(res)
+          })
           this.testEquipInfo = testEquipInfo
           this.testPersonInfo = testPersonInfo
           this.entrustInfoItem = entrustInfoArr[0]

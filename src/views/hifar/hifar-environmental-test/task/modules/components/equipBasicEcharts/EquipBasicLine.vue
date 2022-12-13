@@ -218,7 +218,7 @@ export default {
           trigger: 'axis'
         },
         grid: {
-          bottom: 80
+          bottom: 10
         },
         toolbox: {
           feature: {
@@ -244,17 +244,17 @@ export default {
           },
           right: 40
         },
-        dataZoom: [
-          {
-            type: 'inside',
-            start: 0,
-            end: 100
-          },
-          {
-            start: 0,
-            end: 100
-          },
-        ],
+        // dataZoom: [
+        //   {
+        //     type: 'inside',
+        //     start: 0,
+        //     end: 100
+        //   },
+        //   {
+        //     start: 0,
+        //     end: 100
+        //   },
+        // ],
         legend: {},
         xAxis: {
           type: 'time',

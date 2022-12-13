@@ -91,9 +91,9 @@ export default {
       climateEquipStatusImage: [require('./image/running.png'), require('./image/warning.png'), require('./image/error.png')],
       dynamicsEquipStatusImage: [require('./image/running_rect.png'), require('./image/warning_rect.png'), require('./image/error_rect.png')],
       equipRunningStatus: [
-        {title: '运行', status: '1'},
+        {title: '占用', status: '1'},
         {title: '检修', status: '3'},
-        {title: '待机', status: '2'},
+        {title: '空闲', status: '2'},
       ],
       url: {
         getEquipStatus: '/HfBulletinBoardBusiness/getEquipStatus',
@@ -154,6 +154,7 @@ export default {
     dragSwitchChange(val, e) {
       e.stopPropagation()
       this.dragSwitch = val
+      this.$emit('dragSwitch', val)
       setTimeout(() => {
         this.visible = false
       }, 300)
