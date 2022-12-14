@@ -61,12 +61,12 @@
       document.getElementById('WebOffice').Authorizer = "www.officectrl.com";
       var params = getQuery(location.search)
       var system = params.system
-      var postStrUrl = ''
-      if (system == 'env') {
-        postStrUrl = params.baseUrl + '/HfEnvReportBusiness/onlineReportEdit';
-      } else {
-        postStrUrl = params.baseUrl + '/HfPhysicsReportBusiness/onlineReportEdit';
-      }
+      var postStrUrl = params.baseUrl + '/HfEnvReportBusiness/onlineReportEdit'
+      // if (system == 'env') {
+      //   postStrUrl = params.baseUrl + '/HfEnvReportBusiness/onlineReportEdit';
+      // } else {
+      //   postStrUrl = params.baseUrl + '/HfPhysicsReportBusiness/onlineReportEdit';
+      // }
       try {
         let url = location.search
         let fileUrl = url.substring(url.indexOf('url=') + 4, url.indexOf('&baseUrl'))
@@ -78,7 +78,11 @@
         WebOffice.HttpAddPostCurrFile("docfile", ''); //此句为固定语句，不管是保存word还是excel,ppt等都这样写
         //strResults用于获得网页提交后的返回数据，可用以调试服务器端代码。
         var strResults = WebOffice.HttpPost(postStrUrl);
-        if (strResults) alert('office文档保存成功!');
+        if (strResults){
+          alert('office文档保存成功!');
+        }else {
+          alert('office文档保存失败!')
+        }
       } catch (e) {
         alert('发生错误！请使用查阅返回值！');
       }
