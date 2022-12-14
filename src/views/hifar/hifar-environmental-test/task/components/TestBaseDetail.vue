@@ -26,18 +26,19 @@
     </template>
     <template v-else>
       <!-- 基本信息 -->
-      <div :style="{ marginTop: top ? top : '50px' }">
+      <div id="basicInfo" :style="{ marginTop: top ? top : '50px' }">
         <detail-base-info :detailDataObj="entrustInfoItem"></detail-base-info>
       </div>
       <!--      样品信息-->
       <piece-detail-template
+        id="piece"
         :entrustType="detailData.entrustInfo && detailData.entrustInfo.length && detailData.entrustInfo[0].entrustType"
         :dataSource="detailData.testPieceInfo"/>
       <!-- 项目信息 -->
-      <template v-for="(item,index) in projectInfo">
+      <div v-for="(item,index) in projectInfo" id="project" :key="index">
         <project-detail-template :key="index" :model="item"
                                  :title="'项目信息' + (!viewDetailType ? ('(' + detailData.entrustInfo[index].entrustCode  + ')') : '')"></project-detail-template>
-      </template>
+      </div>
       <!-- 试验信息 -->
       <h-desc id="testInfo" ref="testInfo" lableWidth="110px" style="margin-top: 20px; margin-bottom: 20px"
               title="试验信息">
@@ -67,11 +68,11 @@
         <h-desc-item :span="3" label="试验结果">{{ detailData.processDesc || '--' }}</h-desc-item>
       </h-desc>
       <!-- 图片图谱 -->
-      <h-desc id="testData" ref="testData" title="图片图谱">
+      <h-desc id="picture" title="图片图谱">
         <h-upload-file style="width: 100%" v-model="pictureData" isWriteRemarks :isEdit="false"></h-upload-file>
       </h-desc>
       <!-- 试前检查 -->
-      <h-desc id="testBeforCheck" ref="testBeforCheck" :bordered='false' lableWidth="110px"
+      <h-desc id="testBeforeCheck" :bordered='false' lableWidth="110px"
               style="margin-top: 20px; margin-bottom: 20px" title="试前检查">
         <h-vex-table
           ref="beforeCheckInfo"
@@ -89,7 +90,7 @@
         </h-vex-table>
       </h-desc>
       <!-- 试中检查 -->
-      <h-desc id="testInCheck" ref="testInCheck" :bordered='false' lableWidth="110px"
+      <h-desc id="testInCheck" :bordered='false' lableWidth="110px"
               style="margin-top: 20px; margin-bottom: 20px" title="试中检查">
         <h-vex-table
           ref="inCheckInfo"
@@ -107,7 +108,7 @@
         </h-vex-table>
       </h-desc>
       <!-- 试后检查 -->
-      <h-desc id="testAfterCheck" ref="testAfterCheck" :bordered='false' lableWidth="110px"
+      <h-desc id="testAfterCheck" :bordered='false' lableWidth="110px"
               style="margin-top: 20px; margin-bottom: 20px" title="试后检查">
         <h-vex-table
           ref="afterCheckInfo"
@@ -125,7 +126,7 @@
         </h-vex-table>
       </h-desc>
       <!-- 试验数据 -->
-      <h-desc ref="testData" title="试验数据">
+      <h-desc id="testData" title="试验数据">
         <div style="height: 100%; width: 100%; overflow: auto; padding: 20px">
           <h-desc id="attachForm" :bordered="false">
             <h-form ref="attachForm" v-model="model_attach" :column="1" :formData="attachData"
@@ -139,6 +140,7 @@
 
     </template>
     <test-entrust-review-pdf ref="testEntrustReviewPdf"/>
+    <hf-elevator-layer :layer-columns="layerColumns"></hf-elevator-layer>
   </div>
 </template>
 
@@ -155,12 +157,13 @@ import TestEntrustReviewPdf from "@views/hifar/hifar-environmental-test/task/mod
 import DetailBaseInfo from "@views/hifar/hifar-environmental-test/entrustment/components/DetailBaseInfo";
 import PieceDetailTemplate from "@views/hifar/hifar-environmental-test/entrustment/components/PieceDetailTemplate";
 import ProjectDetailTemplate from "@views/hifar/hifar-environmental-test/entrustment/components/ProjectDetailTemplate";
+import HfElevatorLayer from "@comp/HfElevatorLayer";
 
 export default {
   components: {
     ProjectDetailTemplate,
     PieceDetailTemplate,
-    TestEntrustReviewPdf, AbnormalRecordTable, TerminationRecordTable, TestReportInfo, DetailBaseInfo
+    TestEntrustReviewPdf, AbnormalRecordTable, TerminationRecordTable, TestReportInfo, DetailBaseInfo, HfElevatorLayer
   },
   mixins: [mixin],
   props: {
@@ -184,6 +187,44 @@ export default {
   data() {
     return {
       moment,
+      layerColumns: [
+        {
+          title: "基本信息",
+          id: "basicInfo"
+        },
+        {
+          title: "样品信息",
+          id: "piece"
+        },
+        {
+          title: "项目信息",
+          id: "project"
+        },
+        {
+          title: "试验信息",
+          id: "testInfo"
+        },
+        {
+          title: "图片图谱",
+          id: "picture"
+        },
+        {
+          title: "试前检查",
+          id: "testBeforeCheck"
+        },
+        {
+          title: "试中检查",
+          id: "testInCheck"
+        },
+        {
+          title: "试后检查",
+          id: "testAfterCheck"
+        },
+        {
+          title: "试验数据",
+          id: "testData"
+        },
+      ],
       activeTab: 0,
       checkId: '',
       url: {

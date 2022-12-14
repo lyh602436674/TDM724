@@ -9,28 +9,31 @@
 <template>
   <div class="detail-containter">
     <!-- 委托信息 -->
-    <detail-base-info :detailDataObj="detailData"></detail-base-info>
+    <detail-base-info id="entrust" :detailDataObj="detailData"></detail-base-info>
     <!--样品信息-->
-    <piece-detail-template :entrust-type="detailData.entrustType" :dataSource="detailData.pieceInfo"/>
+    <piece-detail-template id="product" :dataSource="detailData.pieceInfo" :entrust-type="detailData.entrustType"/>
     <!-- 项目信息 -->
     <detail-project-info
+      id="project"
       :projectInfoArr="detailData && detailData.projectInfo ? detailData.projectInfo : []"
       style="margin-top: 15px"
     ></detail-project-info>
+    <hf-elevator-layer :layer-columns="layerColumns"></hf-elevator-layer>
   </div>
 </template>
 
 <script>
-import {postAction} from '@/api/manage'
 import DetailBaseInfo from './DetailBaseInfo.vue'
 import DetailProjectInfo from './DetailProjectInfo.vue'
 import PieceDetailTemplate from "@views/hifar/hifar-environmental-test/entrustment/components/PieceDetailTemplate";
+import HfElevatorLayer from "@comp/HfElevatorLayer";
 
 export default {
   components: {
     PieceDetailTemplate,
     DetailBaseInfo,
     DetailProjectInfo,
+    HfElevatorLayer
   },
   props: {
     id: {
@@ -44,99 +47,46 @@ export default {
     },
   },
   watch: {
-    id(val) {
-      if (val) {
-        this.show(this.id)
+    detailData: {
+      immediate: true,
+      deep: true,
+      handler(val) {
+        if (val && Object.keys(val).length) {
+          this.buildLayer(val.projectInfo)
+        }
       }
-    },
+    }
   },
   data() {
     return {
-      activeKeyArr: '1',
-      url: {
-        detailById: '/HfEnvEntrustBusiness/queryById',
-      },
-      columns: {
-        1: [
-          {
-            title: '#',
-            dataIndex: '',
-            key: 'rowIndex',
-            width: 60,
-            align: 'center',
-            customRender: function (t, r, index) {
-              return parseInt(index) + 1
-            },
-          },
-          {
-            title: '样品名称',
-            dataIndex: 'productName',
-            align: 'center',
-          },
-          {
-            title: '型号/规格',
-            dataIndex: 'productModel',
-            align: 'center',
-          },
-          {
-            title: '编号',
-            dataIndex: 'pieceNo',
-            align: 'center',
-          },
-          {
-            title: '数量',
-            dataIndex: 'pieceNum',
-            align: 'center',
-          }
-        ],
-        2: [
-          {
-            title: '#',
-            dataIndex: '',
-            key: 'rowIndex',
-            width: 60,
-            align: 'center',
-            customRender: function (t, r, index) {
-              return parseInt(index) + 1
-            },
-          },
-          {
-            title: '样品名称',
-            dataIndex: 'productName',
-            align: 'center',
-          },
-          {
-            title: '图号',
-            dataIndex: 'productAlias',
-            align: 'center',
-          },
-          {
-            title: '样品编号',
-            dataIndex: 'pieceNo',
-            align: 'center',
-          },
-          {
-            title: '样品数量',
-            dataIndex: 'pieceNum',
-            align: 'center',
-          },
-        ],
-      },
+      layerColumns: [],
     }
   },
-  created() {
-    if (this.id) {
-      this.show(this.id)
-    }
-  },
+
   methods: {
-    show(id) {
-      let url = this.url.detailById
-      postAction(url, {id: id}).then((res) => {
-        if (res.code === 200) {
-          this.detailData = res.data
-        }
+    buildLayer(column) {
+      let defaultLayer = [
+        {
+          title: "委托信息",
+          id: "entrust"
+        },
+        {
+          title: "产品信息",
+          id: "product"
+        },
+        {
+          title: "项目信息",
+          id: "project"
+        },
+      ]
+      this.layerColumns = []
+      column && column.length && column.forEach((item, index) => {
+        defaultLayer.push({
+          title: item.unitName || item.testName,
+          id: 'projectItem' + index
+        })
       })
+      this.layerColumns = defaultLayer
     },
   },
 }

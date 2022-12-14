@@ -140,7 +140,7 @@
                 <a-divider type="vertical"/>
 
                 <a-tooltip title="标签打印">
-                  <a-icon class="primary-text" type="printer" @click="$refs.testEntrustReviewPdf.show(record)"/>
+                  <a-icon class="primary-text" type="printer" @click="labelPrinter(record.id)"/>
                 </a-tooltip>
 
               </template>
@@ -155,7 +155,7 @@
     <test-info-list-modal ref="TestInfoListModal" @change="refhandleBack"/>
     <task-force-end-modal ref="taskForceEnd" :forceEndUrl="url.forceEnd" :testDetailUrl="url.testDetail"
                           @change="handleRefresh"/>
-    <test-entrust-review-pdf ref="testEntrustReviewPdf"/>
+    <test-entrust-review-pdf ref="testEntrustReviewPdf" title="标签打印"/>
   </div>
 </template>
 
@@ -394,6 +394,7 @@ export default {
         list: '/HfEnvTaskBusiness/listPage',
         forceEnd: '/HfEnvTaskTestBusiness/forceEnd',
         testDetail: '/HfEnvTaskTestBusiness/queryById',
+        printer: '/HfResTestStrip/generateTestStrip'
       },
       selectedRowKeys: [],
       selectedRows: [],
@@ -432,6 +433,13 @@ export default {
     this.getTaskStatistics()
   },
   methods: {
+    labelPrinter(id) {
+      postAction(this.url.printer, {id}).then(res => {
+        if (res.code === 200) {
+          this.$refs.testEntrustReviewPdf.show(res.data.url)
+        }
+      })
+    },
     getTaskStatistics() {
       if (this.loading) return
       this.loading = true
@@ -526,10 +534,9 @@ export default {
           }
           this.taskTimeCount = taskTimeCount
         }
+      }).finally(() => {
+        this.loading = false
       })
-        .finally(() => {
-          this.loading = false
-        })
     },
     getListData(value) {
       let date = value.format('YYYY-MM-DD')

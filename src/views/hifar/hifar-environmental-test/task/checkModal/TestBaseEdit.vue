@@ -13,6 +13,7 @@
     :visible='visible'
     destroyOnClose
     inner
+    fullScreen
     width='95%'
     @cancel='handleCancel'
   >
@@ -21,186 +22,192 @@
       </a-button>
       <a-button :loading="submitLoading" type='primary' @click='handleSave'>保存</a-button>
     </div>
-    <!-- 样品信息 -->
-    <h-desc title='样品信息'>
-      <h-card :bordered='false' style='width: 100%'>
-        <template slot='table-operator'>
-          <a-button icon='plus' size='small' style='margin-bottom: 10px' type='primary' @click='productAdd'>
-            添加
-          </a-button>
-        </template>
-        <div slot='content'>
-          <a-table
-            :columns='testProductColumns[+entrustType]'
-            :dataSource='productTable'
-            :pagination='false'
-            bordered
-            rowKey='id'
-            size='small'
-          >
-            <template #action='text, record'>
-              <a-popconfirm title='确定删除吗?' @confirm='() => productHandleDelete(record.id)'>
-                <a-icon
-                  class='primary-text'
-                  style='cursor: pointer'
-                  theme='twoTone'
-                  title='删除'
-                  two-tone-color='#ff4d4f'
-                  type='delete'
-                />
-              </a-popconfirm>
+    <div style="width:100%;display:flex;">
+      <div style="flex:1">
+        <!-- 样品信息 -->
+        <h-desc id="product" title='样品信息'>
+          <h-card :bordered='false' style='width: 100%'>
+            <template slot='table-operator'>
+              <a-button icon='plus' size='small' style='margin-bottom: 10px' type='primary' @click='productAdd'>
+                添加
+              </a-button>
             </template>
-          </a-table>
-        </div>
-      </h-card>
-    </h-desc>
-    <!-- 实施过程 -->
-    <h-desc style='margin-top: 20px' title='实施过程'>
-      <h-card :bordered='false' style='width: 100%'>
-        <h-form
-          ref='carryOutProcessForm'
-          v-model='carryOutProcessModel'
-          :column='2'
-          :formData='carryOutProcessFormData'
-          style='width: 100%'
-        />
-      </h-card>
-    </h-desc>
-    <!-- 参试人员 -->
-    <h-desc style='margin-top: 20px' title='参试人员'>
-      <h-card :bordered='false' style='width: 100%'>
-        <template slot='table-operator'>
-          <a-button icon='plus' size='small' style='margin-bottom: 10px' type='primary' @click='personAdd'>
-            添加
-          </a-button>
-        </template>
-        <div slot='content'>
-          <a-table
-            ref='personTable'
-            :columns='personColumns'
-            :dataSource='personArr'
-            :pagination='false'
-            :rowKey='(record) => record.testUserId'
-            bordered
-            size='small'
-          >
-            <template #action='text, record'>
-              <a-popconfirm title='确定删除吗?' @confirm='() => personHandleDelete(record.testUserId)'>
-                <a-icon
-                  class='primary-text'
-                  style='cursor: pointer'
-                  theme='twoTone'
-                  title='删除'
-                  two-tone-color='#ff4d4f'
-                  type='delete'
-                />
-              </a-popconfirm>
+            <div slot='content'>
+              <a-table
+                :columns='testProductColumns[+entrustType]'
+                :dataSource='productTable'
+                :pagination='false'
+                bordered
+                rowKey='id'
+                size='small'
+              >
+                <template #action='text, record'>
+                  <a-popconfirm title='确定删除吗?' @confirm='() => productHandleDelete(record.id)'>
+                    <a-icon
+                      class='primary-text'
+                      style='cursor: pointer'
+                      theme='twoTone'
+                      title='删除'
+                      two-tone-color='#ff4d4f'
+                      type='delete'
+                    />
+                  </a-popconfirm>
+                </template>
+              </a-table>
+            </div>
+          </h-card>
+        </h-desc>
+        <!-- 实施过程 -->
+        <h-desc id="processForm" style='margin-top: 20px' title='实施过程'>
+          <h-card :bordered='false' style='width: 100%'>
+            <h-form
+              ref='carryOutProcessForm'
+              v-model='carryOutProcessModel'
+              :column='2'
+              :formData='carryOutProcessFormData'
+              style='width: 100%'
+            />
+          </h-card>
+        </h-desc>
+        <!-- 参试人员 -->
+        <h-desc id="person" style='margin-top: 20px' title='参试人员'>
+          <h-card :bordered='false' style='width: 100%'>
+            <template slot='table-operator'>
+              <a-button icon='plus' size='small' style='margin-bottom: 10px' type='primary' @click='personAdd'>
+                添加
+              </a-button>
             </template>
-          </a-table>
-        </div>
-      </h-card>
-    </h-desc>
-    <!-- 测试设备 -->
-    <h-desc style='margin-top: 20px' title='测试设备'>
-      <h-card :bordered='false' style='width: 100%'>
-        <template slot='table-operator'>
-          <a-button icon='plus' size='small' style='margin-bottom: 10px' type='primary' @click='equipAdd'>
-            添加
-          </a-button>
-        </template>
-        <div slot='content'>
-          <a-table
-            :columns='testEquipColumns'
-            :dataSource='equipData'
-            :pagination='false'
-            bordered
-            rowKey='id'
-            size='small'
-          >
-            <template #action='text, record'>
-              <a-popconfirm title='确定删除吗?' @confirm='() => equipHandleDelete(record.id)'>
-                <a-icon
-                  class='primary-text'
-                  style='cursor: pointer'
-                  theme='twoTone'
-                  title='删除'
-                  two-tone-color='#ff4d4f'
-                  type='delete'
-                />
-              </a-popconfirm>
+            <div slot='content'>
+              <a-table
+                ref='personTable'
+                :columns='personColumns'
+                :dataSource='personArr'
+                :pagination='false'
+                :rowKey='(record) => record.testUserId'
+                bordered
+                size='small'
+              >
+                <template #action='text, record'>
+                  <a-popconfirm title='确定删除吗?' @confirm='() => personHandleDelete(record.testUserId)'>
+                    <a-icon
+                      class='primary-text'
+                      style='cursor: pointer'
+                      theme='twoTone'
+                      title='删除'
+                      two-tone-color='#ff4d4f'
+                      type='delete'
+                    />
+                  </a-popconfirm>
+                </template>
+              </a-table>
+            </div>
+          </h-card>
+        </h-desc>
+        <!-- 测试设备 -->
+        <h-desc id="testEquip" style='margin-top: 20px' title='测试设备'>
+          <h-card :bordered='false' style='width: 100%'>
+            <template slot='table-operator'>
+              <a-button icon='plus' size='small' style='margin-bottom: 10px' type='primary' @click='equipAdd'>
+                添加
+              </a-button>
             </template>
-          </a-table>
-        </div>
-      </h-card>
-    </h-desc>
-    <h-desc style='margin-top: 20px' title='传感器'>
-      <h-card :bordered='false' style='width: 100%'>
-        <template slot='table-operator'>
-          <a-button icon='plus' size='small' style='margin-bottom: 10px' type='primary' @click='sensorAdd'>
-            添加
-          </a-button>
-        </template>
-        <div slot='content'>
-          <a-table
-            :columns='sensorColumns'
-            :dataSource='sensorData'
-            :pagination='false'
-            bordered
-            rowKey='id'
-            size='small'
-          >
-            <template #action='text, record,index'>
-              <a-popconfirm title='确定删除吗?' @confirm='() => sensorHandleDelete(index)'>
-                <a-icon
-                  class='primary-text'
-                  style='cursor: pointer'
-                  theme='twoTone'
-                  title='删除'
-                  two-tone-color='#ff4d4f'
-                  type='delete'
-                />
-              </a-popconfirm>
+            <div slot='content'>
+              <a-table
+                :columns='testEquipColumns'
+                :dataSource='equipData'
+                :pagination='false'
+                bordered
+                rowKey='id'
+                size='small'
+              >
+                <template #action='text, record'>
+                  <a-popconfirm title='确定删除吗?' @confirm='() => equipHandleDelete(record.id)'>
+                    <a-icon
+                      class='primary-text'
+                      style='cursor: pointer'
+                      theme='twoTone'
+                      title='删除'
+                      two-tone-color='#ff4d4f'
+                      type='delete'
+                    />
+                  </a-popconfirm>
+                </template>
+              </a-table>
+            </div>
+          </h-card>
+        </h-desc>
+        <h-desc id="sensor" style='margin-top: 20px' title='传感器'>
+          <h-card :bordered='false' style='width: 100%'>
+            <template slot='table-operator'>
+              <a-button icon='plus' size='small' style='margin-bottom: 10px' type='primary' @click='sensorAdd'>
+                添加
+              </a-button>
             </template>
-          </a-table>
-        </div>
-      </h-card>
-    </h-desc>
-    <h-desc style='margin-top: 20px' title='振动工装'>
-      <h-card :bordered='false' style='width: 100%'>
-        <template slot='table-operator'>
-          <a-button icon='plus' size='small' style='margin-bottom: 10px' type='primary' @click='toolsProductAdd'>
-            添加
-          </a-button>
-        </template>
-        <div slot='content'>
-          <a-table
-            :columns='toolsProductColumns'
-            :dataSource='toolsProductData'
-            :pagination='false'
-            bordered
-            rowKey='id'
-            size='small'
-          >
-            <template #action='text, record,index'>
-              <a-popconfirm title='确定删除吗?' @confirm='() => toolsProductHandleDelete(index)'>
-                <a-icon
-                  class='primary-text'
-                  style='cursor: pointer'
-                  theme='twoTone'
-                  title='删除'
-                  two-tone-color='#ff4d4f'
-                  type='delete'
-                />
-              </a-popconfirm>
+            <div slot='content'>
+              <a-table
+                :columns='sensorColumns'
+                :dataSource='sensorData'
+                :pagination='false'
+                bordered
+                rowKey='id'
+                size='small'
+              >
+                <template #action='text, record,index'>
+                  <a-popconfirm title='确定删除吗?' @confirm='() => sensorHandleDelete(index)'>
+                    <a-icon
+                      class='primary-text'
+                      style='cursor: pointer'
+                      theme='twoTone'
+                      title='删除'
+                      two-tone-color='#ff4d4f'
+                      type='delete'
+                    />
+                  </a-popconfirm>
+                </template>
+              </a-table>
+            </div>
+          </h-card>
+        </h-desc>
+        <h-desc id="toolsProduct" style='margin-top: 20px' title='振动工装'>
+          <h-card :bordered='false' style='width: 100%'>
+            <template slot='table-operator'>
+              <a-button icon='plus' size='small' style='margin-bottom: 10px' type='primary' @click='toolsProductAdd'>
+                添加
+              </a-button>
             </template>
-          </a-table>
-        </div>
-      </h-card>
-    </h-desc>
-    <h-desc style='margin-top: 20px' title='图片图谱'>
-      <h-upload-file accept="image/png,image/gif,image/jpg,image/jpeg" style="width: 100%" v-model="pictureData"
-                     isWriteRemarks :customParams="pictureCustomParams" @delete="handleDeleteImg"></h-upload-file>
-    </h-desc>
+            <div slot='content'>
+              <a-table
+                :columns='toolsProductColumns'
+                :dataSource='toolsProductData'
+                :pagination='false'
+                bordered
+                rowKey='id'
+                size='small'
+              >
+                <template #action='text, record,index'>
+                  <a-popconfirm title='确定删除吗?' @confirm='() => toolsProductHandleDelete(index)'>
+                    <a-icon
+                      class='primary-text'
+                      style='cursor: pointer'
+                      theme='twoTone'
+                      title='删除'
+                      two-tone-color='#ff4d4f'
+                      type='delete'
+                    />
+                  </a-popconfirm>
+                </template>
+              </a-table>
+            </div>
+          </h-card>
+        </h-desc>
+        <h-desc id="picture" style='margin-top: 20px' title='图片图谱'>
+          <h-upload-file v-model="pictureData" :customParams="pictureCustomParams"
+                         accept="image/png,image/gif,image/jpg,image/jpeg"
+                         isWriteRemarks style="width: 100%" @delete="handleDeleteImg"></h-upload-file>
+        </h-desc>
+      </div>
+      <div style="width: 60px;"></div>
+    </div>
     <handle-select-modal
       ref='productHandleSelectModal'
       :columns='addProductColumns'
@@ -237,6 +244,7 @@
       @callback='toolsProductCallback'
     />
     <postion-modal ref='PostionModal' :title="'添加参试人员'" @change='selectPersonHandle'/>
+    <hf-elevator-layer :layer-columns="layerColumns"></hf-elevator-layer>
   </h-modal>
 </template>
 
@@ -248,6 +256,7 @@ import HandleSelectModal from '../modules/components/HandleSelectModal.vue'
 import PostionModal from '../modules/PostionModal'
 import {USER_INFO} from "@/store/mutation-types";
 import {randomUUID} from "@/utils/util";
+import HfElevatorLayer from '@/components/HfElevatorLayer'
 
 export default {
   inject: {
@@ -270,10 +279,41 @@ export default {
   components: {
     HandleSelectModal,
     PostionModal,
+    HfElevatorLayer
   },
   data() {
     return {
       moment,
+      layerColumns: [
+        {
+          title: '样品信息',
+          id: 'product'
+        },
+        {
+          title: '实施过程',
+          id: 'processForm'
+        },
+        {
+          title: '参试人员',
+          id: 'person'
+        },
+        {
+          title: '测试设备',
+          id: 'testEquip'
+        },
+        {
+          title: '传感器',
+          id: 'sensor'
+        },
+        {
+          title: '振动工装',
+          id: 'toolsProduct'
+        },
+        {
+          title: '图片图谱',
+          id: 'picture'
+        }
+      ],
       pictureData: [],
       visible: false,
       submitLoading: false,

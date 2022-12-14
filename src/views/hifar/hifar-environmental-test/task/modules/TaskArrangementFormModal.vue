@@ -145,11 +145,11 @@ export default {
           title: '设备速率',
           key: 'testRate',
           formType: 'input-number',
+          min: 1,
           style: {
             width: "100%"
           }
         },
-
         {
           title: '备注',
           key: 'remarks',

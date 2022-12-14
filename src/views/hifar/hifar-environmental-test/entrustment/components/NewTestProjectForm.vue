@@ -7,17 +7,17 @@
 -->
 <template>
   <div style="height: 100%">
-    <div v-for="(item, index) in formInfoDataList" :key="index" class="panel-custom">
+    <div v-for="(item, index) in formInfoDataList" :id="'projectItem'+index" :key="index" class="panel-custom">
       <div class="panel-custom-item">
         <div class="panel-custom-item-left">
           <new-test-project-form-item ref="projectFormItem" :index="index" :entrustType="entrustType"
                                       :pieceTableData="pieceTableData" :project="item"></new-test-project-form-item>
         </div>
-        <div class="panel-custom-item-right">
+        <div class="panel-custom-item-top-right">
           <a-button
             icon="delete"
             size="small"
-            style="width: 32px; height: 32px; margin-top: 10px"
+            style="width: 32px; height: 32px"
             type="danger"
             @click="deleteProjectHandle(item, index)"
           ></a-button>
@@ -82,6 +82,7 @@ export default {
       const {formInfoDataList} = this
       formInfoDataList.splice(index, 1)
       this.formInfoDataList = formInfoDataList
+      this.$emit('deleteProject')
     },
     submitHandle(bool) {
       // bool 是否进行验证
@@ -141,28 +142,22 @@ export default {
   overflow: hidden;
 
   .panel-custom-item {
-    display: flex;
     margin-bottom: 10px;
+    position: relative;
+    width: calc(100% - 45px);
 
     .panel-custom-item-left {
-      width: 98%;
+      width: 100%;
       min-height: 226px;
       border: 1px solid #e8e8e8;
-      padding: 0 20px 20px;
-
-      .collapseStyle {
-        width: 93%;
-        margin-left: 6%;
-        font-size: 12px;
-        margin-bottom: 18px;
-      }
+      padding: 0 40px 20px 20px;
     }
 
-    .panel-custom-item-right {
-      padding-left: 5px;
-      display: flex;
-      align-items: center;
-      flex-direction: column;
+    .panel-custom-item-top-right {
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: 99;
     }
   }
 }

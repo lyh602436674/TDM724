@@ -190,7 +190,7 @@
                           v-has="'ArrangeMent:finish'"
                           class="h-icon-item"
                           type="icon-wancheng1"
-                          @click="$refs.taskFinishedModal.show('finish', record)"
+                          @click="openTaskFinishedModal(record)"
                         />
                       </a-tooltip>
                       <!-- 更多 -->
@@ -646,6 +646,14 @@ export default {
       }
       this.loadEquip = this.extendEquipData.filter(item => item.title.includes(value))
     },
+    openTaskFinishedModal(record) {
+      postAction('/HfResFreightBasis/calculatingExpenses', {id: record.id}).then((res) => {
+        if (res.code === 200) {
+          let params = Object.assign({}, record, {testCost: res.data})
+          this.$refs.taskFinishedModal.show('finish', params)
+        }
+      })
+    },
     async loadLeftTree() {
       this.treeSpinning = true
       let params = {
@@ -657,8 +665,7 @@ export default {
           item.scopedSlots = {
             title: 'customTitle',
           }
-          item.title = item.equipName + "-" + item.equipModel
-          // 这一步是证明当前数据为目录，当没有children时，则判断为文件
+          item.title = (item.equipName || '') + "-" + (item.equipModel || '')
           item.children = []
           return item
         })

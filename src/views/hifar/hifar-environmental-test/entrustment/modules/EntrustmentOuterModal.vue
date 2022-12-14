@@ -23,7 +23,7 @@
     <h-card bordered>
       <template slot='title'> {{ handleType === 'add' ? '新增' : '编辑' }}外部委托试验</template>
       <a-spin :spinning="submitLoading">
-        <div class="item-wrapper">
+        <div id="entrust" class="item-wrapper">
           <div class="item-wrapper-title">
             <span class="title">委托信息</span>
             <span class="description">填写申请单基本信息</span>
@@ -39,7 +39,7 @@
             </h-form>
           </div>
         </div>
-        <div class="item-wrapper">
+        <div id="product" class="item-wrapper">
           <div class="item-wrapper-title">
             <span class="title">样品信息</span>
             <span class="description">填写样品信息</span>
@@ -127,7 +127,7 @@
             </div>
           </div>
         </div>
-        <div class="item-wrapper">
+        <div id="project" class="item-wrapper">
           <div class="item-wrapper-title">
             <span class="title">项目信息</span>
             <span class="description">填写项目基本信息</span>
@@ -145,6 +145,7 @@
             <new-test-project-form ref='ProjectForm' :entrustType="entrustType" :formInfoData='projectInfoData'
                                    :pieceTableData="pieceTableData" style="margin-bottom:20px"
                                    @change='projectFormChange'
+                                   @deleteProject="deleteProject"
                                    @emptyData="emptyDatCallback"></new-test-project-form>
           </div>
         </div>
@@ -153,6 +154,7 @@
     <project-add-modal ref='projectAddModal' @change='projectModalCallback'></project-add-modal>
     <product-add-modal ref='productAddModal' :entrustType="entrustType"
                        @callback='productAddCallback'></product-add-modal>
+    <hf-elevator-layer :layer-columns="layerColumns"></hf-elevator-layer>
   </h-modal>
 </template>
 
@@ -166,10 +168,18 @@ import {cloneDeep, isArray} from 'lodash'
 import {postAction} from "@api/manage";
 import {randomUUID} from "@/utils/util";
 import ProductAddModal from "@views/hifar/hifar-environmental-test/entrustment/modules/ProductAddModal";
+import HfElevatorLayer from "@comp/HfElevatorLayer";
 
 export default {
   name: "NewEntrustmentModal",
-  components: {ProductAddModal, ProductSelectModal, ProjectAddModal, NewTestProjectForm, PhemismCustomSelect},
+  components: {
+    ProductAddModal,
+    ProductSelectModal,
+    ProjectAddModal,
+    NewTestProjectForm,
+    PhemismCustomSelect,
+    HfElevatorLayer
+  },
   inject: {
     getContainer: {
       default: () => document.body
@@ -197,6 +207,7 @@ export default {
       entrustType: '2',
       tableData: [],
       selectedPieceRows: [],
+      layerColumns: [],
       projectInfoData: [],
       validRules: {
         pieceNo: [{required: true, message: '样品编号不能为空'}, {validator: nameValid}]
@@ -517,6 +528,7 @@ export default {
       }
       this.tableData = []
       this.projectInfoData = []
+      this.buildLayer()
     },
     handleEdit(id) {
       this.submitLoading = true
@@ -547,7 +559,7 @@ export default {
           this.tableData = []
           this.tableData = obj.pieceInfo
           this.projectInfoData = obj.projectInfo
-          // this.pieceSorting(this.tableData, 'productName', 'productAlias')
+          this.buildLayer(obj.projectInfo)
         }
       }).finally(() => {
         this.submitLoading = false
@@ -735,6 +747,34 @@ export default {
           pieceNos: selectedPiece.length ? selectedPiece.map(_item => _item.pieceNo).toString() : ''
         }
       })
+      this.buildLayer(this.projectInfoData)
+    },
+    buildLayer(column) {
+      let defaultLayer = [
+        {
+          title: "委托信息",
+          id: "entrust"
+        },
+        {
+          title: "产品信息",
+          id: "product"
+        },
+        {
+          title: "项目信息",
+          id: "project"
+        },
+      ]
+      this.layerColumns = []
+      column && column.length && column.forEach((item, index) => {
+        defaultLayer.push({
+          title: item.unitName || item.testName,
+          id: 'projectItem' + index
+        })
+      })
+      this.layerColumns = defaultLayer
+    },
+    deleteProject() {
+      this.buildLayer(this.projectInfoData)
     },
     // 样品分类：根据样品名称和图号进行分类
     pieceSorting(data, name, model) {

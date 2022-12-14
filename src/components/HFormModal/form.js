@@ -222,8 +222,8 @@ export default {
             props: {
               placeholder: com.placeholder || '请输入',
               disabled: com.disabled || false,
-              min: com.min || undefined,
-              max: com.max || undefined,
+              min: com.min || com.min === 0 ? com.min : undefined,
+              max: com.max || com.max === 0 ? com.min : undefined,
               step: com.step || 1,
             },
             directives: [{
