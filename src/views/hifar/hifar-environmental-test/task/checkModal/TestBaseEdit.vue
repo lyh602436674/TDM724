@@ -246,6 +246,8 @@ import {cloneDeep} from 'lodash'
 import {postAction} from '@/api/manage'
 import HandleSelectModal from '../modules/components/HandleSelectModal.vue'
 import PostionModal from '../modules/PostionModal'
+import {USER_INFO} from "@/store/mutation-types";
+import {randomUUID} from "@/utils/util";
 
 export default {
   inject: {
@@ -628,8 +630,28 @@ export default {
             return parseInt(index) + 1
           }
         },
-        {title: '参试人员岗位', dataIndex: 'testPostName'},
-        {title: '参试人员姓名', dataIndex: 'testUserName'},
+        {
+          title: '参试人员岗位',
+          dataIndex: 'testPostName',
+          customRender: (t, row, rowIndex) => {
+            return this.$createElement('a-input', {
+              props: {
+                value: row.testPostName
+              }
+            })
+          }
+        },
+        {
+          title: '参试人员姓名',
+          dataIndex: 'testUserName',
+          customRender: (t, row, rowIndex) => {
+            return this.$createElement('a-input', {
+              props: {
+                value: row.testUserName
+              }
+            })
+          }
+        },
         {
           title: '操作',
           dataIndex: 'action',
@@ -977,46 +999,21 @@ export default {
       }
     },
     getTestDetail(id) {
-      let productArr = []
-      let personArr = []
+      let userinfo = this.$ls.get(USER_INFO)
+      let defaultPerson = [
+        {
+          id: randomUUID(),
+          testPostName: userinfo.postName,
+          testPostId: userinfo.postId,
+          testUserId: userinfo.id,
+          testUserName: userinfo.idName
+        }
+      ]
       postAction(this.url.detail, {id: id}).then((res) => {
         if (res.code == 200) {
           this.entrustType = res.data.entrustInfo[0].entrustType
-          res.data.testPieceInfo.forEach((item) => {
-            productArr.push({
-              id: item.id,
-              custName: item.custName,
-              entrustId: item.entrustId,
-              entrustCode: item.entrustCode,
-              projectId: item.projectId,
-              projectCode: item.projectCode,
-              taskId: item.taskId,
-              taskCode: item.taskCode,
-              pieceId: item.pieceId,
-              pieceNo: item.pieceNo,
-              pieceCode: item.pieceCode,
-              productId: item.productId,
-              productCode: item.productCode,
-              productName: item.productName,
-              productModel: item.productModel,
-              productAlias: item.productAlias,
-              pieceNum: item.pieceNum,
-              pieceCnum: item.pieceCnum,
-              intactStatus: item.intactStatus,
-              remarks: item.remarks
-            })
-          })
-          res.data.testPersonInfo.forEach((item) => {
-            personArr.push({
-              id: item.id,
-              testPostName: item.testPostName,
-              testPostId: item.testPostId,
-              testUserId: item.testUserId,
-              testUserName: item.testUserName
-            })
-          })
-          this.productTable = productArr
-          this.personArr = personArr
+          this.productTable = res.data.testPieceInfo
+          this.personArr = defaultPerson.concat(res.data.testPersonInfo)
           this.testTaskData = res.data.testTaskInfo
           this.projectData = res.data.testTaskInfo
           this.productList.queryParams.projectPieceInfo = []

@@ -36,17 +36,18 @@
         {{ detailData.custName || '--' }}
       </h-desc-item>
       <template v-if="detailData.entrustType == 1">
+        <h-desc-item label='工作令号'>
+          {{ detailData.workOrderNo || '--' }}
+        </h-desc-item>
         <h-desc-item label='委托人'>
           {{ detailData.entrustPerson || '--' }}
         </h-desc-item>
         <h-desc-item label='委托人手机号'>
           {{ detailData.entrustPersonPhone || '--' }}
         </h-desc-item>
-      </template>
-      <h-desc-item label='单位地址' v-if="detailData.entrustType == 1">
-        {{ detailData.custAddress || '--' }}
-      </h-desc-item>
-      <template v-if="detailData.entrustType == 1">
+        <h-desc-item label='单位地址'>
+          {{ detailData.custAddress || '--' }}
+        </h-desc-item>
         <h-desc-item label='样品制造单位'>
           {{ detailData.sampleMakeUnit || '--' }}
         </h-desc-item>
@@ -85,11 +86,20 @@
         </h-desc-item>
       </template>
       <template v-if="detailData.entrustType == 2">
-        <h-desc-item label='工作令号'>
-          {{ detailData.workOrderNo || '--' }}
-        </h-desc-item>
         <h-desc-item label='产品名称'>
           {{ detailData.productName || '--' }}
+        </h-desc-item>
+        <h-desc-item label='联系人'>
+          {{ detailData.linkName || '--' }}
+        </h-desc-item>
+        <h-desc-item label='联系方式'>
+          {{ detailData.linkMobile || '--' }}
+        </h-desc-item>
+        <h-desc-item label='委托人'>
+          {{ detailData.entrustPerson || '--' }}
+        </h-desc-item>
+        <h-desc-item label='委托人手机号'>
+          {{ detailData.entrustPersonPhone || '--' }}
         </h-desc-item>
         <h-desc-item label='试验目的'>
           {{ detailData.testPurpose_dictText || '--' }}
@@ -119,9 +129,6 @@
         <h-desc-item label='测试地点'>
           {{ detailData.testAddress_dictText || '--' }}
         </h-desc-item>
-        <h-desc-item label='检测报告'>
-          {{ detailData.testReport_dictText || '--' }}
-        </h-desc-item>
         <h-desc-item label='检测照片'>
           {{ detailData.testPicture_dictText || '--' }}
         </h-desc-item>
@@ -131,14 +138,14 @@
         <h-desc-item label='报告份数'>
           {{ detailData.reportNum || '--' }}
         </h-desc-item>
+        <h-desc-item label='报告密级'>
+          {{ detailData.reportSecretLevel_dictText || '--' }}
+        </h-desc-item>
         <h-desc-item label='报告领取方式'>
           {{ detailData.reportCollectionMethod_dictText || '--' }}
         </h-desc-item>
-        <h-desc-item label='试验依据'>
-          {{ detailData.testEvidence || '--' }}
-        </h-desc-item>
-        <h-desc-item label='试验要求'>
-          {{ detailData.testRequire || '--' }}
+        <h-desc-item label='技术文件'>
+          {{ detailData.technicalFile || '--' }}
         </h-desc-item>
       </template>
       <h-desc-item label='创建人'>
@@ -220,7 +227,7 @@ export default {
       downloadFile(fileAccessUrl, fileName)
     },
     entrustReview() {
-      this.$refs.testEntrustReviewPdf.show(this.model.entrustData.reportPath)
+      this.$refs.testEntrustReviewPdf.show(this.detailData.reportPath)
     },
   }
 }

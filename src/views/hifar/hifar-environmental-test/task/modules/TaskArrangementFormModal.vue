@@ -68,26 +68,6 @@ export default {
             <h-time-select
               v-decorator={['predictStartTime', {rules: [{required: true, message: '请选择预计开始时间'}]}]}
               timeFormat={"HH:mm"}
-              disabledDate={(current) => {
-                return current && current < moment().subtract(1, 'day')
-              }}
-              disabledHours={() => {
-                if (moment(this.selectedStartTime).get('date') === moment().get('date')) {
-                  return this.timeRange(0, 24).splice(0, moment().get('hour'))
-                }
-              }}
-              disabledMinutes={() => {
-                if (moment(this.selectedStartTime).get('date') === moment().get('date') &&
-                  moment(this.selectedStartTime).get('hour') === moment().get('hour')
-                ) {
-                  return this.timeRange(0, 60).splice(0, moment().get('minute'))
-                }
-              }}
-              disabledSeconds={() => {
-                if (moment(this.selectedStartTime).get('date') === moment().get('date')) {
-                  return this.timeRange(0, 60).splice(0, moment().get('second'))
-                }
-              }}
               onchange={(predictStartTime) => {
                 this.selectedStartTime = predictStartTime
                 let {equipId, predictUseTime} = this.$refs.taskArrangementForm.form.getFieldsValue()
@@ -183,13 +163,6 @@ export default {
   },
   methods: {
     moment,
-    timeRange(start, end) {
-      let result = []
-      for (let i = start; i < end; i++) {
-        result.push(i)
-      }
-      return result
-    },
     show(record) {
       this.model = Object.assign({}, record)
       this.visible = true

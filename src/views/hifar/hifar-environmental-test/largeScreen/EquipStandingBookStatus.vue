@@ -14,8 +14,9 @@
 </template>
 
 <script>
-import { fontSize } from './chartsFontSizeToRem'
-import { getAction } from '@/api/manage'
+import {fontSize} from './chartsFontSizeToRem'
+import {getAction} from '@/api/manage'
+
 export default {
   name: 'EquipStandingBookStatus',
   description: '设备台账状态页面',
@@ -63,7 +64,7 @@ export default {
                 type: 'pie',
                 avoidLabelOverlap: true,
                 radius: ['30%', '60%'],
-                center: ['55%', '45%'],
+                center: ['50%', '50%'],
                 roseType: false, // boolean string => false,radius,area
                 data: seriesData,
                 labelLine: {

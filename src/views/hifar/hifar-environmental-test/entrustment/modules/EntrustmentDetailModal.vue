@@ -9,7 +9,7 @@
 <template>
   <h-modal
     :visible='visible'
-    title='委托单详情'
+    title='npm'
     inner
     width='90%'
     :bodyStyle='bodyStyle'

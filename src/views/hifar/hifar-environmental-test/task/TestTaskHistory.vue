@@ -355,6 +355,12 @@ export default {
           minWidth: 150,
         },
         {
+          title: '试验费用',
+          dataIndex: 'testCost',
+          minWidth: 80,
+          align: 'center',
+        },
+        {
           title: '期望开始时间',
           dataIndex: 'predictStartTime',
           customRender: (time) => {

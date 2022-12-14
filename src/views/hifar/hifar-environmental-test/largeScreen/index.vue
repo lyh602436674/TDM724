@@ -30,6 +30,7 @@
           :bgImg="bgImg"
           @equipItemEnter="equipItemEnter"
           @equipItemOut="equipItemOut"
+          @dragSwitch="dragSwitchChange"
           ref="equipLocationDistribute"
         ></equip-location-distribute>
         <equip-detail-list ref="equipDetailList"></equip-detail-list>
@@ -46,7 +47,7 @@
         @mouseleave="equipStatusDetailMouseOut"
         @mouseover="equipStatusDetailMouseEnter"
         @equipItemMove="equipStatusDetailMouseMove"
-        v-if="detailVisible"
+        v-if="detailVisible && dragSwitch === '2'"
         :style="detailStyle"
       >
         <div v-for="(item, index) in equipItemInfo" :key="index + 'info'" class="equipStatus-detail-item">
@@ -102,18 +103,18 @@ export default {
       },
       isFullscreen: false,
       currentTime: '',
+      dragSwitch: '2',
       setIntervalTime: null,
       currentTimeInterval: null,
       equipItemInfo: [
         {title: '委托单号', key: 'entrustNo', value: '--'},
         {title: '运行单号', key: 'entrustCode', value: '--'},
-        {title: '设备名称', key: 'innerName', value: '--'},
+        {title: '设备名称', key: 'equipName', value: '--'},
         {title: '设备编号', key: 'equipCode', value: '--'},
         {title: '设备型号', key: 'equipModel', value: '--'},
         {title: '试验项目', key: 'unitName', value: '--'},
-        {title: '试验性质', key: 'testPropertyName', value: '--'},
         {title: '试品名称', key: 'productName', value: '--'},
-        {title: '试品型号', key: 'productModel', value: '--'},
+        {title: '试品型号/图号', key: 'productModel', value: '--'},
         {title: '开始时间', key: 'realStartTime', value: '--'},
         {title: '预计时长', key: 'predictUseTime', value: '--'},
       ],
@@ -124,12 +125,6 @@ export default {
       equipItemTimeStamp: 0,
       equipDetailTimeStamp: 0,
     }
-  },
-
-  created() {
-  },
-  mounted() {
-
   },
   beforeRouteEnter(to, from, next) {
     next((vm)=>{
@@ -176,6 +171,9 @@ export default {
       this.$refs.equipDetailList.loadData()
       this.$refs.equipWarningByIntraDay.getRecordsNum()
     },
+    dragSwitchChange(val) {
+      this.dragSwitch = val
+    },
     fullscreen() {
       this.isFullscreen = !this.isFullscreen
       let el = this.$refs.largeScreenPage
@@ -212,7 +210,8 @@ export default {
           let sideWidth = this.isFullscreen ? 0 : document.getElementsByTagName('aside')[0].offsetWidth
           let mainPageWidth = this.$refs.largeScreenPage.offsetWidth
           this.detailStyle = {
-            left: ((e.clientX - sideWidth) / mainPageWidth) * 100 + 1 + '%',
+            left: ((e.clientX - sideWidth) / mainPageWidth) * 100 + '%',
+            transform: 'translate(-50%)',
             top: e.clientY - (this.isFullscreen ? 0 : 90) + 'px',
           }
           getAction(this.url.queryEquipInfo, {id: item.id}).then((res) => {

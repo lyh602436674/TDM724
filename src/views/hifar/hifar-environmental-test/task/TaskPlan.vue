@@ -137,6 +137,11 @@
                 <a-tooltip title="终止">
                   <a-icon class="primary-text" type="pause" @click="$refs.taskForceEnd.show('forceEnd', record)"/>
                 </a-tooltip>
+                <a-divider type="vertical"/>
+
+                <a-tooltip title="标签打印">
+                  <a-icon class="primary-text" type="printer" @click="$refs.testEntrustReviewPdf.show(record)"/>
+                </a-tooltip>
 
               </template>
             </h-vex-table>
@@ -150,6 +155,7 @@
     <test-info-list-modal ref="TestInfoListModal" @change="refhandleBack"/>
     <task-force-end-modal ref="taskForceEnd" :forceEndUrl="url.forceEnd" :testDetailUrl="url.testDetail"
                           @change="handleRefresh"/>
+    <test-entrust-review-pdf ref="testEntrustReviewPdf"/>
   </div>
 </template>
 
@@ -163,6 +169,7 @@ import TestInfoListModal from './modules/TestInfoListModal'
 import WorkCenterDetailModal from '../components/WorkCenterDetailModal.vue'
 import TaskForceEndModal from './modules/TaskForceEndModal.vue'
 import {find} from 'lodash'
+import TestEntrustReviewPdf from "@views/hifar/hifar-environmental-test/task/modules/TestEntrustReviewPdf";
 
 export default {
   provide() {
@@ -173,7 +180,15 @@ export default {
       },
     }
   },
-  components: {HPie, TaskArrangement, TaskDetail, WorkCenterDetailModal, TestInfoListModal, TaskForceEndModal,},
+  components: {
+    HPie,
+    TaskArrangement,
+    TaskDetail,
+    WorkCenterDetailModal,
+    TestInfoListModal,
+    TaskForceEndModal,
+    TestEntrustReviewPdf
+  },
   data() {
     return {
       collapse: true,
@@ -368,7 +383,7 @@ export default {
           dataIndex: 'action',
           align: 'center',
           fixed: 'right',
-          width: 120,
+          width: 140,
           scopedSlots: {
             customRender: 'actions',
           },

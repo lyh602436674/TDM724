@@ -60,7 +60,6 @@ export default {
         file:base64Data,
         testIds:this.selectRowId.map(item=>item.id).join(",")
       }
-      console.log("data",data)
       postAction(this.url.saveCurve,data).then(res=>{
         if (res.code === 200) {
           this.$message.success("保存成功")
@@ -175,18 +174,18 @@ export default {
           },
           right: 40
         },
-        dataZoom: [
-          {
-            // startValue: chartData[1][2],
-            // endValue: chartData[chartData.length - 1][2],
-          },
-          {
-            type: 'inside',
-          },
-        ],
+        // dataZoom: [
+        //   {
+        //     // startValue: chartData[1][2],
+        //     // endValue: chartData[chartData.length - 1][2],
+        //   },
+        //   {
+        //     type: 'inside',
+        //   },
+        // ],
         legend: {},
-        grid:{
-          bottom:80
+        grid: {
+          bottom: 10
         },
         xAxis: {
           type: 'time',

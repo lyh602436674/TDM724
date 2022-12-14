@@ -53,6 +53,12 @@ export default {
           ),
         },
         {
+          title: '试验费用',
+          key: 'testCost',
+          formType: 'input-number',
+          style:{width:"100%"}
+        },
+        {
           title: '备注',
           key: 'remarks',
           formType: 'textarea',

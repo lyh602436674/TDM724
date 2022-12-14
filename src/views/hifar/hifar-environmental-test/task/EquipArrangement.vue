@@ -501,12 +501,12 @@ export default {
           title: '状态',
           dataIndex: 'status',
           scopedSlots: {customRender: 'status'},
-          minWidth: 140,
+          minWidth: 80,
         },
         {
           title: '委托单位',
           dataIndex: 'custNames',
-          minWidth: 100,
+          minWidth: 160,
         },
         {
           title: '样品名称',

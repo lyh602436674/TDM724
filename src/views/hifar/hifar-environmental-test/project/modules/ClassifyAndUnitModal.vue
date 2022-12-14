@@ -26,10 +26,11 @@
 <script>
 import workCenterSelect from '../components/WorkCenterSelect'
 import pcClassifySelect from '../components/PcClassifySelect'
-import { postAction } from '@/api/manage'
-import { findIndex } from 'lodash'
+import {postAction} from '@/api/manage'
+import {findIndex} from 'lodash'
+
 export default {
-  components: { workCenterSelect, pcClassifySelect },
+  components: {workCenterSelect, pcClassifySelect},
   inject: ['groupCode'],
   data() {
     return {
@@ -88,7 +89,7 @@ export default {
             ),
           },
           {
-            title: '备注',
+            title: '试验条件',
             key: 'remarks',
             formType: 'textarea',
           },
@@ -155,13 +156,13 @@ export default {
             component: (
               <pc-classify-select
                 placeholder="请选择项目类别"
-                showSearch
-                v-decorator={['classifyId', { rules: [{ required: true, message: '请选择项目类别' }] }]}
+                showSearch={true}
+                v-decorator={['classifyId', {rules: [{required: true, message: '请选择项目类别'}]}]}
               />
             ),
           },
           {
-            title: '备注',
+            title: '试验条件',
             key: 'remarks',
             formType: 'textarea',
           },

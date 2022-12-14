@@ -267,24 +267,6 @@ export default {
           }
         },
         {
-          title: '联系人',
-          align: 'center',
-          dataIndex: 'linkName',
-          width: 100,
-          customRender: (text, record) => {
-            return text || '--';
-          }
-        },
-        {
-          title: '联系方式',
-          align: 'center',
-          width: 120,
-          dataIndex: 'linkMobile',
-          customRender: (text, record) => {
-            return text || '--';
-          }
-        },
-        {
           title: '委托人',
           align: 'center',
           dataIndex: 'entrustPerson',
@@ -390,8 +372,7 @@ export default {
     },
     // 编辑
     handleEdit(record) {
-      let type = 'edit'
-      this.$refs.EntrustmentModal.show(record, type)
+      this.$refs.EntrustmentModal.show(record, 'edit')
     },
     // 删除
     handleDelete(id) {
