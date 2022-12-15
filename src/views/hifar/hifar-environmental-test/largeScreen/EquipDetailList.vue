@@ -17,25 +17,26 @@
           </div>
         </div>
         <div class="table-body">
-          <h-auto-scroll :data="dataSource" class="table-body-scroll" :class-option="classOption">
-            <div class="table-body-row" v-for="(item, index) in dataSource" :key="index + '-tr'">
-              <div class="table-body-col" v-for="(v, i) in columns" :key="index + i + 'td'" :style="{ width: v.width }">
-                <template v-if="v.key === 'index'">
-                  {{ 1 + index }}
-                </template>
-                <template v-else-if="v.key !== 'status'">
-                  <a-tooltip :title="item[v.key]">
-                    <span>{{ item[v.key] }}</span>
-                  </a-tooltip>
-                </template>
-                <template v-else>
-                  <div class="table-body-col-status" :style="{backgroundColor:colorList[item.statusNum-1]}">
-                    {{ item[v.key] ? item[v.key] : '--' }}
-                  </div>
-                </template>
-              </div>
+          <!--          <h-auto-scroll :data="dataSource" class="table-body-scroll" :class-option="classOption">-->
+          <div v-for="(item, index) in dataSource" :key="index + '-tr'" :style="rowStyle"
+               class="table-body-row">
+            <div v-for="(v, i) in columns" :key="index + i + 'td'" :style="{ width: v.width }" class="table-body-col">
+              <template v-if="v.key === 'index'">
+                {{ 1 + index }}
+              </template>
+              <template v-else-if="v.key !== 'status'">
+                <a-tooltip :title="item[v.key]">
+                  <span>{{ item[v.key] }}</span>
+                </a-tooltip>
+              </template>
+              <template v-else>
+                <div :style="{backgroundColor:colorList[item.statusNum-1]}" class="table-body-col-status">
+                  {{ item[v.key] ? item[v.key] : '--' }}
+                </div>
+              </template>
             </div>
-          </h-auto-scroll>
+          </div>
+          <!--          </h-auto-scroll>-->
         </div>
       </div>
     </div>
@@ -46,24 +47,42 @@
 import {getAction} from '@/api/manage'
 import moment from 'moment'
 import HAutoScroll from "@comp/HAutoScroll/HAutoScroll";
+import {cloneDeep} from 'lodash'
 
 export default {
   name: 'EquipDetailList',
   components: {HAutoScroll},
   description: '设备信息列表页面',
+  mounted() {
+    window.addEventListener('resize', () => {
+      this.getTableBodyRowHeight()
+    })
+  },
+  props: {
+    timerStep: {
+      type: Number,
+      default: 0
+    }
+  },
+  computed: {
+    classOption() {
+      return {
+        singleHeight: this.rowStyle.height,
+        waitTime: 5000,
+      }
+    }
+  },
   data() {
     return {
-      classOption: {
-        singleHeight: 30,
-      },
+      rowStyle: {},
       columns: [
-        {title: '序号', width: '7%', key: 'rowSort'},
-        {title: '设备名称', width: '15%', key: 'equipName'},
-        {title: '温度', width: '7%', key: 'temperatureSV'},
-        {title: '湿度', width: '8%', key: 'humiditySV'},
-        {title: '项目名称', width: '15%', key: 'unitName'},
-        {title: '委托单位', width: '18%', key: 'custName'},
-        {title: '预计结束时间', width: '20%', key: 'predictEndTime'},
+        {title: '序号', width: '6%', key: 'rowSort'},
+        {title: '设备名称', width: '20%', key: 'equipName'},
+        {title: '温度', width: '6%', key: 'temperatureSV'},
+        {title: '湿度', width: '6%', key: 'humiditySV'},
+        {title: '项目名称', width: '12%', key: 'unitName'},
+        {title: '委托单位', width: '22%', key: 'custName'},
+        {title: '预计结束时间', width: '18%', key: 'predictEndTime'},
         {title: '状态', width: '10%', key: 'status'},
       ],
       dataSource: [],
@@ -71,21 +90,67 @@ export default {
       url: {
         list: '/LargeScreenDisplay/taskMonitor',
       },
+      pageTimer: null,
+      pageSize: 2,
+      timerIndex: 1,
+      dataSourceWatch: [],
     }
   },
+  watch: {
+    dataSourceWatch(newData, oldData) {
+      if (!(JSON.stringify(newData) === JSON.stringify(oldData))) {
+        this.autoPageTurning(newData)
+      }
+    },
+  },
+  created() {
+    // this.loadData()
+  },
   methods: {
+    getTableBodyRowHeight() {
+      const tableBodyHeight = document.getElementsByClassName('table-body')[0]
+      const height = tableBodyHeight.offsetHeight / 10 + "px"
+      this.rowStyle = {height, lineHeight: height}
+    },
     moment,
     loadData() {
       getAction(this.url.list).then((res) => {
         if (res.code === 200) {
-          this.dataSource = res.data.filter(item => item.status == '1')
-          this.dataSource.map((item) => {
-            item.statusNum = JSON.parse(JSON.stringify(item.status))
-            item.status = this.deviceStatusFilter(item.status)
-            item.predictEndTime = item.predictEndTime ? moment(+item.predictEndTime).format('YYYY-MM-DD HH:mm:ss') : ''
-          })
+          let dataSource = this.formatDataSource(res.data)
+          let {pageSize} = this
+          if (dataSource.length <= pageSize) {
+            this.dataSource = dataSource
+          } else {
+            this.dataSourceWatch = dataSource
+          }
         }
       })
+    },
+    formatDataSource(dataSource) {
+      return dataSource.map((item) => {
+        return {
+          ...item,
+          statusNum: item.status,
+          status: this.deviceStatusFilter(item.status),
+          predictEndTime: item.predictEndTime ? moment(+item.predictEndTime).format('YYYY-MM-DD HH:mm:ss') : ''
+        }
+      }).sort((a, b) => a.rowSort - b.rowSort)
+    },
+    autoPageTurning(dataSource) {
+      let {pageSize} = this
+      this.dataSource = dataSource.slice(0, pageSize)
+      let extendData = cloneDeep(dataSource)
+      let pageTotal = Math.ceil(dataSource.length / pageSize)
+      let result = []
+      for (let i = 0; i < pageTotal; i++) {
+        result.push(extendData.slice(i * pageSize, (i + 1) * pageSize))
+      }
+      if (this.pageTimer) clearInterval(this.pageTimer)
+      this.pageTimer = setInterval(() => {
+        this.dataSource = result[this.timerIndex]
+        this.timerIndex++
+        if (this.timerIndex >= pageTotal) this.timerIndex = 0
+      }, 10000)
     },
     deviceStatusFilter(status) {
       let s = parseInt(status)
@@ -94,18 +159,6 @@ export default {
           return '占用'
         case 2:
           return '待机'
-        /*        case 1:
-                  return '在用'
-                case 2:
-                  return '停用'
-                case 3:
-                  return '封存'
-                case 4:
-                  return '报废'
-                case 5:
-                  return '故障'
-                case 6:
-                  return '计量'*/
         default:
           return '--'
       }
@@ -184,7 +237,7 @@ export default {
         }
 
         &-col {
-          height: 0.167rem /* 64/384 */;
+          height: 100% /* 64/384 */;
           padding: 0 0.026rem /* 10/384 */;
           overflow: hidden;
           white-space: nowrap;

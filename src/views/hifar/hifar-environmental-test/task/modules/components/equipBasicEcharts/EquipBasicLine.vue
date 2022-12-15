@@ -218,7 +218,7 @@ export default {
           trigger: 'axis'
         },
         grid: {
-          bottom: 10
+          bottom: 40
         },
         toolbox: {
           feature: {
@@ -271,6 +271,7 @@ export default {
         },
         yAxis: {
           // name: '试验值'
+          minInterval:1,
         },
         series: mySeries
       }

@@ -1,7 +1,7 @@
 <template>
   <div ref="largeScreenPage" class="largeScreenPage">
     <header>
-      724所试验室综合看板
+      试验数据管理系统综合看板
       <span
         id="localtime"
         style="

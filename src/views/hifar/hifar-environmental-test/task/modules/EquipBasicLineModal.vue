@@ -185,7 +185,7 @@ export default {
         // ],
         legend: {},
         grid: {
-          bottom: 10
+          bottom: 40
         },
         xAxis: {
           type: 'time',
