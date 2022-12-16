@@ -112,6 +112,10 @@ export default {
           let {pageSize} = this
           if (dataSource.length <= pageSize) {
             this.dataSource = dataSource
+            if (this.pageTimer) clearInterval(this.pageTimer)
+            this.pageTimer = setInterval(() => {
+              this.loadData()
+            }, 10000)
           } else {
             this.autoPageTurning(dataSource)
           }
