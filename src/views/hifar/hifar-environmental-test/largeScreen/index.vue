@@ -168,7 +168,7 @@ export default {
       this.$refs.projectTaskTypeStatistics.initCharts()
       this.$refs.tasksCompletedByThirtyDays.initCharts()
       this.$refs.shiftRecords.loadData()
-      this.$refs.equipDetailList.loadData()
+      // this.$refs.equipDetailList.loadData()
       this.$refs.equipWarningByIntraDay.getRecordsNum()
     },
     dragSwitchChange(val) {

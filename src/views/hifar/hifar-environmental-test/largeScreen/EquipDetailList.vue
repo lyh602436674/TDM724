@@ -47,7 +47,6 @@
 import {getAction} from '@/api/manage'
 import moment from 'moment'
 import HAutoScroll from "@comp/HAutoScroll/HAutoScroll";
-import {cloneDeep} from 'lodash'
 
 export default {
   name: 'EquipDetailList',
@@ -93,18 +92,10 @@ export default {
       pageTimer: null,
       pageSize: 2,
       timerIndex: 1,
-      dataSourceWatch: [],
     }
   },
-  watch: {
-    dataSourceWatch(newData, oldData) {
-      if (!(JSON.stringify(newData) === JSON.stringify(oldData))) {
-        this.autoPageTurning(newData)
-      }
-    },
-  },
   created() {
-    // this.loadData()
+    this.loadData()
   },
   methods: {
     getTableBodyRowHeight() {
@@ -121,7 +112,7 @@ export default {
           if (dataSource.length <= pageSize) {
             this.dataSource = dataSource
           } else {
-            this.dataSourceWatch = dataSource
+            this.autoPageTurning(dataSource)
           }
         }
       })
@@ -139,17 +130,19 @@ export default {
     autoPageTurning(dataSource) {
       let {pageSize} = this
       this.dataSource = dataSource.slice(0, pageSize)
-      let extendData = cloneDeep(dataSource)
       let pageTotal = Math.ceil(dataSource.length / pageSize)
       let result = []
       for (let i = 0; i < pageTotal; i++) {
-        result.push(extendData.slice(i * pageSize, (i + 1) * pageSize))
+        result.push(dataSource.slice(i * pageSize, (i + 1) * pageSize))
       }
       if (this.pageTimer) clearInterval(this.pageTimer)
       this.pageTimer = setInterval(() => {
         this.dataSource = result[this.timerIndex]
         this.timerIndex++
-        if (this.timerIndex >= pageTotal) this.timerIndex = 0
+        if (this.timerIndex > pageTotal) {
+          this.timerIndex = 1
+          this.loadData()
+        }
       }, 10000)
     },
     deviceStatusFilter(status) {
