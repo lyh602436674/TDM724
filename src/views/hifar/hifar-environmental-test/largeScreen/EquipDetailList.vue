@@ -53,6 +53,7 @@ export default {
   components: {HAutoScroll},
   description: '设备信息列表页面',
   mounted() {
+    this.getTableBodyRowHeight()
     window.addEventListener('resize', () => {
       this.getTableBodyRowHeight()
     })
