@@ -150,6 +150,7 @@ export default {
     //页面离开后关闭定时器
     clearInterval(this.setIntervalTime)
     clearInterval(this.currentTimeInterval)
+    clearInterval(this.$refs.equipDetailList.pageTimer)
     next()
   },
   // deactivated() {
