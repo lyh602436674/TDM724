@@ -90,7 +90,7 @@ export default {
         list: '/LargeScreenDisplay/taskMonitor',
       },
       pageTimer: null,
-      pageSize: 2,
+      pageSize: 10,
       timerIndex: 1,
     }
   },
