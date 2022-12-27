@@ -15,7 +15,7 @@
 import {getAction} from "@api/manage";
 
 export default {
-  name: "DataStatistics",
+  name: "DataAnalysis",
   data() {
     return {
       src: ""
@@ -25,8 +25,8 @@ export default {
     getAction('/SysSwitchBusiness/queryByItemKeyPrefix', {itemKey: 'dataStatistics'}).then((result) => {
       if (result.code === 200) {
         result.data.map((item) => {
-          if (item.itemKey === 'dataStatisticsResult') {
-            this.src = item.itemValue
+          if (item.itemKey === 'dataStatisticsDes') {
+            this.src = 'http://' + item.itemValue + '/dataAnalysis-724'
           }
         })
       }
@@ -35,9 +35,10 @@ export default {
 }
 </script>
 
+
 <style lang="less" scoped>
 .dataStatistics {
   width: 100%;
   height: 100%
 }
-</style>
+</style>>
