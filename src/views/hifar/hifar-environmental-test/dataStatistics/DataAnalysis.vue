@@ -26,7 +26,7 @@ export default {
       if (result.code === 200) {
         result.data.map((item) => {
           if (item.itemKey === 'dataStatisticsDes') {
-            this.src = 'http://' + item.itemValue + '/dataAnalysis-724'
+            this.src = 'http://' + item.itemValue + '/dataAnalysis'
           }
         })
       }
