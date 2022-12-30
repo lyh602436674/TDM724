@@ -50,24 +50,24 @@
                 <equipment-detail ref="equipmentDetail" :equipId="selectedKeys.join('')"/>
               </div>
             </a-tab-pane>
-            <a-tab-pane :key="3" style="height: 100%" tab="修正参数">
-              <h-card :title="title + ' 修正参数'" fixed>
-                <template slot="table-operator">
-                  <a-button icon="plus" size="small" type="ghost-primary" @click="handleAddAmendment">添加参数</a-button>
-                </template>
-                <h-edit-table
-                  ref="equipmentAmendmentParameterTable"
-                  slot="content"
-                  :autoLoad="false"
-                  :columns="amendmentColumns"
-                  :data="amendmentLoadData"
-                  :editConfig="editConfig"
-                  :editRules="editRules"
-                  uid="equipmentAmendmentParameterTable"
-                  @eidtStatus="editChange"
-                ></h-edit-table>
-              </h-card>
-            </a-tab-pane>
+            <!--            <a-tab-pane :key="3" style="height: 100%" tab="修正参数">-->
+            <!--              <h-card :title="title + ' 修正参数'" fixed>-->
+            <!--                <template slot="table-operator">-->
+            <!--                  <a-button icon="plus" size="small" type="ghost-primary" @click="handleAddAmendment">添加参数</a-button>-->
+            <!--                </template>-->
+            <!--                <h-edit-table-->
+            <!--                  ref="equipmentAmendmentParameterTable"-->
+            <!--                  slot="content"-->
+            <!--                  :autoLoad="false"-->
+            <!--                  :columns="amendmentColumns"-->
+            <!--                  :data="amendmentLoadData"-->
+            <!--                  :editConfig="editConfig"-->
+            <!--                  :editRules="editRules"-->
+            <!--                  uid="equipmentAmendmentParameterTable"-->
+            <!--                  @eidtStatus="editChange"-->
+            <!--                ></h-edit-table>-->
+            <!--              </h-card>-->
+            <!--            </a-tab-pane>-->
             <a-tab-pane :key="4" style="height: 100%" tab="试前模板">
               <h-card :title="title + ' 试前模板'" fixed>
                 <h-search

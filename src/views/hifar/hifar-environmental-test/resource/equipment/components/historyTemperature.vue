@@ -54,18 +54,8 @@
             <a-input-number style="width: 100%" v-model="record.humidity"
                             @blur="(e)=>handleTableChange(e,record)"></a-input-number>
           </template>
-          <!--          <span slot="action" slot-scope="text, record">-->
-          <!--              <a-icon-->
-          <!--                type="edit"-->
-          <!--                title="编辑"-->
-          <!--                class="primary-text"-->
-          <!--                style="cursor: pointer"-->
-          <!--                @click="edit(record)"-->
-          <!--              />-->
-          <!--          </span>-->
         </h-vex-table>
       </div>
-      <!--      <edit-history-temperature ref="editHistory" @change="refresh"></edit-history-temperature>-->
     </h-card>
   </h-modal>
 </template>
