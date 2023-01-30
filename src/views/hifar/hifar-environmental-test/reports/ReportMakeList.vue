@@ -47,7 +47,7 @@
         <!--        </span>-->
         <div slot="action" slot-scope="text, record">
           <a-icon
-            class="primary-text"
+            class="primary-text cursor-pointer"
             style="cursor: pointer"
             title="详情"
             type="eye"
@@ -57,56 +57,72 @@
           <span v-if="record.status == 1">
             <a-popconfirm v-if="record.isExternalManage == 0" title="确定生成报告吗?"
                           @confirm="() => handleMakeReport(record)">
-              <a-icon v-has="'report:make'" class="primary-text" style="cursor: pointer" title="生成"
+              <a-icon v-has="'report:make'" class="primary-text cursor-pointer" style="cursor: pointer" title="生成"
                       type="check-square"/>
             </a-popconfirm>
-            <a-upload
+            <h-upload-file-b
               v-else
-              :action='autoFileUrl'
-              :data='{id:record.id}'
-              :headers='tokenHeader'
-              :multiple='false'
-              :show-upload-list='false'
-              name='file'
-              @change='fileChange'
+              v-model="reportFileList"
+              :customParams="{id:record.id}"
+              accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              isPublic
+              @beforeUpload="$refs.reportMakeTable.localLoading = true"
+              @change="file => handleUploadCallback(file,record,true)"
             >
-              <a-icon v-has="'report:upload'" title='上传' type='upload'/>
-            </a-upload>
+              <a-icon v-has="'report:upload'" class="primary-text cursor-pointer" title="上传" type="upload"/>
+            </h-upload-file-b>
             <a-divider style="color: #409eff" type="vertical"/>
           </span>
           <span v-if="record.status == 3 || record.status == 30 || record.status == 50">
             <a-popconfirm title="确定提交吗?" @confirm="() => handleSubmit(record)">
               <h-icon v-if="record.isExternalManage != 1" v-has="'report:submit'" style="cursor: pointer" title="提交"
-                      type="icon-tijiao"/>
+                      class="cursor-pointer" type="icon-tijiao"/>
             </a-popconfirm>
             <a-divider v-if='record.filePath && record.isExternalManage != 1' v-has="'report:submit'"
                        style="color: #409eff"
                        type="vertical"/>
-            <a-icon v-if='record.filePath' v-has="'report:edit'" class="primary-text" style="cursor: pointer"
+            <a-icon v-if='record.filePath' v-has="'report:edit'" class="primary-text cursor-pointer"
+                    style="cursor: pointer"
                     type="edit"
                     @click="handleEdit(record)"/>
             <a-divider v-if="record.isExternalManage != 1" v-has="'report:edit'" style="color: #409eff"
                        type="vertical"/>
+            <h-upload-file-b
+              v-model="reportFileList"
+              :customParams="{id:record.id}"
+              accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              isPublic
+              @beforeUpload="$refs.reportMakeTable.localLoading = true"
+              @change="file => handleUploadCallback(file,record)">
+                   <a-icon class="primary-text cursor-pointer" title='替换' type='swap'/>
+            </h-upload-file-b>
+            <a-divider
+              v-if="record.isExternalManage != 1"
+              v-has="'report:edit'"
+              style="color: #409eff"
+              type="vertical"/>
           </span>
           <template v-if="record.status >= 3">
             <span v-has="'report:download'">
-                <a-dropdown>
-                  <a-icon class="primary-text" style="cursor: pointer" title="下载" type="download"/>
-                  <a-menu slot="overlay">
-                    <a-menu-item>
-                      <span @click="handleDownload(record.filePath, record.reportCode,'.docx')">下载word</span>
-                    </a-menu-item>
-                    <a-menu-item>
-                      <span @click="handleDownload(record.pdfPath, record.reportCode,'.pdf')">下载pdf</span>
-                    </a-menu-item>
-                  </a-menu>
-                </a-dropdown>
+              <a-icon
+                :type="record.docxLoading ? 'loading' : 'file-word'"
+                class="primary-text cursor-pointer"
+                title="下载docx"
+                @click="handleDownload(record, 'docx')"
+              />
+              <a-divider type="vertical"/>
+              <a-icon
+                :type="record.pdfLoading ? 'loading' : 'file-pdf'"
+                class="primary-text cursor-pointer"
+                title="下载pdf"
+                @click="handleDownload(record, 'pdf')"
+              />
             </span>
           </template>
           <span v-if="record.status == 1 || record.status == 30 || record.status == 50" v-has="'report:delete'">
             <a-divider v-if="record.status == 30 || record.status == 50" style="color: #409eff" type="vertical"/>
             <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id, record.status)">
-              <a-icon class="danger-text" style="cursor: pointer" title="删除" type="delete"/>
+              <a-icon class="danger-text  cursor-pointer" style="cursor: pointer" title="删除" type="delete"/>
             </a-popconfirm>
           </span>
         </div>
@@ -119,7 +135,7 @@
 
 <script>
 import moment from 'moment'
-import {downloadFile, postAction} from '@/api/manage'
+import {downloadFile, getAction, postAction} from '@/api/manage'
 import mixin from './mixin'
 import * as WebCtrl from '@/plugins/webOffice'
 import ReportMakeListsModal from './modules/ReportMakeListsModal.vue'
@@ -151,8 +167,11 @@ export default {
         makeReport: '/HfEnvReportBusiness/generateReport',
         static: '/HfEnvReportBusiness/countNotGenerated',
         autoFileUrl: '/HfEnvReportBusiness/authUpload',
+        autoFileUrls: '/HfEnvReportBusiness/authUploads',
+        download: '/HfEnvReportBusiness/download',
       },
       reportNum: 0,
+      reportFileList: [],
       selectedRowKeys: [],
       selectedRows: [],
       searchBar: [
@@ -218,7 +237,7 @@ export default {
           title: '报告编号',
           align: 'left',
           dataIndex: 'reportCode',
-          width: 140,
+          width: 120,
           customRender: (t)=>{
             return t || '--'
           }
@@ -245,6 +264,7 @@ export default {
         {
           title: '联系人',
           align: 'left',
+          width: 80,
           dataIndex: 'custLinkName',
           customRender: (text, record) => {
             return text || '--'
@@ -261,6 +281,7 @@ export default {
         {
           title: '运行单号',
           align: 'left',
+          width: 160,
           dataIndex: 'entrustCode',
           customRender: (text, record) => {
             return text || '--'
@@ -302,7 +323,7 @@ export default {
           title: '操作',
           dataIndex: 'action',
           fixed: 'right',
-          width: 140,
+          width: 200,
           align: 'center',
           scopedSlots: {customRender: 'action'},
         },
@@ -314,7 +335,17 @@ export default {
         }
         return postAction(this.url.list, data).then((res) => {
           if (res.code == 200) {
-            return res.data
+            return Object.assign({}, res.data, {
+              data: res.data.data.map(item => {
+                return {
+                  ...item,
+                  docxLoading: false,
+                  pdfLoading: false,
+                  intranetLoading: false,
+                  mesLoading: false,
+                }
+              })
+            })
           }
         })
       },
@@ -341,6 +372,18 @@ export default {
     this.loadReportNum()
   },
   methods: {
+    handleUploadCallback(file, record, isUpload) {
+      postAction(this.url.autoFileUrls, {id: record.id, fileId: file[0].fileId, isUpload}).then(res => {
+        if (res.code === 200) {
+          this.refresh()
+          this.$message.success(isUpload ? '上传成功' : '替换成功')
+        } else {
+          this.$message.error(isUpload ? '上传失败' : '替换失败')
+        }
+      }).finally(() => {
+        this.reportFileList = []
+      })
+    },
     addReportchange() {
       this.refresh(true)
     },
@@ -355,15 +398,32 @@ export default {
       this.selectedRowKeys = []
     },
     onSelectChange(selectedRowKeys, selectedRows) {
-      console.log(selectedRows)
       this.selectedRowKeys = selectedRowKeys
       selectedRows.map((item) => {
         this.selectedRows = item
       })
-      console.log(this.selectedRows)
     },
-    handleDownload(filePath, fileName, fileType) {
-      downloadFile(filePath, fileName + fileType)
+    handleDownload(record, type) {
+      let obj = {
+        docx: {
+          loading: 'docxLoading',
+        },
+        pdf: {
+          loading: 'pdfLoading',
+        },
+      }
+      this.$set(record, obj[type].loading, true)
+      getAction(this.url.download, {id: record.id, type}).then(res => {
+        if (res.code === 200) {
+          let filePath = res.data.url;
+          let fileName = res.data.fileName;
+          downloadFile(filePath, fileName)
+        } else {
+          this.$message.error('下载失败!')
+        }
+      }).finally(() => {
+        this.$set(record, obj[type].loading, false)
+      })
     },
     loadReportNum() {
       postAction(this.url.static, {}).then((res) => {
@@ -476,3 +536,8 @@ export default {
   },
 }
 </script>
+<style lang="less" scoped>
+.cursor-pointer {
+  cursor: pointer
+}
+</style>

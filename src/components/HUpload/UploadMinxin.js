@@ -113,6 +113,8 @@ export default {
       }
 
       this.fileList = this.fileList.concat(fileList)
+      // 抛出准备上传前的事件
+      this.$emit('beforeUpload')
       this.$refs[this.inputConfig.ref].value = ''
       console.log('文件上传列表数据', this.fileList)
       this.beforeRequestUpload()
