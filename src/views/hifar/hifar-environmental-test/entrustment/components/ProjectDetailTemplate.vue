@@ -9,7 +9,6 @@
   <h-desc size="small" lableWidth="130px"  :title="title">
     <h-desc-item label="项目名称">{{ model.unitName || '--' }}</h-desc-item>
     <h-desc-item label="试验名称">{{ model.testName || '--' }}</h-desc-item>
-    <h-desc-item label="技术文件">{{ model.technicalFile || '--' }}</h-desc-item>
     <h-desc-item label="检测依据">{{ model.standardCode + model.standardName || '--' }}</h-desc-item>
     <h-desc-item label="是否分包">{{ model.isSubpackage == 1 ? '是' : '否' }}</h-desc-item>
     <h-desc-item label="期望开始时间">{{
@@ -28,7 +27,7 @@
             </a-button>
           </div>
         </template>
-        <span v-else>暂无附件</span>
+        <span v-else>无附件</span>
       </div>
     </h-desc-item>
   </h-desc>

@@ -86,9 +86,6 @@
         </h-desc-item>
       </template>
       <template v-if="detailData.entrustType == 2">
-        <h-desc-item label='产品名称'>
-          {{ detailData.productName || '--' }}
-        </h-desc-item>
         <h-desc-item label='联系人'>
           {{ detailData.linkName || '--' }}
         </h-desc-item>
@@ -160,8 +157,8 @@
       </h-desc-item>
       <h-desc-item :span='3' label='委托单附件'>
         <div slot='content'>
-          <template v-if='attachInfo && attachInfo.length'>
-            <div v-for='(item, index) in attachInfo' :key='index' class='url-list'>
+          <template v-if='attachInfoList && attachInfoList.length'>
+            <div v-for='(item, index) in attachInfoList' :key='index' class='url-list'>
               <span>{{ index + 1 }}、{{ item.fileName }}</span>
               <a-button icon='download' size='small' type='primary'
                         @click='handleDownload(item.filePath, item.fileName)'>
@@ -169,7 +166,7 @@
               </a-button>
             </div>
           </template>
-          <span v-else>暂无附件</span>
+          <span v-else>无附件</span>
         </div>
       </h-desc-item>
       <h-desc-item :span='3' label='备注'>
@@ -202,6 +199,11 @@ export default {
     showPreviewBtn: {
       type: Boolean,
       default: false
+    }
+  },
+  computed:{
+    attachInfoList(){
+      return this.attachInfo && this.attachInfo.length ? this.attachInfo : this.detailData.attachInfo
     }
   },
   components: {TestEntrustReviewPdf},

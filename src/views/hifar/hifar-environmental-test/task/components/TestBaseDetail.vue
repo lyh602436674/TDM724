@@ -39,105 +39,110 @@
         <project-detail-template :key="index" :model="item"
                                  :title="'项目信息' + (!viewDetailType ? ('(' + detailData.entrustInfo[index].entrustCode  + ')') : '')"></project-detail-template>
       </div>
-      <!-- 试验信息 -->
-      <h-desc id="testInfo" ref="testInfo" lableWidth="110px" style="margin-top: 20px; margin-bottom: 20px"
-              title="试验信息">
-        <h-desc-item label="试验设备">{{ detailData.equipName + '-' + detailData.equipModel || '--' }}</h-desc-item>
-        <h-desc-item label="设备速率">{{ detailData.testRate || '--' }}</h-desc-item>
-        <h-desc-item label="负责人">{{ detailData.chargeUserName || '--' }}</h-desc-item>
-        <h-desc-item label="开始时间">{{
-            detailData.realStartTime && detailData.realStartTime != 0
-              ? moment(parseInt(detailData.realStartTime)).format('YYYY-MM-DD HH:mm:ss')
-              : '--'
-          }}
-        </h-desc-item>
-        <h-desc-item label="结束时间">{{
-            detailData.realEndTime && detailData.realEndTime != 0
-              ? moment(parseInt(detailData.realEndTime)).format('YYYY-MM-DD HH:mm:ss')
-              : '--'
-          }}
-        </h-desc-item>
-        <h-desc-item label="试验部门">{{ projectInfo.workName || '--' }}</h-desc-item>
-        <h-desc-item label="试验费用">{{ projectInfo.testCost || '--' }}</h-desc-item>
-        <h-desc-item :span="3" label="参试人员">
-          {{ testPersonInfo.length > 0 ? testPersonInfo.join(',') : '--' }}
-        </h-desc-item>
-        <h-desc-item :span="3" label="测试设备">
-          {{ testEquipInfo.length > 0 ? testEquipInfo.join(',') : '--' }}
-        </h-desc-item>
-        <h-desc-item :span="3" label="试验结果">{{ detailData.processDesc || '--' }}</h-desc-item>
-      </h-desc>
-      <!-- 图片图谱 -->
-      <h-desc id="picture" title="图片图谱">
-        <h-upload-file style="width: 100%" v-model="pictureData" isWriteRemarks :isEdit="false"></h-upload-file>
-      </h-desc>
-      <!-- 试前检查 -->
-      <h-desc id="testBeforeCheck" :bordered='false' lableWidth="110px"
-              style="margin-top: 20px; margin-bottom: 20px" title="试前检查">
-        <h-vex-table
-          ref="beforeCheckInfo"
-          :columns="columns"
-          :data="beforeCheckInfo"
-          :pagination="false"
-          bordered
-          style="width: 100%; height: 200px"
-        >
-        <span slot="itemRes" slot-scope="text, record">
-            <h-icon v-if="record.itemRes === '2'" class='success-text' type='icon-wancheng1'/>
-            <h-icon v-else-if="record.itemRes === '3'" class='danger-text' type='icon-chacha'/>
-            <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="record.itemRes"></span>
-        </span>
-        </h-vex-table>
-      </h-desc>
-      <!-- 试中检查 -->
-      <h-desc id="testInCheck" :bordered='false' lableWidth="110px"
-              style="margin-top: 20px; margin-bottom: 20px" title="试中检查">
-        <h-vex-table
-          ref="inCheckInfo"
-          :columns="columns"
-          :data="inCheckInfo"
-          :pagination="false"
-          bordered
-          style="width: 100%; height: 200px"
-        >
+      <template v-if="viewDetailType !== '1'">
+        <!-- 试验信息 -->
+        <h-desc id="testInfo" ref="testInfo" :data="detailData" lableWidth="110px"
+                style="margin-top: 20px; margin-bottom: 20px"
+                title="试验信息">
+          <h-desc-item label="试验设备">{{ detailData.equipName + '-' + detailData.equipModel || '--' }}</h-desc-item>
+          <h-desc-item label="设备速率">{{ detailData.testRate || '--' }}</h-desc-item>
+          <h-desc-item label="负责人">{{ detailData.chargeUserName || '--' }}</h-desc-item>
+          <h-desc-item label="开始时间">{{
+              detailData.realStartTime && detailData.realStartTime != 0
+                ? moment(parseInt(detailData.realStartTime)).format('YYYY-MM-DD HH:mm:ss')
+                : '--'
+            }}
+          </h-desc-item>
+          <h-desc-item label="结束时间">{{
+              detailData.realEndTime && detailData.realEndTime != 0
+                ? moment(parseInt(detailData.realEndTime)).format('YYYY-MM-DD HH:mm:ss')
+                : '--'
+            }}
+          </h-desc-item>
+          <h-desc-item label="试验部门">{{ projectInfo.workName || '--' }}</h-desc-item>
+          <h-desc-item label="试验费用">{{ projectInfo.testCost || '--' }}</h-desc-item>
+          <h-desc-item :span="3" label="参试人员">
+            {{ testPersonInfo.length > 0 ? testPersonInfo.join(',') : '--' }}
+          </h-desc-item>
+          <h-desc-item :span="3" label="测试设备">
+            {{ testEquipInfo.length > 0 ? testEquipInfo.join(',') : '--' }}
+          </h-desc-item>
+          <h-desc-item :span="3" label="试验结果">{{ detailData.processDesc || '--' }}</h-desc-item>
+        </h-desc>
+        <!-- 图片图谱 -->
+        <h-desc id="picture" title="图片图谱">
+          <h-upload-file v-model="pictureData" :isEdit="false" isWriteRemarks style="width: 100%"></h-upload-file>
+        </h-desc>
+        <!-- 试前检查 -->
+        <h-desc id="testBeforeCheck" :bordered='false' lableWidth="110px" style="margin-top: 20px; margin-bottom: 20px"
+                title="试前检查">
+          <h-vex-table
+            ref="beforeCheckInfo"
+            :autoLoad="false"
+            :columns="columns"
+            :data="params => getCheckInfo('beforeCheckInfo')"
+            :pagination="false"
+            bordered
+            style="width: 100%; height: 200px"
+          >
+          <span slot="itemRes" slot-scope="text, record">
+              <h-icon v-if="record.itemRes === '2'" class='success-text' type='icon-wancheng1'/>
+              <h-icon v-else-if="record.itemRes === '3'" class='danger-text' type='icon-chacha'/>
+              <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="record.itemRes"></span>
+          </span>
+          </h-vex-table>
+        </h-desc>
+        <!-- 试中检查 -->
+        <h-desc id="testInCheck" :bordered='false' lableWidth="110px" style="margin-top: 20px; margin-bottom: 20px"
+                title="试中检查">
+          <h-vex-table
+            ref="inCheckInfo"
+            :autoLoad="false"
+            :columns="columns"
+            :data="params =>  getCheckInfo('inCheckInfo')"
+            :pagination="false"
+            bordered
+            style="width: 100%; height: 200px"
+          >
+            <span slot="itemRes" slot-scope="text, record">
+              <h-icon v-if="record.itemRes === '2'" class='success-text' type='icon-wancheng1'/>
+              <h-icon v-else-if="record.itemRes === '3'" class='danger-text' type='icon-chacha'/>
+              <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="record.itemRes"></span>
+            </span>
+          </h-vex-table>
+        </h-desc>
+        <!-- 试后检查 -->
+        <h-desc id="testAfterCheck" :bordered='false' lableWidth="110px" style="margin-top: 20px; margin-bottom: 20px"
+                title="试后检查">
+          <h-vex-table
+            ref="afterCheckInfo"
+            :autoLoad="false"
+            :columns="columns"
+            :data="params => getCheckInfo('afterCheckInfo')"
+            :pagination="false"
+            bordered
+            style="width: 100%; height: 200px"
+          >
           <span slot="itemRes" slot-scope="text, record">
             <h-icon v-if="record.itemRes === '2'" class='success-text' type='icon-wancheng1'/>
-            <h-icon v-else-if="record.itemRes === '3'" class='danger-text' type='icon-chacha'/>
-            <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="record.itemRes"></span>
+              <h-icon v-else-if="record.itemRes === '3'" class='danger-text' type='icon-chacha'/>
+              <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="record.itemRes"></span>
           </span>
-        </h-vex-table>
-      </h-desc>
-      <!-- 试后检查 -->
-      <h-desc id="testAfterCheck" :bordered='false' lableWidth="110px"
-              style="margin-top: 20px; margin-bottom: 20px" title="试后检查">
-        <h-vex-table
-          ref="afterCheckInfo"
-          :columns="columns"
-          :data="afterCheckInfo"
-          :pagination="false"
-          bordered
-          style="width: 100%; height: 200px"
-        >
-        <span slot="itemRes" slot-scope="text, record">
-          <h-icon v-if="record.itemRes === '2'" class='success-text' type='icon-wancheng1'/>
-            <h-icon v-else-if="record.itemRes === '3'" class='danger-text' type='icon-chacha'/>
-            <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="record.itemRes"></span>
-        </span>
-        </h-vex-table>
-      </h-desc>
-      <!-- 试验数据 -->
-      <h-desc id="testData" title="试验数据">
-        <div style="height: 100%; width: 100%; overflow: auto; padding: 20px">
-          <h-desc id="attachForm" :bordered="false">
-            <h-form ref="attachForm" v-model="model_attach" :column="1" :formData="attachData"
-                    style="width: 100%"/>
-          </h-desc>
-          <h-desc id="videoForm" :bordered="false">
-            <h-form ref="videoForm" v-model="model_video" :column="1" :formData="videoData" style="width: 100%"/>
-          </h-desc>
-        </div>
-      </h-desc>
-
+          </h-vex-table>
+        </h-desc>
+        <!-- 试验数据 -->
+        <h-desc id="testData" title="试验数据">
+          <div style="height: 100%; width: 100%; overflow: auto; padding: 20px">
+            <h-desc id="attachForm" :bordered="false">
+              <h-form ref="attachForm" v-model="model_attach" :column="1" :formData="attachData"
+                      style="width: 100%"/>
+            </h-desc>
+            <h-desc id="videoForm" :bordered="false">
+              <h-form ref="videoForm" v-model="model_video" :column="1" :formData="videoData" style="width: 100%"/>
+            </h-desc>
+          </div>
+        </h-desc>
+      </template>
     </template>
     <test-entrust-review-pdf ref="testEntrustReviewPdf"/>
     <hf-elevator-layer :layer-columns="layerColumns"></hf-elevator-layer>
@@ -187,44 +192,8 @@ export default {
   data() {
     return {
       moment,
-      layerColumns: [
-        {
-          title: "基本信息",
-          id: "basicInfo"
-        },
-        {
-          title: "样品信息",
-          id: "piece"
-        },
-        {
-          title: "项目信息",
-          id: "project"
-        },
-        {
-          title: "试验信息",
-          id: "testInfo"
-        },
-        {
-          title: "图片图谱",
-          id: "picture"
-        },
-        {
-          title: "试前检查",
-          id: "testBeforeCheck"
-        },
-        {
-          title: "试中检查",
-          id: "testInCheck"
-        },
-        {
-          title: "试后检查",
-          id: "testAfterCheck"
-        },
-        {
-          title: "试验数据",
-          id: "testData"
-        },
-      ],
+      checkInfoData: {},
+      layerColumns: [],
       activeTab: 0,
       checkId: '',
       url: {
@@ -280,7 +249,7 @@ export default {
           scopedSlots: {customRender: 'itemRes'},
         },
         {
-          title: '检查人',
+          title: '试验员',
           align: 'left',
           dataIndex: 'fillUserName',
           customRender: (text, record) => {
@@ -288,7 +257,7 @@ export default {
           },
         },
         {
-          title: '复核人',
+          title: '检验员',
           align: 'left',
           dataIndex: 'checkUserName',
           customRender: (text, record) => {
@@ -296,30 +265,6 @@ export default {
           },
         },
       ],
-      // 试前检查
-      beforeCheckInfo: () => {
-        return postAction(this.url.CheckInfo, {id: this.checkId}).then((res) => {
-          if (res.code === 200) {
-            return res.data.beforeCheckInfo
-          }
-        })
-      },
-      // 试中检查
-      inCheckInfo: () => {
-        return postAction(this.url.CheckInfo, {id: this.checkId}).then((res) => {
-          if (res.code === 200) {
-            return res.data.inCheckInfo
-          }
-        })
-      },
-      // 试后检查
-      afterCheckInfo: () => {
-        return postAction(this.url.CheckInfo, {id: this.checkId}).then((res) => {
-          if (res.code === 200) {
-            return res.data.afterCheckInfo
-          }
-        })
-      },
       // 图片
       pictureData: [],
       // 附件
@@ -365,11 +310,85 @@ export default {
           this.loadImgData()
           this.loadAttachData()
           this.loadVideoData()
+          this.loadCheckInfo(val)
+          this.buildLayerColumns()
+        }
+      },
+    },
+    checkInfoData: {
+      deep: true,
+      handler(val) {
+        if (Object.keys(val).length) {
+          this.$nextTick().then(() => {
+            this.$refs.afterCheckInfo.refresh(false)
+            this.$refs.inCheckInfo.refresh(false)
+            this.$refs.beforeCheckInfo.refresh(false)
+          })
         }
       },
     },
   },
   methods: {
+    buildLayerColumns() {
+      let layerColumns = [
+        {
+          title: "基本信息",
+          id: "basicInfo"
+        },
+        {
+          title: "样品信息",
+          id: "piece"
+        },
+        {
+          title: "项目信息",
+          id: "project"
+        },
+        {
+          title: "试验信息",
+          id: "testInfo"
+        },
+        {
+          title: "图片图谱",
+          id: "picture"
+        },
+        {
+          title: "试前检查",
+          id: "testBeforeCheck"
+        },
+        {
+          title: "试中检查",
+          id: "testInCheck"
+        },
+        {
+          title: "试后检查",
+          id: "testAfterCheck"
+        },
+        {
+          title: "试验数据",
+          id: "testData"
+        },
+      ]
+      if (this.viewDetailType === '1') {
+        layerColumns.splice(3, layerColumns.length)
+        this.layerColumns = layerColumns
+      } else {
+        this.layerColumns = layerColumns
+      }
+    },
+    getCheckInfo(type) {
+      return new Promise((resolve, inject) => {
+        resolve(this.checkInfoData[type])
+      }).then(res => {
+        return res
+      })
+    },
+    loadCheckInfo(val) {
+      postAction(this.url.CheckInfo, {id: val}).then((res) => {
+        if (res.code === 200) {
+          this.checkInfoData = res.data
+        }
+      })
+    },
     handleDownload(filePath, fileName) {
       let fileAccessUrl = getFileAccessHttpUrl(filePath)
       downloadFile(fileAccessUrl, fileName)

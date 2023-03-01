@@ -11,25 +11,16 @@
     <h-card fixed title="试验查询">
       <h-search v-model="queryParams" slot="search-form" :data="searchForm" @change="refresh"/>
       <div slot="table-operator" style="border-top: 5px">
-            <a-button size="small" type="ghost-warning" icon="download" @click="handleExportXls('试验查询信息')">
-              导出
-            </a-button>
-        <!--        暂时隐藏掉-->
-        <!--        <a-button-->
-        <!--          v-for="(item, index) in operatorButtons"-->
-        <!--          :key="item.key"-->
-        <!--          :size="item.size"-->
-        <!--          :type="item.type"-->
-        <!--          :v-has="item.has"-->
-        <!--          @click="() => item.click(item, index)"-->
-        <!--        >-->
-        <!--          <a-icon v-if="item.icon.indexOf('icon-') === -1" :type="item.icon"></a-icon>-->
-        <!--          <h-icon v-else :type="item.icon"/>-->
-        <!--          {{ item.title }}-->
-        <!--        </a-button>-->
+        <a-button icon="download" size="small" type="ghost-warning" @click="handleExportXls('试验查询信息')">
+          导出
+        </a-button>
       </div>
-      <h-vex-table ref="taskHistoryTable" slot="content" :columns="columns" :data="loadData" :rowSelection='{ selectedRowKeys: selectedRowKeys, onSelect: onSelect }'>
-        <a slot="testCode" slot-scope="text, record" @click="() => handleShowDetail(record)">
+      <h-vex-table ref="taskHistoryTable" slot="content" :columns="columns" :data="loadData"
+                   :rowSelection='{ selectedRowKeys: selectedRowKeys, onSelect: onSelect }'>
+        <a slot="entrustCodes" slot-scope="text, record" @click="() => handleShowDetail(record)">
+          {{ record.entrustCodes || '--' }}
+        </a>
+        <a slot="entrustNos" slot-scope="text, record" @click="() => handleShowDetail(record,'1')">
           {{ record.testCode || '--' }}
         </a>
         <template slot="status" slot-scope="text">
@@ -43,18 +34,13 @@
         </template>
         <template slot="actions" slot-scope="text, record">
           <a-tooltip title="查看">
-            <a-icon class="primary-text" type="eye" @click="() => handleShowDetail(record)"/>
+            <a-icon class="primary-text" type="eye" @click="handleShowDetail(record)"/>
           </a-tooltip>
         </template>
       </h-vex-table>
     </h-card>
     <!--    showExceptionAndEnd 是否展示异常信息和终止信息-->
-    <test-task-base-info-modal ref="TaskDetailModal" :showExceptionAndEnd="true"/>
-    <task-abnormal-modal ref="taskAbnormalModal" @change="refreshEquipTaskList"></task-abnormal-modal>
-    <test-data-add-modal ref="testDataAddModal" @change="refreshEquipTaskList"></test-data-add-modal>
-    <test-check-modal ref="testCheckModal"/>
-    <test-base-edit ref="TestBaseEdit" :records="records" :selectedTreeRows="selectedRows"
-                    @change="refreshEquipTaskList"/>
+    <test-task-base-info-modal ref="TaskDetailModal" showExceptionAndEnd/>
   </div>
 </template>
 
@@ -62,10 +48,6 @@
 import {downloadFile, postAction} from '@/api/manage'
 import moment from 'moment'
 import TestTaskBaseInfoModal from '@/views/hifar/hifar-environmental-test/task/TestTaskBaseInfoModal'
-import TestCheckModal from "@views/hifar/hifar-environmental-test/task/checkModal/TestCheckModal";
-import TestBaseEdit from "@views/hifar/hifar-environmental-test/task/checkModal/TestBaseEdit";
-import testDataAddModal from "@views/hifar/hifar-environmental-test/task/modules/TestDataAddModal";
-import TaskAbnormalModal from "@views/hifar/hifar-environmental-test/task/checkModal/TaskAbnormalModal";
 
 export default {
   provide() {
@@ -74,105 +56,12 @@ export default {
     }
   },
   components: {
-    TestTaskBaseInfoModal,TestCheckModal,TestBaseEdit,testDataAddModal,TaskAbnormalModal
+    TestTaskBaseInfoModal,
   },
   data() {
     return {
       queryParams: {},
       records: {},
-      operatorButtons:[
-        {
-          title: '试前检查',
-          key: '0',
-          size: 'small',
-          type: 'default',
-          has: 'ArrangeMent:boforTest',
-          icon: 'icon-jianchaqianzhunbei',
-          click: (item, index) => {
-            if (!this.selectedRows.length) {
-              this.$message.error('请至少选择一项')
-            } else {
-              this.$refs.testCheckModal.show(this.selectedRows[0], '试前', 'before')
-            }
-          },
-        },
-        {
-          title: '试中检查',
-          key: '1',
-          size: 'small',
-          type: 'default',
-          has: 'ArrangeMent:intest',
-          icon: 'icon-jianchazhong',
-          click: (item, index) => {
-            if (!this.selectedRows.length) {
-              this.$message.error('请至少选择一项')
-            } else {
-              this.$refs.testCheckModal.show(this.selectedRows[0], '试中', 'testMiddle')
-            }
-          },
-        },
-        {
-          title: '试后检查',
-          key: '2',
-          size: 'small',
-          type: 'default',
-          has: 'ArrangeMent:afterTest',
-          icon: 'icon-shiyanhouguanli',
-          click: (item, index) => {
-            if (!this.selectedRows.length) {
-              this.$message.error('请至少选择一项')
-            } else {
-              this.$refs.testCheckModal.show(this.selectedRows[0], '试后', 'after')
-            }
-          },
-        },
-        {
-          title: '试验结果',
-          key: '3',
-          size: 'small',
-          has: 'ArrangeMent:edit',
-          icon: 'icon-tianxie',
-          type: 'default',
-          click: (item, index) => {
-            if (this.selectedRows.length === 0) {
-              this.$message.error('请至少选择一项')
-            } else {
-              this.records = this.selectedRows[0]
-              this.$refs.TestBaseEdit.show(this.selectedRows[0])
-            }
-          },
-        },
-        {
-          title: '试验数据',
-          key: '4',
-          size: 'small',
-          has: 'ArrangeMent:dataTest',
-          icon: 'icon-shiyanshuju',
-          type: 'default',
-          click: (item, index) => {
-            if (!this.selectedRows.length) {
-              this.$message.error('请至少选择一项')
-            } else {
-              this.$refs.testDataAddModal.show(this.selectedRows[0])
-            }
-          },
-        },
-        {
-          title: '异常记录',
-          key: '5',
-          size: 'small',
-          has: 'ArrangeMent:errRecord',
-          icon: 'icon-gantanhao',
-          type: 'default',
-          click: (item, index) => {
-            if (!this.selectedRows.length) {
-              this.$message.error('请至少选择一项')
-            } else {
-              this.$refs.taskAbnormalModal.show('error', this.selectedRows[0])
-            }
-          },
-        },
-      ],
       selectedRowKeys: [],
       selectedRows: [],
       searchForm: [
@@ -277,19 +166,20 @@ export default {
       ],
       columns: [
         {
-          title: '试验编号',
-          dataIndex: 'testCode',
+          title: '委托单号',
+          dataIndex: 'entrustNos',
           minWidth: 120,
-          scopedSlots: {customRender: 'testCode'},
+          scopedSlots: {customRender: 'entrustNos'},
         },
         {
           title: '运行单号',
           dataIndex: 'entrustCodes',
           minWidth: 140,
+          scopedSlots: {customRender: 'entrustCodes'},
         },
         {
-          title: '委托单号',
-          dataIndex: 'entrustNos',
+          title: '试验编号',
+          dataIndex: 'testCode',
           minWidth: 120,
         },
         {
@@ -386,16 +276,16 @@ export default {
           dataIndex: 'realUseTime',
           minWidth: 100,
         },
-        {
-          title: '操作',
-          dataIndex: 'actions',
-          align: 'center',
-          fixed: 'right',
-          width: 80,
-          scopedSlots: {
-            customRender: 'actions',
-          },
-        },
+        // {
+        //   title: '操作',
+        //   dataIndex: 'actions',
+        //   align: 'center',
+        //   fixed: 'right',
+        //   width: 80,
+        //   scopedSlots: {
+        //     customRender: 'actions',
+        //   },
+        // },
       ],
       loadData: (params) => {
         let data = {
@@ -433,8 +323,8 @@ export default {
       this.selectedRowKeys = []
       this.selectedRows = []
     },
-    handleShowDetail(record) {
-      this.$refs.TaskDetailModal.show(record, '1','10px')
+    handleShowDetail(record, type) {
+      this.$refs.TaskDetailModal.show(record, type, '10px')
     },
     async handleExportXls(name, model) {
       let data = {
@@ -450,9 +340,6 @@ export default {
     onSelect(selectedRowKeys, selectedRows){
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
-      this.operatorButtons.map((item, index) => {
-        item.type = 'primary'
-      })
     }
   },
 }

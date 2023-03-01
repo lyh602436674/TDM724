@@ -20,25 +20,26 @@
     </header>
     <main>
       <div class="main-left" ref="mainLeft">
-        <equip-usage-rate ref="equipUsageRate"></equip-usage-rate>
-        <equip-standing-book-status ref="equipStandingBookStatus"></equip-standing-book-status>
-        <project-task-type-statistics ref="projectTaskTypeStatistics"></project-task-type-statistics>
+        <equip-usage-rate id="main-left-top" ref="equipUsageRate"/>
+        <position-temperature-humidity id="main-left-center" ref="positionTemperatureHumidity"/>
+        <project-task-type-statistics id="main-left-bottom" ref="projectTaskTypeStatistics"/>
       </div>
       <div class="main-center">
         <equip-location-distribute
+          id="main-center-top"
           :title="title"
           :bgImg="bgImg"
           @equipItemEnter="equipItemEnter"
           @equipItemOut="equipItemOut"
           @dragSwitch="dragSwitchChange"
           ref="equipLocationDistribute"
-        ></equip-location-distribute>
-        <equip-detail-list ref="equipDetailList"></equip-detail-list>
+        />
+        <equip-detail-list id="main-center-bottom" ref="equipDetailList"/>
       </div>
       <div class="main-right">
-        <equip-warning-by-intra-day ref="equipWarningByIntraDay"></equip-warning-by-intra-day>
-        <shift-records ref="shiftRecords"></shift-records>
-        <tasks-completed-by-thirty-days ref="tasksCompletedByThirtyDays"></tasks-completed-by-thirty-days>
+        <equip-warning-by-intra-day id="main-right-top" ref="equipWarningByIntraDay"/>
+        <shift-records ref="shiftRecords" id="main-right-center"/>
+        <tasks-completed-by-thirty-days id="main-right-bottom" ref="tasksCompletedByThirtyDays"/>
       </div>
     </main>
     <transition>
@@ -69,6 +70,7 @@ import EquipDetailList from '@views/hifar/hifar-environmental-test/largeScreen/E
 import EquipWarningByIntraDay from '@views/hifar/hifar-environmental-test/largeScreen/EquipWarningByIntraDay'
 import ShiftRecords from '@views/hifar/hifar-environmental-test/largeScreen/ShiftRecords'
 import TasksCompletedByThirtyDays from '@views/hifar/hifar-environmental-test/largeScreen/TasksCompletedByThirtyDays'
+import PositionTemperatureHumidity from "@views/hifar/hifar-environmental-test/largeScreen/PositionTemperatureHumidity";
 
 export default {
   name: 'LargeScreenPage',
@@ -83,6 +85,7 @@ export default {
     },
   },
   components: {
+    PositionTemperatureHumidity,
     TasksCompletedByThirtyDays,
     ShiftRecords,
     EquipWarningByIntraDay,
@@ -164,7 +167,8 @@ export default {
   methods: {
     init() {
       this.$refs.equipUsageRate.initCharts()
-      this.$refs.equipStandingBookStatus.initCharts()
+      // this.$refs.equipStandingBookStatus.initCharts()
+      this.$refs.positionTemperatureHumidity.loadData()
       this.$refs.equipLocationDistribute.getEquipStatus()
       this.$refs.projectTaskTypeStatistics.initCharts()
       this.$refs.tasksCompletedByThirtyDays.initCharts()

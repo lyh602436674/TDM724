@@ -248,14 +248,14 @@ export default {
           },
           disabled: true,
         },
-        {
-          title: '产品名称',
-          key: 'productName',
-          formType: 'input',
-          validate: {
-            rules: [{required: true, message: '请输入产品名称', trigger: 'blur'}]
-          },
-        },
+        // {
+        //   title: '产品名称',
+        //   key: 'productName',
+        //   formType: 'input',
+        //   validate: {
+        //     rules: [{required: true, message: '请输入产品名称', trigger: 'blur'}]
+        //   },
+        // },
         {
           title: '委托单位',
           key: 'custId',
@@ -523,7 +523,7 @@ export default {
         testPurpose: "1",
         reportForm: "1",
         reportSecretLevel: "1",
-        reportCollectionMethod: "1",
+        reportCollectionMethod: "2",
         reportNum: 1,
       }
       this.tableData = []

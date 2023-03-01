@@ -66,11 +66,15 @@
               </a>
             </a-tooltip>
             <a-menu slot="overlay">
-              <a-menu-item v-if="record.status == 1 || record.status == 30">
+              <a-menu-item v-if="[1,30].includes(record.status)">
                 <a @click="handleEdit(record)">编辑</a>
               </a-menu-item>
+              <!-- 草稿，已提交，已驳回 状态只能复制单条，因为还没有运行单 -->
+              <a-menu-item v-if="![1,10,30].includes(record.status)">
+                <a @click="handleCopyItem(record,'1')">复制运行单</a>
+              </a-menu-item>
               <a-menu-item>
-                <a @click="handleCopyItem(record)">复制</a>
+                <a @click="handleCopyItem(record,'2')">复制委托单</a>
               </a-menu-item>
               <a-menu-item v-if="record.status == 1">
                 <a-popconfirm v-has="'entrustment:delete'" title="确定删除吗?" @confirm="() => handleDelete(record.id)">
@@ -357,9 +361,9 @@ export default {
       await downloadFile(url, fileName, params)
     },
     // 复制
-    handleCopyItem(record) {
+    handleCopyItem(record, copyType) {
       let url = this.url.copy
-      postAction(url, { id: record.id }).then((res) => {
+      postAction(url, {id: record.id, copyType}).then((res) => {
         if (res.code == 200) {
           this.$message.success('复制成功!')
           this.refresh(true)
