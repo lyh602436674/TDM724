@@ -246,12 +246,7 @@ export default {
         },
         {
           title: '样品名称',
-          key: 'productName',
-          formType: 'input',
-        },
-        {
-          title: '样品代号',
-          key: 'productAlias',
+          key: 'c_productName_7',
           formType: 'input',
         },
         {

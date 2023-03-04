@@ -309,8 +309,8 @@ export default {
       selectedRowKeys: [],
       searchForm: [
         {
-          title: '运行单号',
-          key: 'taskCode',
+          title: '试验编号',
+          key: 'testCode',
           formType: 'input',
         },
         {
@@ -319,8 +319,8 @@ export default {
           formType: 'input',
         },
         {
-          title: '试验编号',
-          key: 'testCode',
+          title: '运行单号',
+          key: 'taskCode',
           formType: 'input',
         },
         {

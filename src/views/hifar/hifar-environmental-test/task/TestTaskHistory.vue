@@ -160,7 +160,7 @@ export default {
         },
         {
           title: '样品编号',
-          key: 'productNo',
+          key: 'pieceNo',
           formType: 'input',
         },
       ],
