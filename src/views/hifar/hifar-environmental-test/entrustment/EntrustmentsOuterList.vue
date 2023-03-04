@@ -30,10 +30,6 @@
         :data="loadData"
         :rowSelection="{ selectedRowKeys: selectedRowKeys, onSelect: onSelect }"
       >
-        <template #entrustNo="text, record">
-          <a v-if="record.entrustNo" @click="handleDetailCode(record,'1')">{{ record.entrustNo }}</a>
-          <span v-else>--</span>
-        </template>
         <template #entrustCode="text, record">
           <a v-if="record.entrustCode" @click="handleDetailCode(record)">{{ record.entrustCode }}</a>
           <span v-else>--</span>
@@ -62,12 +58,8 @@
               <a-menu-item v-if="[1,30].includes(record.status)" v-has="'entrustment:outeredit'">
                 <a @click="handleEdit(record)">编辑</a>
               </a-menu-item>
-              <!-- 草稿，已提交，已驳回 状态只能复制单条，因为还没有运行单 -->
-              <a-menu-item v-if="![1,10,30].includes(record.status)" v-has="'entrustment:outeradd'">
-                <a @click="handleCopyItem(record,'1')">复制运行单</a>
-              </a-menu-item>
               <a-menu-item v-has="'entrustment:outeradd'">
-                <a @click="handleCopyItem(record,'2')">复制委托单</a>
+                <a @click="handleCopyItem(record)">复制</a>
               </a-menu-item>
               <a-menu-item v-if="record.status == 1"  v-has="'entrustment:outerdelete'">
                 <a-popconfirm v-has="'entrustment:outerdelete'" title="确定删除吗?" @confirm="() => handleDelete(record.id)">
@@ -120,13 +112,8 @@ export default {
       selectedRows: [],
       searchForm: [
         {
-          title: '运行单号',
-          key: 'c_entrustCode_7',
-          formType: 'input'
-        },
-        {
           title: '委托单号',
-          key: 'c_entrustNo_7',
+          key: 'c_entrustCode_7',
           formType: 'input'
         },
         {
@@ -194,19 +181,11 @@ export default {
       ],
       columns: [
         {
-          title: '运行单号',
+          title: '委托单号',
           align: 'left',
           width: 140,
           dataIndex: 'entrustCode',
           scopedSlots: { customRender: 'entrustCode' },
-          fixed: 'left'
-        },
-        {
-          title: '委托单号',
-          align: 'left',
-          width: 160,
-          dataIndex: 'entrustNo',
-          scopedSlots: { customRender: 'entrustNo' },
           fixed: 'left'
         },
         {
@@ -352,9 +331,9 @@ export default {
       await downloadFile(url, fileName, params)
     },
     // 复制
-    handleCopyItem(record, copyType) {
+    handleCopyItem(record) {
       let url = this.url.copy
-      postAction(url, { id: record.id, copyType}).then((res) => {
+      postAction(url, { id: record.id}).then((res) => {
         if (res.code === 200) {
           this.$message.success('复制成功!')
           this.refresh(true)

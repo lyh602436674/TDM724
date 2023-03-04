@@ -473,15 +473,8 @@ export default {
           }
         },
         {
-          title: '样品单位',
+          title: '委托单位',
           dataIndex: 'custName',
-          customRender: (t) => {
-            return t ? t : '--'
-          }
-        },
-        {
-          title: '样品编号',
-          dataIndex: 'pieceCode',
           customRender: (t) => {
             return t ? t : '--'
           }
@@ -494,7 +487,7 @@ export default {
           }
         },
         {
-          title: '样品代号',
+          title: '样品图号',
           dataIndex: 'productAlias',
           customRender: (t) => {
             return t ? t : '--'
@@ -508,8 +501,8 @@ export default {
           }
         },
         {
-          title: '样品规格',
-          dataIndex: 'productSpec',
+          title: '样品编号',
+          dataIndex: 'pieceNo',
           customRender: (t) => {
             return t ? t : '--'
           }
@@ -517,13 +510,6 @@ export default {
         {
           title: '样品数量',
           dataIndex: 'pieceNum',
-          customRender: (t) => {
-            return t ? t : '--'
-          }
-        },
-        {
-          title: '库存数量',
-          dataIndex: 'pieceCnum',
           customRender: (t) => {
             return t ? t : '--'
           }

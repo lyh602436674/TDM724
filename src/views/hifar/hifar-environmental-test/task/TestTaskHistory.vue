@@ -17,11 +17,11 @@
       </div>
       <h-vex-table ref="taskHistoryTable" slot="content" :columns="columns" :data="loadData"
                    :rowSelection='{ selectedRowKeys: selectedRowKeys, onSelect: onSelect }'>
-        <a slot="entrustCodes" slot-scope="text, record" @click="() => handleShowDetail(record)">
-          {{ record.entrustCodes || '--' }}
-        </a>
-        <a slot="entrustNos" slot-scope="text, record" @click="() => handleShowDetail(record,'1')">
+        <a slot="testCode" slot-scope="text, record" @click="() => handleShowDetail(record)">
           {{ record.testCode || '--' }}
+        </a>
+        <a slot="entrustCodes" slot-scope="text, record" @click="() => handleShowDetail(record,'1')">
+          {{ record.entrustCodes || '--' }}
         </a>
         <template slot="status" slot-scope="text">
           <a-badge v-if="text == 1" color="geekblue" text="未开始"/>
@@ -66,18 +66,18 @@ export default {
       selectedRows: [],
       searchForm: [
         {
-          title: '运行单号',
-          key: 'entrustCode',
+          title: '试验编号',
+          key: 'c_testCode_7',
           formType: 'input',
         },
         {
           title: '委托单号',
-          key: 'entrustNo',
+          key: 'entrustCode',
           formType: 'input',
         },
         {
-          title: '试验编号',
-          key: 'c_testCode_7',
+          title: '运行单号',
+          key: 'taskCode',
           formType: 'input',
         },
         {
@@ -166,21 +166,21 @@ export default {
       ],
       columns: [
         {
-          title: '委托单号',
-          dataIndex: 'entrustNos',
-          minWidth: 120,
-          scopedSlots: {customRender: 'entrustNos'},
-        },
-        {
-          title: '运行单号',
-          dataIndex: 'entrustCodes',
-          minWidth: 140,
-          scopedSlots: {customRender: 'entrustCodes'},
-        },
-        {
           title: '试验编号',
           dataIndex: 'testCode',
           minWidth: 120,
+          scopedSlots: {customRender: 'testCode'},
+        },
+        {
+          title: '委托单号',
+          dataIndex: 'entrustCodes',
+          minWidth: 120,
+          scopedSlots: {customRender: 'entrustCodes'},
+        },
+        {
+          title: '运行单号',
+          dataIndex: 'taskCodes',
+          minWidth: 140,
         },
         {
           title: '报告编号',
