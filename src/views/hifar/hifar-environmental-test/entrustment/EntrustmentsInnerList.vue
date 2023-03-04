@@ -19,13 +19,13 @@
           type="ghost-primary"
           @click="handleDataEntry">扫码创建
         </a-button>
-          <a-button v-has="'entrustment:add'" icon="plus" size="small" type="ghost-primary" @click="handleAdd"> 添加
-          </a-button>
+<!--          <a-button v-has="'entrustment:inneradd'" icon="plus" size="small" type="ghost-primary" @click="handleAdd"> 新增-->
+<!--          </a-button>-->
         <a-button icon="download" size="small" type="ghost-warning" @click="handleExportXls('委托单信息')">
           导出
         </a-button>
         <template v-if="selectedRowKeys.length>0">
-          <a-button v-has="'entrustment:delete'" icon="delete" size="small" type="danger" @click="batchDel">
+          <a-button v-has="'entrustment:innerdelete'" icon="delete" size="small" type="danger" @click="batchDel">
             批量删除
           </a-button>
         </template>
@@ -66,18 +66,18 @@
               </a>
             </a-tooltip>
             <a-menu slot="overlay">
-              <a-menu-item v-if="[1,30].includes(record.status)">
+              <a-menu-item v-if="[1,30].includes(record.status)"  v-has="'entrustment:inneredit'">
                 <a @click="handleEdit(record)">编辑</a>
               </a-menu-item>
               <!-- 草稿，已提交，已驳回 状态只能复制单条，因为还没有运行单 -->
-              <a-menu-item v-if="![1,10,30].includes(record.status)">
-                <a @click="handleCopyItem(record,'1')">复制运行单</a>
-              </a-menu-item>
-              <a-menu-item>
-                <a @click="handleCopyItem(record,'2')">复制委托单</a>
-              </a-menu-item>
-              <a-menu-item v-if="record.status == 1">
-                <a-popconfirm v-has="'entrustment:delete'" title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+<!--              <a-menu-item v-if="![1,10,30].includes(record.status)" v-has="'entrustment:inneradd'">-->
+<!--                <a @click="handleCopyItem(record,'1')">复制运行单</a>-->
+<!--              </a-menu-item>-->
+<!--              <a-menu-item v-has="'entrustment:inneradd'">-->
+<!--                <a @click="handleCopyItem(record,'2')">复制委托单</a>-->
+<!--              </a-menu-item>-->
+              <a-menu-item v-if="record.status == 1"  v-has="'entrustment:innerdelete'">
+                <a-popconfirm v-has="'entrustment:innerdelete'" title="确定删除吗?" @confirm="() => handleDelete(record.id)">
                   <a style="color: #ff4d4f">删除</a>
                 </a-popconfirm>
               </a-menu-item>
@@ -119,7 +119,7 @@ export default {
         list: '/HfEnvEntrustBusiness/listPage',
         delete: '/HfEnvEntrustBusiness/logicRemoveById',
         copy: '/HfEnvEntrustBusiness/copyById',
-        batchSubmitConfirm: '/HfEnvEntrustBusiness/batchSubmitConfirm',
+        // batchSubmitConfirm: '/HfEnvEntrustBusiness/batchSubmitConfirm',
         export: '/HfEnvEntrustBusiness/listAllForExport',
         signAndIssue: '/HfEnvEntrustBusiness/signAndIssue'
       },

@@ -12,13 +12,13 @@
       <template slot="title"> 委托管理</template>
       <h-search slot="search-form" v-model="queryParams" :data="searchForm" size="default" @change="refresh(true)"/>
       <template slot="table-operator">
-        <a-button v-has="'entrustment:add'" icon="plus" size="small" type="ghost-primary" @click="handleAdd"> 添加
+        <a-button v-has="'entrustment:outeradd'" icon="plus" size="small" type="ghost-primary" @click="handleAdd"> 新增
         </a-button>
         <a-button icon="download" size="small" type="ghost-warning" @click="handleExportXls('委托单信息')">
           导出
         </a-button>
         <template v-if="selectedRowKeys.length">
-          <a-button v-has="'entrustment:delete'" icon="delete" size="small" type="danger" @click="batchDel">
+          <a-button v-has="'entrustment:outerdelete'" icon="delete" size="small" type="danger" @click="batchDel">
             批量删除
           </a-button>
         </template>
@@ -59,18 +59,18 @@
               </a>
             </a-tooltip>
             <a-menu slot="overlay">
-              <a-menu-item v-if="[1,30].includes(record.status)" v-has="'entrustment:edit'">
+              <a-menu-item v-if="[1,30].includes(record.status)" v-has="'entrustment:outeredit'">
                 <a @click="handleEdit(record)">编辑</a>
               </a-menu-item>
               <!-- 草稿，已提交，已驳回 状态只能复制单条，因为还没有运行单 -->
-              <a-menu-item v-if="![1,10,30].includes(record.status)" v-has="'entrustment:add'">
+              <a-menu-item v-if="![1,10,30].includes(record.status)" v-has="'entrustment:outeradd'">
                 <a @click="handleCopyItem(record,'1')">复制运行单</a>
               </a-menu-item>
-              <a-menu-item v-has="'entrustment:add'">
+              <a-menu-item v-has="'entrustment:outeradd'">
                 <a @click="handleCopyItem(record,'2')">复制委托单</a>
               </a-menu-item>
-              <a-menu-item v-if="record.status == 1">
-                <a-popconfirm v-has="'entrustment:delete'" title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+              <a-menu-item v-if="record.status == 1"  v-has="'entrustment:outerdelete'">
+                <a-popconfirm v-has="'entrustment:outerdelete'" title="确定删除吗?" @confirm="() => handleDelete(record.id)">
                   <a style="color: #ff4d4f">删除</a>
                 </a-popconfirm>
               </a-menu-item>
@@ -352,9 +352,9 @@ export default {
       await downloadFile(url, fileName, params)
     },
     // 复制
-    handleCopyItem(record) {
+    handleCopyItem(record, copyType) {
       let url = this.url.copy
-      postAction(url, { id: record.id }).then((res) => {
+      postAction(url, { id: record.id, copyType}).then((res) => {
         if (res.code === 200) {
           this.$message.success('复制成功!')
           this.refresh(true)
