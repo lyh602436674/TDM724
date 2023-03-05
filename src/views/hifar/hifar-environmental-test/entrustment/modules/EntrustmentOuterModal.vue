@@ -519,6 +519,7 @@ export default {
         progressRequire: "1",
         performanceTest: "1",
         sampleStatus: "1",
+        testAddress: "1",
         testPicture: "1",
         testPurpose: "1",
         reportForm: "1",
