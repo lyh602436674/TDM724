@@ -61,6 +61,14 @@ export default {
           hidden: true,
         },
         {
+          title: '客户编码',
+          key: 'custCode',
+          formType: 'input',
+          validate: {
+            rules: [{ required: true, message: '请输入客户编码', trigger: 'blur' }],
+          },
+        },
+        {
           title: '客户名称',
           key: 'custName',
           formType: 'input',

@@ -33,9 +33,9 @@
         :rowKey="(record) => record.id"
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       >
-        <span slot="custName" slot-scope="text,record">
+        <span slot="custCode" slot-scope="text,record">
           <a href="javascript:;" @click="handleDetailCode(record)">
-            {{ record.custName? record.custName:'--' }}
+            {{ record.custCode? record.custCode:'--' }}
           </a>
         </span>
         <span slot="custType" slot-scope="text">
@@ -121,6 +121,11 @@ export default {
       queryParam: {},
       searchBar: [
         {
+          title: '客户编码',
+          key: 'c_custCode_7',
+          formType: 'input',
+        },
+        {
           title: '客户名称',
           key: 'c_custName_7',
           formType: 'input',
@@ -163,10 +168,15 @@ export default {
       // 表头
       columns: [
         {
+          title: '客户编码',
+          align: 'left',
+          dataIndex: 'custCode',
+          scopedSlots:{ customRender:'custCode' }
+        },
+        {
           title: '客户名称',
           align: 'left',
           dataIndex: 'custName',
-          scopedSlots:{ customRender:'custName' }
         },
         {
           title: '客户简称',
