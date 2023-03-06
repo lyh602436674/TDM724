@@ -116,6 +116,9 @@ export default {
               } else {
                 this.terFormData = [].concat([], this.terFormBackUp[0])
               }
+              if (values.dealStatus === 3) {
+                this.terFormData = this.terFormData.concat(this.dealForm)
+              }
             },
           },
           {
@@ -212,6 +215,9 @@ export default {
                 this.terFormData = [].concat([], this.terFormBackUp[1])
               } else {
                 this.terFormData = [].concat([], this.terFormBackUp[0])
+              }
+              if (values.dealStatus === 3) {
+                this.terFormData = this.terFormData.concat(this.dealForm)
               }
             },
           },

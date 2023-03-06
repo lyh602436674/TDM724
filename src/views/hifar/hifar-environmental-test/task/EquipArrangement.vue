@@ -636,8 +636,12 @@ export default {
       this.buttons.map((item, index) => {
         item.type = 'primary'
       })
-      // this.selectedKeys = [selectedRow[0].equipId]
-      // this.getEquipDetail()
+      // 点击列表自动定位设备
+      if (!this.selectedKeys.length) {
+        this.selectedKeys = [selectedRow[0].equipId]
+        this.getEquipDetail()
+        this.$refs.equipTaskList.refresh()
+      }
     },
     loadLeftTreeBySearch(e) {
       let value = isObject(e) ? e.target.value : e
