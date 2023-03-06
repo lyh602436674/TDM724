@@ -194,7 +194,7 @@ export default {
       collapse: true,
       centerId: null,
       queryParams: {
-        type: 'month',
+        type: '',
       },
       searchForm: [
         {
@@ -443,6 +443,8 @@ export default {
         case 'month':
           params.isDay ? params.dateStr = this.calendarDate.format('YYYY-MM-DD') : params.dateStr = this.calendarDate.format('YYYY-MM')
           break
+        default:
+          params.dateStr = ''
       }
       postAction(this.url.taskStatistics, params).then((res) => {
         if (res.code === 200) {
@@ -616,6 +618,8 @@ export default {
         case 'month':
           data.isDay ? data.dateStr = this.calendarDate.format('YYYY-MM-DD') : data.dateStr = this.calendarDate.format('YYYY-MM')
           break
+        default:
+          params.dateStr = ''
       }
       return postAction(this.url.list, data).then((res) => {
         if (res.code === 200) {
@@ -659,6 +663,9 @@ export default {
       this.$refs.taskArrangement.show(record)
     },
     handleQueryTaskList(value) {
+      if (!this.queryParams.type) {
+        this.queryParams.type = 'month'
+      }
       let date = null
       if (this.queryParams.type === 'year') {
         date = value.format('YYYY-MM')

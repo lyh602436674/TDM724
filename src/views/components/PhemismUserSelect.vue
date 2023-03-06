@@ -48,6 +48,7 @@
           :columns="columns"
           :data="loadData"
           :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelect, type: type }"
+          historySelect
         ></h-vex-table>
       </h-card>
     </h-modal>
@@ -55,8 +56,9 @@
 </template>
 
 <script>
-import { getAction } from '@/api/manage'
-import { isString, isArray, isFunction } from 'lodash'
+import {getAction} from '@/api/manage'
+import {isArray, isFunction, isString} from 'lodash'
+
 export default {
   // inject: ['centerId'],
   props: {

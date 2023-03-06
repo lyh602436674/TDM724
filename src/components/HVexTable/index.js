@@ -94,7 +94,12 @@ export default {
     selectedListConfig: {
       type: Object,
       default: () => undefined
-    }
+    },
+    // 是否开启记录历史选中 比如跨页选中
+    historySelect: {
+      type: Boolean,
+      default: false
+    },
   }),
   data() {
     return {
@@ -410,13 +415,15 @@ export default {
           selectedRows[this.rowKey(item)] = item
         }
       })
-      // reserves.map(item => {
-      //   if (isString(this.rowKey)) {
-      //     selectedRows[item[this.rowKey]] = item
-      //   } else if (isFunction(this.rowKey)) {
-      //     selectedRows[this.rowKey(item)] = item
-      //   }
-      // })
+      if (this.historySelect) {
+        reserves.map(item => {
+          if (isString(this.rowKey)) {
+            selectedRows[item[this.rowKey]] = item
+          } else if (isFunction(this.rowKey)) {
+            selectedRows[this.rowKey(item)] = item
+          }
+        })
+      }
       this.selectedRowKeys = Object.keys(selectedRows)
       this.selectedRows = selectedRows
       this.triggerChange()
@@ -443,13 +450,15 @@ export default {
           selectedRows[this.rowKey(item)] = item
         }
       })
-      // reserves.map(item => {
-      //   if (isString(this.rowKey)) {
-      //     selectedRows[item[this.rowKey]] = item
-      //   } else if (isFunction(this.rowKey)) {
-      //     selectedRows[this.rowKey(item)] = item
-      //   }
-      // })
+      if (this.historySelect) {
+        reserves.map(item => {
+          if (isString(this.rowKey)) {
+            selectedRows[item[this.rowKey]] = item
+          } else if (isFunction(this.rowKey)) {
+            selectedRows[this.rowKey(item)] = item
+          }
+        })
+      }
       this.selectedRowKeys = Object.keys(selectedRows)
       this.selectedRows = selectedRows
       this.triggerChange()
