@@ -27,9 +27,9 @@
           <a-button v-has="'device:import'" icon='import' size='small' type='ghost-success' @click='handleImportExcel'>
             导入
           </a-button>
-          <a-button icon='download' size='small' type='ghost-success' @click='handleTagDownload'>
-            标签下载
-          </a-button>
+<!--          <a-button icon='download' size='small' type='ghost-success' @click='handleTagDownload'>-->
+<!--            标签下载-->
+<!--          </a-button>-->
           <!--          <a-button icon='logout' size='small' type='ghost-primary' @click='handleBorrow'>-->
           <!--            借用-->
           <!--          </a-button>-->

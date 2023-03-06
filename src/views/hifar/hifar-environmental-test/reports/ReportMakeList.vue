@@ -176,13 +176,13 @@ export default {
       selectedRows: [],
       searchBar: [
         {
-          title: '运行单号',
+          title: '委托单号',
           key: 'c_entrustCode_7',
           formType: 'input',
         },
         {
-          title: '委托单号',
-          key: 'c_entrustNo_7',
+          title: '试验编号',
+          key: 'c_testCode_7',
           formType: 'input',
         },
         {
@@ -191,8 +191,8 @@ export default {
           formType: 'input',
         },
         {
-          title: '试验编号',
-          key: 'c_testCode_7',
+          title: '运行单号',
+          key: 'c_taskCode_7',
           formType: 'input',
         },
         {
@@ -249,11 +249,6 @@ export default {
           scopedSlots: {customRender: 'status'},
         },
         {
-          title: '试验编号',
-          align: 'left',
-          dataIndex: 'testCode',
-        },
-        {
           title: '委托单位',
           align: 'left',
           dataIndex: 'custName',
@@ -279,18 +274,23 @@ export default {
           },
         },
         {
-          title: '运行单号',
+          title: '试验编号',
           align: 'left',
-          width: 160,
+          dataIndex: 'testCode',
+        },
+        {
+          title: '委托单号',
+          align: 'left',
           dataIndex: 'entrustCode',
           customRender: (text, record) => {
             return text || '--'
           },
         },
         {
-          title: '委托单号',
+          title: '运行单号',
           align: 'left',
-          dataIndex: 'entrustNo',
+          width: 160,
+          dataIndex: 'taskCode',
           customRender: (text, record) => {
             return text || '--'
           },

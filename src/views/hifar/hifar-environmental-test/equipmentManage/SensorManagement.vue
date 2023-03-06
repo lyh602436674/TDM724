@@ -17,7 +17,7 @@
       @change="refresh(true)"
     />
     <div slot="table-operator" style="border-top: 5px">
-      <a-button v-has="'sensorlist:add'" type="ghost-primary" size="small" icon="plus" @click="handleAdd">新建</a-button>
+      <a-button v-has="'sensorlist:add'" type="ghost-primary" size="small" icon="plus" @click="handleAdd">添加</a-button>
 <!--      <a-button v-has="'sensorlist:export'" icon="download" size="small" type="ghost-warning"-->
 <!--                @click="handleExportXls('传感器信息')">-->
 <!--        导出-->

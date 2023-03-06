@@ -24,14 +24,10 @@
       :rowKey="(record) => record.id"
       :scroll="{ x: true }"
     >
-      <span slot="entrustNo" slot-scope="text, record">
+      <span slot="entrustCode" slot-scope="text, record">
         <h-icon v-if="record.entrustType === '1'" type='icon-nei'/>
         <h-icon v-else type='icon-wai'/>
         <a @click="handleDetail(record,'1')"> {{ text || '--' }}</a>
-      </span>
-      <span slot="entrustCode" slot-scope="text, record">
-        <a v-if="text" @click="handleDetail(record)"> {{ text }}</a>
-        <span v-else>--</span>
       </span>
       <span slot="status" slot-scope="text, record">
         <a-badge :color='record.status | wtStatusColorFilter' :text='record.status | wtStatusFilter(record.entrustType)'/>
@@ -82,13 +78,8 @@ export default {
       unitId: "",
       searchBar: [
         {
-          title: "运行单号",
-          key: "c_entrustCode_7",
-          formType: "input",
-        },
-        {
           title: "委托单号",
-          key: "c_entrustNo_7",
+          key: "c_entrustCode_7",
           formType: "input",
         },
         {
@@ -109,19 +100,11 @@ export default {
       ],
       columns: [
         {
-          title: '运行单号',
+          title: '委托单号',
           align: 'left',
           width: 140,
           dataIndex: 'entrustCode',
           scopedSlots: {customRender: 'entrustCode'},
-          fixed: 'left'
-        },
-        {
-          title: '委托单号',
-          align: 'left',
-          width: 160,
-          dataIndex: 'entrustNo',
-          scopedSlots: {customRender: 'entrustNo'},
           fixed: 'left'
         },
         {

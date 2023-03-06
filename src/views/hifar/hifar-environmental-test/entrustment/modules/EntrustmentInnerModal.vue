@@ -259,6 +259,12 @@ export default {
           }
         },
         {
+          title: '委托单位编码',
+          key: 'custCode',
+          formType: 'input',
+          disabled: true
+        },
+        {
           title: '委托人',
           key: 'entrustPerson',
           formType: 'input',
@@ -451,13 +457,16 @@ export default {
     },
     // 新增默认值
     handleAdd() {
+      debugger
       let userInfo = store.getters.userInfo
+      console.log(userInfo);
       this.entrustModel = {
         entrustPerson: userInfo.idName,
         entrustPersonPhone: userInfo.mobile,
         entrustTime: moment(),
         attachIds: [],
         entrustType: '1',
+        custCode: userInfo.deptCode,
         custName: userInfo.deptName,
         sampleMakeUnit: userInfo.deptName,
         custId: userInfo.deptId,

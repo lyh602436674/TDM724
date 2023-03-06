@@ -102,15 +102,15 @@
               <template slot="productNames" slot-scope="text, record">
                 <span>{{ record.productNames }}-{{ record.productAliass }}</span>
               </template>
-              <span slot="entrustNo" slot-scope="text, record">
-                <a @click="$refs.taskDetail.show(record,'1')" v-if="text">
+              <span slot="taskCode" slot-scope="text, record">
+                <a @click="$refs.taskDetail.show(record,'2')" v-if="text">
                   <h-icon :type="record.alert ? 'icon-jingbaobaojing2' : ''" style="font-size: 20px"/>
                   <span :style="{ marginLeft: record.alert ? 0 : '20px' }">{{ text }}</span>
                 </a>
                 <span v-else> -- </span>
               </span>
               <span slot="entrustCode" slot-scope="text, record">
-                <a @click="$refs.taskDetail.show(record)" v-if="text">{{ text ? text : '--' }}</a>
+                <a @click="$refs.taskDetail.show(record,'1')" v-if="text">{{ text ? text : '--' }}</a>
                 <span v-else> -- </span>
               </span>
               <span slot="testNum" slot-scope="text, record">
@@ -199,22 +199,17 @@ export default {
       searchForm: [
         {
           title: '运行单号',
-          key: 'c_entrustCode_7',
+          key: 'c_taskCode_7',
           formType: 'input',
         },
         {
           title: '委托单号',
-          key: 'c_entrustNo_7',
+          key: 'c_entrustCode_7',
           formType: 'input',
         },
         {
           title: '委托单位',
           key: 'c_custName_7',
-          formType: 'input',
-        },
-        {
-          title: '任务编号',
-          key: 'c_taskCode_7',
           formType: 'input',
         },
         {
@@ -251,12 +246,7 @@ export default {
         },
         {
           title: '样品名称',
-          key: 'productName',
-          formType: 'input',
-        },
-        {
-          title: '样品代号',
-          key: 'productAlias',
+          key: 'c_productName_7',
           formType: 'input',
         },
         {
@@ -268,18 +258,18 @@ export default {
       columns: [
         {
           title: '运行单号',
-          dataIndex: 'entrustCode',
-          minWidth: 140,
+          dataIndex: 'taskCode',
+          minWidth: 160,
           scopedSlots: {
-            customRender: 'entrustCode',
+            customRender: 'taskCode',
           },
         },
         {
           title: '委托单号',
-          dataIndex: 'entrustNo',
-          minWidth: 160,
+          dataIndex: 'entrustCode',
+          minWidth: 140,
           scopedSlots: {
-            customRender: 'entrustNo',
+            customRender: 'entrustCode',
           },
         },
         {

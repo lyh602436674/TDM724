@@ -9,9 +9,6 @@
   <div>
     <h-desc :data="detailData" labelWidth='130px' size='small' title='基本信息'>
       <h-desc-item label='委托单号'>
-        {{ detailData.entrustNo || '--' }}
-      </h-desc-item>
-      <h-desc-item label='运行单号'>
         {{ detailData.entrustCode || '--' }}
         <a-button v-if="showPreviewBtn" icon="eye" size="small" style="margin-left: 10px" type="primary"
                   @click="entrustReview">委托单预览
