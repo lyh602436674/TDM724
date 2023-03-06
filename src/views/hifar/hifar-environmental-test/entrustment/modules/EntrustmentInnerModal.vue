@@ -457,9 +457,7 @@ export default {
     },
     // 新增默认值
     handleAdd() {
-      debugger
       let userInfo = store.getters.userInfo
-      console.log(userInfo);
       this.entrustModel = {
         entrustPerson: userInfo.idName,
         entrustPersonPhone: userInfo.mobile,
@@ -657,9 +655,6 @@ export default {
     },
     // 选择项目弹框返回数据
     projectModalCallback(recordId, record) {
-      // let pieceTableData = this.$refs.pieceTable.getData()
-      // let pieceSorting = this.pieceSorting(pieceTableData, 'productName', 'productModel')
-      // console.log(pieceSorting, 'pieceSorting')
       let extendRecord = cloneDeep(record)
       if (this.projectInfoData.length) {
         for (let i = 0; i < extendRecord.length; i++) {
@@ -674,19 +669,18 @@ export default {
         }
       }
       let selectedPiece = this.selectedPieceRows
-      this.projectInfoData = this.projectInfoData.concat(extendRecord.map((item, index) => {
+      extendRecord = extendRecord.map((item, index) => {
         return {
           ...item,
           // 给选择之后的项目添加unitId字段
           unitId: item.id,
           testCondition: item.remarks,
         }
-      })).map((v, i) => {
-        return {
-          ...v,
-          pieceIds: selectedPiece.length ? selectedPiece.map(_item => _item.id).toString() : '',
-          pieceNos: selectedPiece.length ? selectedPiece.map(_item => _item.pieceNo).toString() : ''
-        }
+      })
+      this.projectInfoData.push(...extendRecord);
+      this.projectInfoData.forEach((item, index) => {
+        item.pieceIds = item.pieceIds || (selectedPiece.length ? selectedPiece.map(_item => _item.id).toString() : '')
+        item.pieceNos = item.pieceNos || (selectedPiece.length ? selectedPiece.map(_item => _item.pieceNo).toString() : '')
       })
       this.buildLayer(this.projectInfoData)
     },
