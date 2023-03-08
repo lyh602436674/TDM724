@@ -11,7 +11,7 @@
     <!-- 基本信息 -->
     <a-tabs v-model="activeTab" size="small" type="card" @change="handleTabsChange">
       <a-tab-pane v-for="(item, index) in entrustInfo" :key="index"
-                  :tab="item.flag ? item.title : (viewDetailType ? item.entrustNo : item.entrustCode) "></a-tab-pane>
+                  :tab="item.flag ? item.title : item.entrustCode "></a-tab-pane>
     </a-tabs>
     <template v-if="entrustInfo[activeTab]['flag']">
       <abnormal-record-table v-if="entrustInfo[activeTab]['type'] === 'exception'"

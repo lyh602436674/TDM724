@@ -16,7 +16,6 @@
               <img style="width: 100%;height: 100%;display: block" :src="item.headUrl ? item.headUrl : noHead" alt="图像">
             </div>
             <div>{{ item.idName }}</div>
-            <div>{{ item.mobile }}</div>
           </li>
         </ul>
     </div>
@@ -53,8 +52,12 @@ export default {
           {headUrl: "", idName: "暂无排班人员",},
           {headUrl: "", idName: "暂无排班人员",}
         ]
-        if (res.code === 200) {
-          this.shiftData = res.data && res.data.length ? res.data : defaultData
+        if (res.code === 200 && res.data && res.data.length) {
+          let data = res.data[0]
+          this.shiftData = [
+            {headUrl: data.dayHeadUrl, idName: data.dayShiftContact},
+            {headUrl: data.nightHeadUrl, idName: data.nightShiftContact},
+          ]
         } else {
           this.shiftData = defaultData
         }

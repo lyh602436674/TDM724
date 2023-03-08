@@ -151,7 +151,6 @@
     </h-card>
     <task-arrangement ref="taskArrangement" @change="handleRefresh"></task-arrangement>
     <task-detail ref="taskDetail"/>
-    <work-center-detail-modal ref="WorkCenterDetailModal"/>
     <test-info-list-modal ref="TestInfoListModal" @change="refhandleBack"/>
     <task-force-end-modal ref="taskForceEnd" :forceEndUrl="url.forceEnd" :testDetailUrl="url.testDetail"
                           @change="handleRefresh"/>
@@ -166,7 +165,6 @@ import HPie from '@/components/HChart/HPie'
 import TaskArrangement from './modules/TaskArrangementModal.vue'
 import TaskDetail from './modules/TaskDetail'
 import TestInfoListModal from './modules/TestInfoListModal'
-import WorkCenterDetailModal from '../components/WorkCenterDetailModal.vue'
 import TaskForceEndModal from './modules/TaskForceEndModal.vue'
 import {find} from 'lodash'
 import TestEntrustReviewPdf from "@views/hifar/hifar-environmental-test/task/modules/TestEntrustReviewPdf";
@@ -184,7 +182,6 @@ export default {
     HPie,
     TaskArrangement,
     TaskDetail,
-    WorkCenterDetailModal,
     TestInfoListModal,
     TaskForceEndModal,
     TestEntrustReviewPdf
@@ -193,9 +190,7 @@ export default {
     return {
       collapse: true,
       centerId: null,
-      queryParams: {
-        type: '',
-      },
+      queryParams: {},
       searchForm: [
         {
           title: '运行单号',
@@ -597,7 +592,6 @@ export default {
       this.refresh(bool)
     },
     refhandleBack(bool) {
-      this.loadData()
       this.refresh(bool)
     },
     refresh(bool = true) {

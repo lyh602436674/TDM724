@@ -240,7 +240,7 @@ export default {
     },
     handleCancel() {
       this.visible = false
-      this.$emit('change',this.handleBack())
+      this.$emit('change')
     },
     refresh(bool = true) {
       this.$refs.testInfoListTable.refresh(bool)
