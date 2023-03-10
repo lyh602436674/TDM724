@@ -5,6 +5,7 @@
  * @LastEditors: Please set LastEditors
  * @Description: 设备任务
  * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\task\EquipTask.vue
+ * @Description: 设备任务 v1.0
 -->
 <template>
   <div class="equip-task">
@@ -48,12 +49,12 @@
   </div>
 </template>
 <script>
-import Vue from 'vue'
 import Raphael from 'raphael'
-import { getAction } from '@/api/manage'
+import {getAction} from '@/api/manage'
 import moment from 'moment'
-import { isEmpty } from 'lodash'
+import {isEmpty} from 'lodash'
 import TestTaskBaseInfoModal from '@/views/hifar/hifar-environmental-test/task/TestTaskBaseInfoModal'
+
 const equipIcon = require('./assets/image/equip.png')
 const testIcon = require('./assets/image/test.png')
 export default {

@@ -5,6 +5,7 @@
  * @LastEditors: 陈乾龙
  * @Description: 试验安排弹窗
  * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\task\modules\TaskArrangementModal.vue
+ * @description: 试验安排弹窗V1.0
 -->
 <template>
   <div>

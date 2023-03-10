@@ -1,10 +1,9 @@
 <!--
- * @Author: 陈乾龙
- * @Date: 2021-09-23 10:29:01
- * @LastEditTime: 2021-11-17 15:54:43
- * @LastEditors: 陈乾龙
- * @Description: 试验安排弹窗
- * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\task\modules\TaskArrangementModal.vue
+ * @Author: 雷宇航
+ * @Date: 2023-03-10 16:05:20
+ * @fileName: TaskArrangementModal.vue
+ * @FilePath: tdm724-client\src\views\hifar\hifar-environmental-test\task\modules\TaskArrangementModal.vue
+ * @Description:试验安排弹窗V2.0 使用dhtmlx-gantt绘制
 -->
 <template>
   <div>
@@ -14,11 +13,9 @@
           <a-space slot="search-form" class="query-condition" size="small">
             <a-radio-group v-model="queryType" button-style="solid" size="small" @change="handleQueryTypeChange">
               <a-radio-button value="all">全部</a-radio-button>
-              <a-radio-button value="yestoday">昨天</a-radio-button>
+              <a-radio-button value="yesterday">昨天</a-radio-button>
               <a-radio-button value="today">今天</a-radio-button>
-              <a-radio-button value="tommorow">明天</a-radio-button>
-              <!-- <a-radio-button value="7days">未来7天</a-radio-button>
-              <a-radio-button value="30days">未来30天</a-radio-button> -->
+              <a-radio-button value="tomorrow">明天</a-radio-button>
               <a-radio-button value="custom">自定义</a-radio-button>
             </a-radio-group>
             <a-range-picker
@@ -123,14 +120,55 @@ export default {
         })
       })
     },
+    getDate(type) {
+      let start, end
+      let dateObj = {
+        today: () => {
+          start = moment().format("YYYY-MM-DD") + " 00:00:00"
+          end = moment().format("YYYY-MM-DD") + " 23:59:59"
+        },
+        yesterday: () => {
+          start = moment(moment().add(-1, 'days').startOf('day').valueOf()).format('YYYY-MM-DD HH:mm:ss');
+          end = moment(moment().add(-1, 'days').endOf('day').valueOf()).format('YYYY-MM-DD HH:mm:ss');
+        },
+        tomorrow: () => {
+          start = moment(moment().add(1, 'days').startOf('day').valueOf()).format('YYYY-MM-DD HH:mm:ss');
+          end = moment(moment().add(1, 'days').endOf('day').valueOf()).format('YYYY-MM-DD HH:mm:ss');
+        }
+      }
+      dateObj[type]()
+      return {start, end}
+    },
     ganttLoad() {
       gantt.clearAll()
       gantt.i18n.setLocale('cn')
-      gantt.config.date_format = '%Y-%m-%d %H:%i:%s' //  设置日期格式
-      gantt.config.date_scale = '%m-%d'
+      //  设置日期格式
+      gantt.config.date_format = '%Y-%m-%d %H:%i:%s'
+      //  只读模式
       gantt.config.readonly = true
-      gantt.config.scale_unit = 'day'
-      gantt.config.step = 1
+      let bool = ['all', 'custom'].includes(this.queryType)
+      let global_start_date = null
+      let global_end_date = null
+      // 设置时间刻度相关属性
+      gantt.config.scales = [];
+      if (bool) {
+        gantt.config.scales.push(
+          {unit: "day", step: 1, format: "%m-%d"}
+        )
+        if (this.queryType === 'custom') {
+          global_start_date = moment(this.queryTime[0]).format('YYYY-MM-DD HH:mm:ss')
+          global_end_date = moment(this.queryTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        }
+      } else {
+        let result = this.getDate(this.queryType)
+        global_start_date = result.start
+        global_end_date = result.end
+        gantt.config.scales.push({
+          unit: "hour", step: 1, format: "%H"
+        })
+      }
+      gantt.config.start_date = global_start_date
+      gantt.config.end_date = global_end_date
       // 允许在出现意外行为时显示错误警报
       gantt.config.show_errors = false;
       //甘特图自动延长时间刻度以适应所有显示的任务
@@ -141,18 +179,7 @@ export default {
       gantt.config.preserve_scroll = true
       // 设置表格行的默认高度
       gantt.config.row_height = 40
-      // 设置时间刻度相关属性
-      // gantt.config.scales = [
-      //   {unit: "month", step: 1, format: "%F, %Y"},
-      //   {unit: "week", step: 1, format: function (date) {
-      //       return "Week #" + gantt.date.getWeek(date);
-      //     }},
-      //   {unit: "day", step: 1, format: "%D", css: function(date) {
-      //       if(!gantt.isWorkTime({ date: date, unit: "day"})){
-      //         return "weekend"
-      //       }
-      //     }}
-      // ];
+
 
       gantt.config.columns = [
         {
@@ -377,16 +404,12 @@ export default {
     },
     filterQueryType(type) {
       switch (type) {
-        case 'yestoday':
+        case 'yesterday':
           return [moment().subtract(1, 'd').startOf('day').valueOf(), moment().subtract(1, 'd').endOf('day').valueOf()]
         case 'today':
           return [moment().startOf('day').valueOf(), moment().endOf('day').valueOf()]
-        case 'tommorow':
+        case 'tomorrow':
           return [moment().add(1, 'd').startOf('day').valueOf(), moment().add(1, 'd').endOf('day').valueOf()]
-        case '7days':
-          return [moment().startOf('day').valueOf(), moment().add(7, 'd').endOf('day').valueOf()]
-        case '30days':
-          return [moment().startOf('day').valueOf(), moment().add(30, 'd').endOf('day').valueOf()]
         case 'custom':
           return [this.queryTime[0].startOf('day').valueOf(), this.queryTime[1].endOf('day').valueOf()]
         case 'all':
